@@ -41,8 +41,8 @@ function AuthPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-muted/40 px-4">
-      <div className="w-full max-w-sm rounded-xl bg-card p-8 shadow-sm">
+    <main className="flex min-h-screen items-center justify-center bg-brand-gradient px-4">
+      <div className="w-full max-w-sm rounded-xl border bg-card p-8 shadow-card">
         <h1 className="text-xl font-semibold tracking-tight">Sign in</h1>
         <p className="mt-1 text-sm text-muted-foreground">Manage your jobs and review requests.</p>
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
