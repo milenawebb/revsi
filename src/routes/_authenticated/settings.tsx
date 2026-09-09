@@ -26,6 +26,11 @@ export const Route = createFileRoute("/_authenticated/settings")({
 
 function SettingsPage() {
   const business = useBusiness();
+  return <SettingsForm key={business.id} />;
+}
+
+function SettingsForm() {
+  const business = useBusiness();
   const queryClient = useQueryClient();
   const [form, setForm] = useState({
     name: business.name,
