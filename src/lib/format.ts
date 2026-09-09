@@ -13,9 +13,12 @@ export function formatDate(value: string | null | undefined) {
   return new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
-export function statusTone(status: string): "default" | "secondary" | "destructive" | "outline" {
-  if (status === "failed" || status === "bounced") return "destructive";
-  if (status === "sent" || status === "completed") return "default";
-  if (status === "cancelled") return "outline";
-  return "secondary";
+export function statusTone(
+  status: string,
+): "queued" | "sent" | "clicked" | "failed" | "cancelled" {
+  if (status === "failed" || status === "bounced") return "failed";
+  if (status === "sent" || status === "completed") return "sent";
+  if (status === "clicked") return "clicked";
+  if (status === "cancelled") return "cancelled";
+  return "queued";
 }
