@@ -116,6 +116,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <main className="md:pl-60">
         <div className="mx-auto w-full max-w-5xl px-4 py-6 md:px-8 md:py-10">{children}</div>
       </main>
+
+      <AddBusinessDialog
+        open={addOpen}
+        onOpenChange={setAddOpen}
+        onCreated={(id) => {
+          selectBusiness(id);
+          setOpen(false);
+          navigate({ to: "/jobs" });
+        }}
+      />
     </div>
   );
 }
