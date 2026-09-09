@@ -1,0 +1,204 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Plus } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useBusiness } from "@/lib/business-context";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { NewJobDialog } from "@/components/NewJobDialog";
+import { formatDate, formatDateTime, statusTone } from "@/lib/format";
+
+export const Route = createFileRoute("/_authenticated/jobs")({
+  head: () => ({
+    meta: [
+      { title: "Jobs — Review Requests" },
+      { name: "description", content: "Log jobs and trigger automated review requests." },
+      { property: "og:title", content: "Jobs — Review Requests" },
+      { property: "og:description", content: "Log jobs and trigger automated review requests." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: JobsPage,
+});
+
+function since30() {
+  return new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+}
+
+function JobsPage() {
+  const business = useBusiness();
+  const queryClient = useQueryClient();
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const jobs = useQuery({
+    queryKey: ["jobs", business.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("services")
+        .select("id, service_type, status, completed_at, created_at, customers(name, email)")
+        .eq("business_id", business.id)
+        .order("created_at", { ascending: false })
+        .limit(200);
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const dueByService = useQuery({
+    queryKey: ["due-map", business.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("review_requests")
+        .select("service_id, kind, send_after, sent_at, status")
+        .eq("business_id", business.id)
+        .eq("kind", "initial")
+        .limit(500);
+      if (error) throw error;
+      const map: Record<string, { send_after: string; sent_at: string | null; status: string }> =
+        {};
+      for (const r of data) map[r.service_id] = r;
+      return map;
+    },
+  });
+
+  const stats = useQuery({
+    queryKey: ["stats", business.id],
+    queryFn: async () => {
+      const from = since30();
+      const [completed, requests] = await Promise.all([
+        supabase
+          .from("services")
+          .select("id", { count: "exact", head: true })
+          .eq("business_id", business.id)
+          .eq("status", "completed")
+          .gte("completed_at", from),
+        supabase
+          .from("review_requests")
+          .select("sent_at, clicked_at")
+          .eq("business_id", business.id)
+          .eq("status", "sent")
+          .gte("sent_at", from)
+          .limit(1000),
+      ]);
+      if (completed.error) throw completed.error;
+      if (requests.error) throw requests.error;
+      const sent = requests.data.length;
+      const clicked = requests.data.filter((r) => r.clicked_at).length;
+      return {
+        jobs: completed.count ?? 0,
+        sent,
+        clicked,
+        rate: sent ? Math.round((clicked / sent) * 100) : 0,
+      };
+    },
+  });
+
+  const complete = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("services")
+        .update({ status: "completed", completed_at: new Date().toISOString() })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Job completed", { description: "A review request has been scheduled." });
+      queryClient.invalidateQueries();
+    },
+    onError: (e: Error) => toast.error("Couldn't complete job", { description: e.message }),
+  });
+
+  const cards = [
+    { label: "Jobs completed", value: stats.data?.jobs ?? 0 },
+    { label: "Requests sent", value: stats.data?.sent ?? 0 },
+    { label: "Requests clicked", value: stats.data?.clicked ?? 0 },
+    { label: "Click rate", value: `${stats.data?.rate ?? 0}%` },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Jobs</h1>
+          <p className="text-sm text-muted-foreground">Last 30 days at a glance.</p>
+        </div>
+        <Button onClick={() => setDialogOpen(true)} className="gap-2">
+          <Plus className="size-4" /> New job
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {cards.map((c) => (
+          <div key={c.label} className="rounded-xl bg-card p-5">
+            <p className="text-xs text-muted-foreground">{c.label}</p>
+            <p className="mt-2 text-2xl font-semibold tracking-tight">{c.value}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="overflow-hidden rounded-xl bg-card">
+        <div className="hidden grid-cols-[1.2fr_1.4fr_1fr_0.8fr_1.2fr] gap-4 px-5 py-3 text-xs font-medium text-muted-foreground md:grid">
+          <span>Customer</span>
+          <span>Email</span>
+          <span>Service</span>
+          <span>Status</span>
+          <span className="text-right">Completed</span>
+        </div>
+        {jobs.isLoading ? (
+          <p className="px-5 py-8 text-sm text-muted-foreground">Loading…</p>
+        ) : jobs.data && jobs.data.length > 0 ? (
+          jobs.data.map((job) => {
+            const due = dueByService.data?.[job.id];
+            return (
+              <div
+                key={job.id}
+                className="grid gap-2 border-t border-border/60 px-5 py-4 text-sm md:grid-cols-[1.2fr_1.4fr_1fr_0.8fr_1.2fr] md:items-center md:gap-4"
+              >
+                <span className="font-medium">{job.customers?.name ?? "—"}</span>
+                <span className="truncate text-muted-foreground">
+                  {job.customers?.email ?? "—"}
+                </span>
+                <span className="text-muted-foreground">{job.service_type ?? "—"}</span>
+                <span>
+                  <Badge variant={statusTone(job.status)} className="capitalize">
+                    {job.status}
+                  </Badge>
+                </span>
+                <div className="md:text-right">
+                  {job.status === "scheduled" ? (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={complete.isPending}
+                      onClick={() => complete.mutate(job.id)}
+                    >
+                      Mark completed
+                    </Button>
+                  ) : job.status === "completed" ? (
+                    <div className="text-muted-foreground">
+                      <div>{formatDate(job.completed_at)}</div>
+                      {due && !due.sent_at && due.status === "queued" ? (
+                        <div className="text-xs">Sends {formatDateTime(due.send_after)}</div>
+                      ) : due?.sent_at ? (
+                        <div className="text-xs">Sent {formatDateTime(due.sent_at)}</div>
+                      ) : null}
+                    </div>
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <p className="px-5 py-8 text-sm text-muted-foreground">No jobs yet.</p>
+        )}
+      </div>
+
+      <NewJobDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+    </div>
+  );
+}
