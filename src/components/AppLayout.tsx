@@ -38,10 +38,39 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   const sidebar = (
     <div className="flex h-full flex-col gap-6 p-5">
-      <div>
-        <p className="text-sm font-semibold tracking-tight">{business.name}</p>
-        <p className="text-xs text-muted-foreground">Review requests</p>
-      </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left transition-colors hover:bg-secondary/60">
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-semibold tracking-tight">
+                {business.name}
+              </span>
+              <span className="block text-xs text-muted-foreground">Review requests</span>
+            </span>
+            <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-56">
+          {businesses.map((b) => (
+            <DropdownMenuItem
+              key={b.id}
+              onSelect={() => {
+                selectBusiness(b.id);
+                setOpen(false);
+              }}
+              className="gap-2"
+            >
+              <Check className={cn("size-4", b.id === business.id ? "opacity-100" : "opacity-0")} />
+              <span className="truncate">{b.name}</span>
+            </DropdownMenuItem>
+          ))}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem className="gap-2" onSelect={() => setAddOpen(true)}>
+            <Plus className="size-4" />
+            Add business
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <nav className="flex flex-col gap-1">
         {nav.map((item) => {
           const active = pathname.startsWith(item.to);
