@@ -1,10 +1,18 @@
 import { useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Briefcase, Send, Settings, LogOut, Menu, X } from "lucide-react";
+import { Briefcase, Send, Settings, LogOut, Menu, X, Check, ChevronsUpDown, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useBusiness } from "@/lib/business-context";
+import { useBusinesses } from "@/lib/business-context";
+import { AddBusinessDialog } from "@/components/AddBusinessDialog";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 const nav = [
