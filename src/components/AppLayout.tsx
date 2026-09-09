@@ -41,7 +41,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left transition-colors hover:bg-sidebar-accent/60">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-gradient text-sm font-bold text-white">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-gradient text-sm font-bold text-primary-foreground">
               {business.name.charAt(0).toUpperCase()}
             </span>
             <span className="min-w-0">
