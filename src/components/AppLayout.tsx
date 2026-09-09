@@ -40,14 +40,17 @@ export function AppLayout({ children }: { children: ReactNode }) {
     <div className="flex h-full flex-col gap-6 p-5">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left transition-colors hover:bg-secondary/60">
+          <button className="flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left transition-colors hover:bg-sidebar-accent/60">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-gradient text-sm font-bold text-primary-foreground">
+              {business.name.charAt(0).toUpperCase()}
+            </span>
             <span className="min-w-0">
-              <span className="block truncate text-sm font-semibold tracking-tight">
+              <span className="block truncate text-sm font-semibold tracking-tight text-sidebar-foreground">
                 {business.name}
               </span>
-              <span className="block text-xs text-muted-foreground">Review requests</span>
+              <span className="block text-xs text-sidebar-muted">Review requests</span>
             </span>
-            <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" />
+            <ChevronsUpDown className="size-4 shrink-0 text-sidebar-muted" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-56">
@@ -82,8 +85,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
                 active
-                  ? "bg-secondary font-medium text-secondary-foreground"
-                  : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground",
+                  ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
+                  : "text-sidebar-muted hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
               )}
             >
               <item.icon className="size-4" />
@@ -92,7 +95,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
           );
         })}
       </nav>
-      <Button variant="ghost" className="mt-auto justify-start gap-3 px-3" onClick={signOut}>
+      <Button
+        variant="ghost"
+        className="mt-auto justify-start gap-3 px-3 text-sidebar-muted hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
+        onClick={signOut}
+      >
         <LogOut className="size-4" />
         Sign out
       </Button>
@@ -100,17 +107,17 @@ export function AppLayout({ children }: { children: ReactNode }) {
   );
 
   return (
-    <div className="min-h-screen bg-muted/40">
-      <aside className="fixed inset-y-0 left-0 hidden w-60 bg-card md:block">{sidebar}</aside>
+    <div className="min-h-screen bg-background">
+      <aside className="fixed inset-y-0 left-0 hidden w-60 bg-sidebar md:block">{sidebar}</aside>
 
-      <header className="sticky top-0 z-20 flex items-center gap-3 bg-card px-4 py-3 md:hidden">
+      <header className="sticky top-0 z-20 flex items-center gap-3 border-b bg-card px-4 py-3 md:hidden">
         <Button variant="ghost" size="icon" onClick={() => setOpen((v) => !v)} aria-label="Menu">
           {open ? <X className="size-5" /> : <Menu className="size-5" />}
         </Button>
         <span className="text-sm font-semibold">{business.name}</span>
       </header>
       {open ? (
-        <div className="fixed inset-x-0 top-[57px] bottom-0 z-20 bg-card md:hidden">{sidebar}</div>
+        <div className="fixed inset-x-0 top-[57px] bottom-0 z-20 bg-sidebar md:hidden">{sidebar}</div>
       ) : null}
 
       <main className="md:pl-60">

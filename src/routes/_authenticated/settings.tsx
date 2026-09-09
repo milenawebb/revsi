@@ -84,11 +84,11 @@ function SettingsForm() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
         <p className="text-sm text-muted-foreground">How your review requests are sent.</p>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-6 rounded-xl bg-card p-5 md:p-6">
+      <form onSubmit={onSubmit} className="space-y-6 rounded-xl border bg-card p-5 shadow-card md:p-6">
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="name">Business name</Label>

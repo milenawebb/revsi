@@ -58,7 +58,7 @@ function RequestsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Requests</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Requests</h1>
           <p className="text-sm text-muted-foreground">
             Created automatically when a job is completed.
           </p>
@@ -78,8 +78,8 @@ function RequestsPage() {
         </Select>
       </div>
 
-      <div className="overflow-hidden rounded-xl bg-card">
-        <div className="hidden grid-cols-[1.4fr_0.8fr_0.8fr_1fr_1fr_0.7fr] gap-4 px-5 py-3 text-xs font-medium text-muted-foreground md:grid">
+      <div className="overflow-hidden rounded-xl border bg-card shadow-card">
+        <div className="hidden grid-cols-[1.4fr_0.8fr_0.8fr_1fr_1fr_0.7fr] gap-4 px-5 py-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground md:grid">
           <span>Customer</span>
           <span>Kind</span>
           <span>Status</span>

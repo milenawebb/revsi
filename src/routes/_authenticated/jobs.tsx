@@ -122,7 +122,7 @@ function JobsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Jobs</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Jobs</h1>
           <p className="text-sm text-muted-foreground">Last 30 days at a glance.</p>
         </div>
         <Button onClick={() => setDialogOpen(true)} className="gap-2">
@@ -132,15 +132,16 @@ function JobsPage() {
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {cards.map((c) => (
-          <div key={c.label} className="rounded-xl bg-card p-5">
+          <div key={c.label} className="relative overflow-hidden rounded-xl border bg-card p-5 shadow-card">
+            <div className="absolute inset-x-0 top-0 h-[3px] bg-brand-gradient" />
             <p className="text-xs text-muted-foreground">{c.label}</p>
             <p className="mt-2 text-2xl font-semibold tracking-tight">{c.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="overflow-hidden rounded-xl bg-card">
-        <div className="hidden grid-cols-[1.2fr_1.4fr_1fr_0.8fr_1.2fr] gap-4 px-5 py-3 text-xs font-medium text-muted-foreground md:grid">
+      <div className="overflow-hidden rounded-xl border bg-card shadow-card">
+        <div className="hidden grid-cols-[1.2fr_1.4fr_1fr_0.8fr_1.2fr] gap-4 px-5 py-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground md:grid">
           <span>Customer</span>
           <span>Email</span>
           <span>Service</span>
