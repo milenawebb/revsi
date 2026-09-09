@@ -22,11 +22,12 @@ const nav = [
 ] as const;
 
 export function AppLayout({ children }: { children: ReactNode }) {
-  const business = useBusiness();
+  const { business, businesses, selectBusiness } = useBusinesses();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
 
   async function signOut() {
     await queryClient.cancelQueries();
