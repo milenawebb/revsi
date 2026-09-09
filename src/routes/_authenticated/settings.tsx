@@ -1,0 +1,182 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useBusiness } from "@/lib/business-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+
+export const Route = createFileRoute("/_authenticated/settings")({
+  head: () => ({
+    meta: [
+      { title: "Settings — Review Requests" },
+      { name: "description", content: "Business details, timing and reminder settings." },
+      { property: "og:title", content: "Settings — Review Requests" },
+      { property: "og:description", content: "Business details, timing and reminder settings." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: SettingsPage,
+});
+
+function SettingsPage() {
+  const business = useBusiness();
+  const queryClient = useQueryClient();
+  const [form, setForm] = useState({
+    name: business.name,
+    review_url: business.review_url,
+    from_name: business.from_name,
+    reply_to_email: business.reply_to_email ?? "",
+    postal_address: business.postal_address ?? "",
+    request_delay_minutes: String(business.request_delay_minutes),
+    reminder_enabled: business.reminder_enabled,
+    reminder_delay_days: String(business.reminder_delay_days),
+  });
+  const [urlError, setUrlError] = useState<string | null>(null);
+
+  const save = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("businesses")
+        .update({
+          name: form.name.trim(),
+          review_url: form.review_url.trim(),
+          from_name: form.from_name.trim(),
+          reply_to_email: form.reply_to_email.trim() || null,
+          postal_address: form.postal_address.trim() || null,
+          request_delay_minutes: Number(form.request_delay_minutes) || 0,
+          reminder_enabled: form.reminder_enabled,
+          reminder_delay_days: Number(form.reminder_delay_days) || 0,
+        })
+        .eq("id", business.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Settings saved");
+      queryClient.invalidateQueries();
+    },
+    onError: (e: Error) => toast.error("Couldn't save settings", { description: e.message }),
+  });
+
+  function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      const url = new URL(form.review_url.trim());
+      if (!url.protocol.startsWith("http")) throw new Error();
+    } catch {
+      setUrlError("Enter a valid URL starting with https://");
+      return;
+    }
+    setUrlError(null);
+    save.mutate();
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
+        <p className="text-sm text-muted-foreground">How your review requests are sent.</p>
+      </div>
+
+      <form onSubmit={onSubmit} className="space-y-6 rounded-xl bg-card p-5 md:p-6">
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="name">Business name</Label>
+            <Input
+              id="name"
+              required
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="from_name">From name</Label>
+            <Input
+              id="from_name"
+              required
+              value={form.from_name}
+              onChange={(e) => setForm({ ...form, from_name: e.target.value })}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="review_url">Review link</Label>
+          <Input
+            id="review_url"
+            required
+            value={form.review_url}
+            onChange={(e) => setForm({ ...form, review_url: e.target.value })}
+          />
+          {urlError ? <p className="text-sm text-destructive">{urlError}</p> : null}
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="reply_to_email">Reply-to email</Label>
+            <Input
+              id="reply_to_email"
+              type="email"
+              value={form.reply_to_email}
+              onChange={(e) => setForm({ ...form, reply_to_email: e.target.value })}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="request_delay_minutes">Delay before sending (minutes)</Label>
+            <Input
+              id="request_delay_minutes"
+              type="number"
+              min={0}
+              value={form.request_delay_minutes}
+              onChange={(e) => setForm({ ...form, request_delay_minutes: e.target.value })}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="postal_address">Postal address</Label>
+          <Textarea
+            id="postal_address"
+            rows={2}
+            value={form.postal_address}
+            onChange={(e) => setForm({ ...form, postal_address: e.target.value })}
+          />
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-muted/50 p-4">
+          <div>
+            <p className="text-sm font-medium">Send a reminder</p>
+            <p className="text-xs text-muted-foreground">
+              Follow up if the first email isn't clicked.
+            </p>
+          </div>
+          <Switch
+            checked={form.reminder_enabled}
+            onCheckedChange={(v) => setForm({ ...form, reminder_enabled: v })}
+          />
+        </div>
+
+        <div className="space-y-2 md:max-w-xs">
+          <Label htmlFor="reminder_delay_days">Reminder delay (days)</Label>
+          <Input
+            id="reminder_delay_days"
+            type="number"
+            min={0}
+            disabled={!form.reminder_enabled}
+            value={form.reminder_delay_days}
+            onChange={(e) => setForm({ ...form, reminder_delay_days: e.target.value })}
+          />
+        </div>
+
+        <Button type="submit" disabled={save.isPending}>
+          {save.isPending ? "Saving…" : "Save changes"}
+        </Button>
+      </form>
+    </div>
+  );
+}
