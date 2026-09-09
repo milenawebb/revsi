@@ -80,7 +80,7 @@ export function BusinessProvider({ children }: { children: ReactNode }) {
 
   if (!current) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-muted/40 px-6 text-center">
+      <div className="flex min-h-screen items-center justify-center bg-background px-6 text-center">
         <div className="max-w-sm">
           <h1 className="text-lg font-semibold">Add your first business</h1>
           <p className="mt-2 text-sm text-muted-foreground">
