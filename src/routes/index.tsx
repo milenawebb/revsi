@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
 import { HeroEmailCard } from "@/components/landing/HeroEmailCard";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Reveal, useInView, usePrefersReducedMotion } from "@/components/landing/motion";
@@ -13,9 +12,8 @@ import {
   RequestsShot,
 } from "@/components/landing/ProductShots";
 import { Badge } from "@/components/ui/badge";
-import logoHeader from "@/assets/logo-header.png.asset.json";
-import logoFooter from "@/assets/logo-footer.png.asset.json";
 import { cn } from "@/lib/utils";
+import { SiteFooter, SiteHeader } from "@/components/site/SiteChrome";
 
 const WAITLIST_MAILTO =
   "mailto:info@revsi.app?subject=revsi.app%20waitlist&body=Please%20add%20me%20to%20the%20waitlist.";
@@ -222,38 +220,13 @@ function NotaryPoints() {
 }
 
 function LandingPage() {
-  const [signedIn, setSignedIn] = useState(false);
 
-  useEffect(() => {
-    let active = true;
-    supabase.auth.getSession().then(({ data }) => {
-      if (active) setSignedIn(!!data.session);
-    });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSignedIn(!!session);
-    });
-    return () => {
-      active = false;
-      listener.subscription.unsubscribe();
-    };
-  }, []);
 
   return (
     <div className="landing-wash min-h-screen">
       {/* Hero on the brand gradient */}
       <div className="bg-brand-gradient text-primary-foreground">
-        <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
-          <img src={logoHeader.url} alt="revsi" className="h-7 w-auto" />
-          {signedIn ? (
-            <Button asChild size="sm" variant="secondary">
-              <Link to="/jobs">Go to dashboard</Link>
-            </Button>
-          ) : (
-            <Link to="/login" className="text-sm font-medium opacity-80 hover:opacity-100">
-              Sign in
-            </Link>
-          )}
-        </header>
+        <SiteHeader variant="gradient" />
 
         <section className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 pt-8 lg:grid-cols-2 lg:items-center lg:gap-14 lg:pb-28 lg:pt-16">
           <div>
@@ -372,22 +345,7 @@ function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t bg-card">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <img src={logoFooter.url} alt="revsi" className="h-6 w-auto" />
-          <div className="flex flex-wrap items-center gap-4">
-            <Link to="/terms" className="hover:text-foreground">
-              Terms
-            </Link>
-            <Link to="/privacy" className="hover:text-foreground">
-              Privacy
-            </Link>
-            <a href="mailto:info@revsi.app" className="hover:text-foreground">
-              info@revsi.app
-            </a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

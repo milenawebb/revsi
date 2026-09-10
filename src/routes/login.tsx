@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SiteFooter, SiteHeader } from "@/components/site/SiteChrome";
 
 export const Route = createFileRoute("/login")({
   ssr: false,
@@ -41,7 +42,9 @@ function AuthPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-brand-gradient px-4">
+    <div className="flex min-h-screen flex-col">
+      <SiteHeader variant="gradient" className="bg-brand-gradient" />
+      <main className="flex flex-1 items-center justify-center bg-brand-gradient px-4 py-12">
       <div className="w-full max-w-sm rounded-xl border bg-card p-8 shadow-card">
         <h1 className="text-xl font-semibold tracking-tight">Sign in</h1>
         <p className="mt-1 text-sm text-muted-foreground">Manage your jobs and review requests.</p>
@@ -82,6 +85,8 @@ function AuthPage() {
           </Link>
         </div>
       </div>
-    </main>
+      </main>
+      <SiteFooter />
+    </div>
   );
 }
