@@ -307,7 +307,7 @@ function LandingPage() {
         <AltSection
           id="how-it-works"
           pill="How it works"
-          heading="How it works"
+          heading="In simple steps"
           reverse
           tint
           visual={<RequestsShot />}
