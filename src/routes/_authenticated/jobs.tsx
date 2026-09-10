@@ -224,7 +224,16 @@ function JobsPage() {
             return (
               <div
                 key={job.id}
-                className="grid gap-2 border-t border-border/60 px-5 py-4 text-sm md:grid-cols-[1.2fr_1.4fr_1fr_0.8fr_1.2fr] md:items-center md:gap-4"
+                role="button"
+                tabIndex={0}
+                onClick={() => setSelectedJobId(job.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setSelectedJobId(job.id);
+                  }
+                }}
+                className="grid cursor-pointer gap-2 border-t border-border/60 px-5 py-4 text-sm transition-colors hover:bg-muted/40 md:grid-cols-[1.2fr_1.4fr_1fr_0.8fr_1.2fr] md:items-center md:gap-4"
               >
                 <span className="font-medium">{job.customers?.name ?? "—"}</span>
                 <span className="truncate text-muted-foreground">
