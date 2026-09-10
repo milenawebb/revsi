@@ -239,11 +239,11 @@ function LandingPage() {
         <section className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 pt-8 lg:grid-cols-2 lg:items-center lg:gap-14 lg:pb-28 lg:pt-16">
           <div>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              Get Google reviews after every signing.
+              Get Google reviews after every job.
             </h1>
             <p className="mt-5 text-lg opacity-90">
-              revsi.app asks your signers for an honest review, on its own, an hour after the
-              job is done. No app to remember, no awkward ask.
+              revsi asks your customers for an honest review, on its own, an hour after the job
+              is done. No app to remember, no awkward ask.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <WaitlistButton variant="secondary" />
@@ -315,6 +315,7 @@ function LandingPage() {
         </AltSection>
 
         <AltSection
+          id="compliance"
           pill="Compliance"
           heading="Built to keep you out of trouble."
           reverse
