@@ -89,7 +89,7 @@ function SettingsForm() {
   const [bodyError, setBodyError] = useState<string | null>(null);
   const bodyRef = useRef<HTMLTextAreaElement>(null);
 
-  const photoEnabled = form.email_template === "personal";
+  
   const isCustom = form.email_template === "custom";
 
   type CopyCheck = { verdict: string; matched: string; reason: string };
@@ -620,7 +620,7 @@ function SettingsForm() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    disabled={!photoEnabled || uploading}
+                    disabled={uploading}
                     onClick={() => fileRef.current?.click()}
                   >
                     {uploading ? "Uploading…" : form.sender_photo_url ? "Replace photo" : "Upload photo"}
@@ -630,7 +630,6 @@ function SettingsForm() {
                       type="button"
                       variant="ghost"
                       size="sm"
-                      disabled={!photoEnabled}
                       onClick={() => setForm({ ...form, sender_photo_url: null })}
                     >
                       Remove
