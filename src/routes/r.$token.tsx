@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { usePublicBranding } from "@/lib/public-branding";
 
 export const Route = createFileRoute("/r/$token")({
   ssr: false,

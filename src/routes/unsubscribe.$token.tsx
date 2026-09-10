@@ -3,6 +3,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { usePublicBranding } from "@/lib/public-branding";
+import {
+  DEFAULT_BUTTON_COLOR,
+  effectiveButtonColor,
+  HEX_RE,
+} from "@/components/EmailPreview";
 
 export const Route = createFileRoute("/unsubscribe/$token")({
   ssr: false,
