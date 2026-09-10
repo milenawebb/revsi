@@ -185,7 +185,7 @@ function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="landing-wash min-h-screen">
       {/* Hero on the brand gradient */}
       <div className="bg-brand-gradient text-primary-foreground">
         <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
@@ -324,7 +324,9 @@ function LandingPage() {
           <div className="mx-auto max-w-3xl px-5">
             <Reveal>
               <div className="rounded-2xl bg-brand-gradient p-8 text-center text-primary-foreground shadow-[0_24px_60px_-24px_rgb(20_20_27/0.35)] sm:p-12">
-                <SectionPill>Pricing</SectionPill>
+                <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
+                  Pricing
+                </span>
                 <h2 className="mt-4 text-2xl font-bold tracking-tight">Pricing</h2>
                 <p className="mx-auto mt-4 max-w-md text-base opacity-90">
                   Pricing announced at launch. Waitlist members get founding pricing.
