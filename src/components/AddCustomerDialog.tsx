@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useCustomerMatches } from "@/lib/customer-match";
+import { CustomerMatchHint } from "@/components/CustomerMatchHint";
 
 const empty = { name: "", email: "", phone: "" };
 
@@ -28,6 +30,23 @@ export function AddCustomerDialog({
   const queryClient = useQueryClient();
   const [form, setForm] = useState(empty);
   const [error, setError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [existingId, setExistingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    setForm(empty);
+    setError(null);
+    setEmailError(null);
+    setExistingId(null);
+  }, [open]);
+
+  const { matches } = useCustomerMatches({
+    businessId: business.id,
+    name: form.name,
+    email: form.email,
+    enabled: open && !existingId,
+  });
 
   const save = useMutation({
     mutationFn: async () => {
@@ -48,14 +67,14 @@ export function AddCustomerDialog({
     },
     onError: (e: { message: string; code?: string }) => {
       if (e.code === "23505" || /duplicate|unique/i.test(e.message)) {
-        setError("A customer with that email already exists for this business.");
+        setEmailError("A customer with this email already exists for this business.");
         return;
       }
       toast.error("Couldn't add customer", { description: e.message });
     },
   });
 
-  const contactMissing = !form.email.trim() && !form.phone.trim();
+  const canSave = Boolean(form.name.trim()) && Boolean(form.email.trim() || form.phone.trim());
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -69,8 +88,8 @@ export function AddCustomerDialog({
           onSubmit={(e) => {
             e.preventDefault();
             setError(null);
-            if (contactMissing) {
-              setError("Add an email or a phone number.");
+            if (existingId) {
+              setError("This person is already on your customer list.");
               return;
             }
             save.mutate();
@@ -82,7 +101,20 @@ export function AddCustomerDialog({
               id="c-name"
               required
               value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              onChange={(e) => {
+                setExistingId(null);
+                setForm({ ...form, name: e.target.value });
+              }}
+            />
+            <CustomerMatchHint
+              matches={matches}
+              usingExisting={Boolean(existingId)}
+              onUse={(c) => {
+                setExistingId(c.id);
+                setEmailError(null);
+                setForm({ name: c.name, email: c.email ?? "", phone: c.phone ?? "" });
+              }}
+              onClear={() => setExistingId(null)}
             />
           </div>
           <div className="space-y-2">
@@ -90,9 +122,15 @@ export function AddCustomerDialog({
             <Input
               id="c-email"
               type="email"
+              aria-invalid={emailError ? true : undefined}
               value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              onChange={(e) => {
+                setEmailError(null);
+                setExistingId(null);
+                setForm({ ...form, email: e.target.value });
+              }}
             />
+            {emailError ? <p className="text-xs text-destructive">{emailError}</p> : null}
           </div>
           <div className="space-y-2">
             <Label htmlFor="c-phone">Phone</Label>
@@ -107,7 +145,7 @@ export function AddCustomerDialog({
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={save.isPending}>
+            <Button type="submit" disabled={save.isPending || !canSave || Boolean(existingId)}>
               {save.isPending ? "Saving…" : "Add customer"}
             </Button>
           </DialogFooter>
