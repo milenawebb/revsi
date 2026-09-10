@@ -292,20 +292,48 @@ export function CustomerDetailDialog({
               </div>
 
               <div className="space-y-2 border-t pt-4">
-                <Button
-                  variant="outline"
-                  className="text-destructive"
-                  disabled={hasSent}
-                  onClick={() => setConfirmOpen(true)}
-                >
-                  Delete customer
-                </Button>
                 {hasSent ? (
-                  <p className="text-xs text-muted-foreground">
-                    A review request has already been sent to this customer, so their record is
-                    kept.
-                  </p>
-                ) : null}
+                  <div className="space-y-3 rounded-lg border p-4">
+                    <div>
+                      <p className="text-sm font-medium">This customer cannot be deleted</p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        A review request has already been sent to them, so their record is kept as
+                        a record of what was sent.
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={prefs.isPending || Boolean(data.customer.do_not_ask)}
+                        onClick={() => prefs.mutate({ do_not_ask: true })}
+                      >
+                        {data.customer.do_not_ask ? "Never asking" : "Never ask again"}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => document.getElementById("d-name")?.focus()}
+                      >
+                        Edit details
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Never ask again keeps their history but stops all future requests. Edit
+                      details is for fixing a wrong name or phone number.
+                    </p>
+                  </div>
+                ) : (
+                  <Button
+                    variant="outline"
+                    className="text-destructive"
+                    onClick={() => setConfirmOpen(true)}
+                  >
+                    Delete customer
+                  </Button>
+                )}
               </div>
             </div>
           )}
