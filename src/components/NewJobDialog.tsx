@@ -279,9 +279,14 @@ export function NewJobDialog({
                 type="email"
                 readOnly={readOnlyContact}
                 className={cn(readOnlyContact && "bg-muted/50")}
+                aria-invalid={emailError ? true : undefined}
                 value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                onChange={(e) => {
+                  setEmailError(null);
+                  setForm({ ...form, email: e.target.value });
+                }}
               />
+              {emailError ? <p className="text-xs text-destructive">{emailError}</p> : null}
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Phone</Label>
