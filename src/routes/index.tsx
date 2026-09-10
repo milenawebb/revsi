@@ -7,10 +7,13 @@ import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Reveal, useInView, usePrefersReducedMotion } from "@/components/landing/motion";
 import {
   FloatingChip,
-  JobsShot,
+  PhotoFrame,
   RequestsShot,
   SettingsShot,
 } from "@/components/landing/ProductShots";
+import signingTablePhoto from "@/assets/landing/signing-table.jpg";
+import carSeatPhoto from "@/assets/landing/car-seat.jpg";
+import stampSealPhoto from "@/assets/landing/stamp-seal.jpg";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -235,7 +238,12 @@ function LandingPage() {
         <AltSection
           pill="The problem"
           heading="Reviews decide who gets called."
-          visual={<JobsShot />}
+          visual={
+            <PhotoFrame
+              src={signingTablePhoto}
+              alt="Hands turning a page of documents on a signing table beside a pen"
+            />
+          }
           chip={
             <FloatingChip>
               <Badge variant="delivered" className="text-[10px]">
@@ -272,6 +280,37 @@ function LandingPage() {
         <AltSection
           pill="For notaries"
           heading="Built for notaries"
+          visual={
+            <PhotoFrame
+              src={carSeatPhoto}
+              alt="A document folder and a phone on a car passenger seat in afternoon light"
+            />
+          }
+          chip={
+            <FloatingChip>
+              <Badge variant="queued" className="text-[10px]">
+                Queued
+              </Badge>
+              <p className="mt-2 text-xs text-muted-foreground">Sends 1 hour after the job</p>
+            </FloatingChip>
+          }
+          chipClassName="-bottom-6 -left-4 rotate-[-2deg] sm:-left-8"
+        >
+          <ul className="grid gap-6">
+            {NOTARY_POINTS.map((point) => (
+              <li key={point} className="flex gap-3 text-base text-foreground">
+                <span className="mt-2 size-2 shrink-0 rounded-full bg-pink" aria-hidden />
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+        </AltSection>
+
+        <AltSection
+          pill="Compliance"
+          heading="Built to keep you out of trouble."
+          reverse
+          tint
           visual={<SettingsShot />}
           chip={
             <FloatingChip>
@@ -291,20 +330,9 @@ function LandingPage() {
               </div>
             </FloatingChip>
           }
-          chipClassName="-bottom-6 -left-4 rotate-[-2deg] sm:-left-8"
+          chipClassName="-bottom-6 -right-4 rotate-[2deg] sm:-right-8"
         >
-          <ul className="grid gap-6">
-            {NOTARY_POINTS.map((point) => (
-              <li key={point} className="flex gap-3 text-base text-foreground">
-                <span className="mt-2 size-2 shrink-0 rounded-full bg-pink" aria-hidden />
-                <span>{point}</span>
-              </li>
-            ))}
-          </ul>
-        </AltSection>
-
-        <AltSection pill="Compliance" heading="Built to keep you out of trouble." tint>
-          <div className="max-w-3xl space-y-4 text-base leading-relaxed text-muted-foreground">
+          <div className="space-y-4 text-base leading-relaxed text-muted-foreground">
             <p>
               The tool will not let you ask for a five star review, offer anything in return, or
               ask only the customers you think are happy. Google&apos;s review policies and the
@@ -320,8 +348,22 @@ function LandingPage() {
         </AltSection>
 
         {/* Pricing — the second and final gradient moment */}
-        <section className="landing-wash pb-20 lg:pb-28">
-          <div className="mx-auto max-w-3xl px-5">
+        <section className="landing-wash py-20 lg:py-28">
+          <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 lg:grid-cols-2 lg:gap-16">
+            <div className="relative">
+              <Reveal>
+                <PhotoFrame
+                  src={stampSealPhoto}
+                  alt="A rubber stamp and an embossing seal resting on a stack of paperwork"
+                />
+              </Reveal>
+              <Reveal delay={150} className="absolute -bottom-6 -left-4 z-10 rotate-[-2deg] sm:-left-8">
+                <FloatingChip>
+                  <p className="text-xs font-medium text-status-sent-foreground">Looks good.</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Message checked before it sends</p>
+                </FloatingChip>
+              </Reveal>
+            </div>
             <Reveal>
               <div className="rounded-2xl bg-brand-gradient p-8 text-center text-primary-foreground shadow-[0_24px_60px_-24px_rgb(20_20_27/0.35)] sm:p-12">
                 <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
