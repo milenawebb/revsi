@@ -95,24 +95,23 @@ export function NewJobDialog({
   const readOnlyContact = Boolean(selectedId);
   const { data: canAsk } = useCanAsk(selectedId, open);
   const blockedReason = canAsk && !canAsk.allowed ? canAsk.reason : null;
+  const [emailError, setEmailError] = useState<string | null>(null);
+
+  const typed = search.trim();
+  const exactMatch = matches.some(
+    (c) =>
+      c.name.trim().toLowerCase() === typed.toLowerCase() ||
+      (c.email ?? "").trim().toLowerCase() === typed.toLowerCase(),
+  );
+
+  const canSave = selectedId
+    ? true
+    : Boolean(form.name.trim()) && Boolean(form.email.trim() || form.phone.trim());
 
   const save = useMutation({
     mutationFn: async () => {
       let customerId = selectedId;
-
-      if (!customerId) {
-        const email = form.email.trim();
-        if (email) {
-          const { data: existing, error: findError } = await supabase
-            .from("customers")
-            .select("id")
-            .eq("business_id", business.id)
-            .ilike("email", email)
-            .maybeSingle();
-          if (findError) throw findError;
-          customerId = existing?.id ?? null;
-        }
-      }
+      setEmailError(null);
 
       if (!customerId) {
         const { data: created, error: insertError } = await supabase
@@ -125,7 +124,13 @@ export function NewJobDialog({
           })
           .select("id")
           .single();
-        if (insertError) throw insertError;
+        if (insertError) {
+          if (insertError.code === "23505" || /duplicate key|unique/i.test(insertError.message)) {
+            setEmailError("A customer with this email already exists for this business.");
+            throw new Error("DUPLICATE_EMAIL");
+          }
+          throw insertError;
+        }
         customerId = created.id;
       }
 
@@ -151,7 +156,10 @@ export function NewJobDialog({
       onOpenChange(false);
       queryClient.invalidateQueries();
     },
-    onError: (e: Error) => toast.error("Couldn't save job", { description: e.message }),
+    onError: (e: Error) => {
+      if (e.message === "DUPLICATE_EMAIL") return;
+      toast.error("Couldn't save job", { description: e.message });
+    },
   });
 
   return (
@@ -177,7 +185,9 @@ export function NewJobDialog({
                   className="text-xs font-medium text-primary hover:underline"
                   onClick={() => {
                     setSelectedId(null);
-                    setForm({ ...form, email: "", phone: "" });
+                    setForm({ ...form, name: "", email: "", phone: "" });
+                    setSearch("");
+                    setEmailError(null);
                   }}
                 >
                   Change
@@ -240,17 +250,18 @@ export function NewJobDialog({
                             </span>
                           </CommandItem>
                         ))}
-                        {search.trim() ? (
+                        {typed && !exactMatch ? (
                           <CommandItem
                             value="__create"
                             onSelect={() => {
                               setSelectedId(null);
-                              setForm({ ...form, name: search.trim() });
+                              setForm({ ...form, name: typed, email: "", phone: "" });
+                              setEmailError(null);
                               setPickerOpen(false);
                             }}
                           >
                             <UserPlus className="mr-2 size-4" />
-                            Create new customer: {search.trim()}
+                            Create new customer: {typed}
                           </CommandItem>
                         ) : null}
                       </CommandGroup>
@@ -268,9 +279,14 @@ export function NewJobDialog({
                 type="email"
                 readOnly={readOnlyContact}
                 className={cn(readOnlyContact && "bg-muted/50")}
+                aria-invalid={emailError ? true : undefined}
                 value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                onChange={(e) => {
+                  setEmailError(null);
+                  setForm({ ...form, email: e.target.value });
+                }}
               />
+              {emailError ? <p className="text-xs text-destructive">{emailError}</p> : null}
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Phone</Label>
@@ -322,7 +338,7 @@ export function NewJobDialog({
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={save.isPending || !form.name.trim()}>
+            <Button type="submit" disabled={save.isPending || !canSave}>
               {save.isPending ? "Saving…" : "Save job"}
             </Button>
           </DialogFooter>
