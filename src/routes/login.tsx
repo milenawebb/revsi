@@ -10,9 +10,9 @@ export const Route = createFileRoute("/login")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Sign in — Review Requests" },
+      { title: "Sign in · Review Requests" },
       { name: "description", content: "Sign in to manage jobs and review requests." },
-      { property: "og:title", content: "Sign in — Review Requests" },
+      { property: "og:title", content: "Sign in · Review Requests" },
       { property: "og:description", content: "Sign in to manage jobs and review requests." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

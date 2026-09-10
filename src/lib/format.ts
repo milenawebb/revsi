@@ -1,5 +1,5 @@
 export function formatDateTime(value: string | null | undefined) {
-  if (!value) return "—";
+  if (!value) return "–";
   return new Date(value).toLocaleString(undefined, {
     month: "short",
     day: "numeric",
@@ -9,7 +9,7 @@ export function formatDateTime(value: string | null | undefined) {
 }
 
 export function formatDate(value: string | null | undefined) {
-  if (!value) return "—";
+  if (!value) return "–";
   return new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 

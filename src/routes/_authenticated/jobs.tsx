@@ -16,9 +16,9 @@ import { requestBadge, type RequestSummary } from "@/lib/request-state";
 export const Route = createFileRoute("/_authenticated/jobs")({
   head: () => ({
     meta: [
-      { title: "Jobs — Review Requests" },
+      { title: "Jobs · Review Requests" },
       { name: "description", content: "Log jobs and trigger automated review requests." },
-      { property: "og:title", content: "Jobs — Review Requests" },
+      { property: "og:title", content: "Jobs · Review Requests" },
       { property: "og:description", content: "Log jobs and trigger automated review requests." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -173,11 +173,11 @@ function JobsPage() {
                 }}
                 className="grid cursor-pointer gap-2 border-t border-border/60 px-5 py-4 text-sm transition-colors hover:bg-muted/40 md:grid-cols-[1.2fr_1.4fr_1fr_0.8fr_1.2fr] md:items-center md:gap-4"
               >
-                <span className="font-medium">{job.customers?.name ?? "—"}</span>
+                <span className="font-medium">{job.customers?.name ?? "–"}</span>
                 <span className="truncate text-muted-foreground">
-                  {job.customers?.email ?? "—"}
+                  {job.customers?.email ?? "–"}
                 </span>
-                <span className="text-muted-foreground">{job.service_type ?? "—"}</span>
+                <span className="text-muted-foreground">{job.service_type ?? "–"}</span>
                 <div className="space-y-1">
                   <Badge variant={state.variant} className="capitalize">
                     {state.label}
@@ -202,7 +202,7 @@ function JobsPage() {
                   ) : job.completed_at ? (
                     <span className="text-muted-foreground">{formatDate(job.completed_at)}</span>
                   ) : (
-                    <span className="text-muted-foreground">—</span>
+                    <span className="text-muted-foreground">–</span>
                   )}
                 </div>
               </div>

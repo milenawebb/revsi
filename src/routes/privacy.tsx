@@ -4,9 +4,9 @@ import { LegalPage, LegalSection } from "@/components/LegalPage";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy Policy — revsi.app" },
+      { title: "Privacy Policy · revsi.app" },
       { name: "description", content: "Privacy Policy for revsi.app, operated by Webb Consulting LLC." },
-      { property: "og:title", content: "Privacy Policy — revsi.app" },
+      { property: "og:title", content: "Privacy Policy · revsi.app" },
       { property: "og:description", content: "Privacy Policy for revsi.app, operated by Webb Consulting LLC." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -25,9 +25,9 @@ function PrivacyPage() {
 
       <LegalSection heading="The two roles we play">
         <p>
-          For your own account data — your name, email, and business details —
-          we are the controller. We decide how that data is used to run your
-          account.
+          For your own account data, meaning your name, email, and business
+          details, we are the controller. We decide how that data is used to
+          run your account.
         </p>
         <p>
           For the contact data you upload about your customers, you are the

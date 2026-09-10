@@ -19,9 +19,9 @@ import ogImage from "@/assets/og-revsi.jpg.asset.json";
 const WAITLIST_MAILTO =
   "mailto:info@revsi.app?subject=revsi.app%20waitlist&body=Please%20add%20me%20to%20the%20waitlist.";
 
-const TITLE = "Get Google reviews after every job — revsi.app";
+const TITLE = "Get Google reviews after every job";
 const DESC =
-  "revsi asks your customers for an honest Google review an hour after the job is done. Built for notaries, mobile notaries and signing services.";
+  "revsi asks your customers for an honest review, on its own, an hour after the job is done.";
 const OG_IMAGE = `https://revsi.app${ogImage.url}`;
 
 export const Route = createFileRoute("/")({
