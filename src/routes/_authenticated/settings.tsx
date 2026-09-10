@@ -266,6 +266,16 @@ function SettingsForm() {
       return;
     }
     setUrlError(null);
+    if (form.website_url.trim()) {
+      try {
+        const website = new URL(form.website_url.trim());
+        if (!website.protocol.startsWith("http")) throw new Error();
+      } catch {
+        setWebsiteError("Enter a valid URL starting with https://");
+        return;
+      }
+    }
+    setWebsiteError(null);
     if (isCustom && !form.custom_body.trim()) {
       setBodyError("Write your message before saving, or choose a different template.");
       return;
