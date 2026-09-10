@@ -205,6 +205,50 @@ function SettingsForm() {
     toast.success("Photo uploaded", { description: "Save changes to keep it." });
   }
 
+  async function onLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setLogoError(null);
+
+    if (!LOGO_TYPES.includes(file.type)) {
+      setLogoError("Please choose a JPG, PNG, WEBP or SVG image.");
+      return;
+    }
+    if (file.size > MAX_LOGO_BYTES) {
+      setLogoError("That image is larger than 1MB.");
+      return;
+    }
+
+    const ext = (file.name.split(".").pop() || "png").toLowerCase();
+    const path = `${business.id}/${crypto.randomUUID()}.${ext}`;
+
+    setLogoUploading(true);
+    const { error } = await supabase.storage
+      .from("business-photos")
+      .upload(path, file, { contentType: file.type, upsert: false });
+    setLogoUploading(false);
+
+    if (error) {
+      setLogoError(error.message);
+      return;
+    }
+
+    const { data } = supabase.storage.from("business-photos").getPublicUrl(path);
+    setForm((f) => ({ ...f, logo_url: data.publicUrl }));
+    toast.success("Logo uploaded", { description: "Save changes to keep it." });
+  }
+
+  function applyColor(value: string) {
+    setColorText(value);
+    if (!HEX_RE.test(value)) {
+      setColorError("Enter a colour like #4F6EF7.");
+      return;
+    }
+    setColorError(null);
+    setForm((f) => ({ ...f, button_color: value }));
+  }
+
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
