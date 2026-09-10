@@ -223,21 +223,7 @@ function NotaryPoints() {
 }
 
 function LandingPage() {
-  const [signedIn, setSignedIn] = useState(false);
 
-  useEffect(() => {
-    let active = true;
-    supabase.auth.getSession().then(({ data }) => {
-      if (active) setSignedIn(!!data.session);
-    });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSignedIn(!!session);
-    });
-    return () => {
-      active = false;
-      listener.subscription.unsubscribe();
-    };
-  }, []);
 
   return (
     <div className="landing-wash min-h-screen">
