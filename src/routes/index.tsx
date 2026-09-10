@@ -1,11 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { HeroEmailCard } from "@/components/landing/HeroEmailCard";
 import { HowItWorks } from "@/components/landing/HowItWorks";
-import { ReviewBoxMock } from "@/components/landing/ReviewBoxMock";
 import { Reveal, useInView, usePrefersReducedMotion } from "@/components/landing/motion";
+import {
+  FloatingChip,
+  JobsShot,
+  RequestsShot,
+  SettingsShot,
+} from "@/components/landing/ProductShots";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const WAITLIST_MAILTO =
@@ -62,61 +68,102 @@ function splitSentences(text: string): [string, string | null] {
   return [text, null];
 }
 
-function ProblemSection() {
+function SectionPill({ children }: { children: ReactNode }) {
+  return (
+    <span className="inline-block rounded-full bg-brand-purple/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-purple">
+      {children}
+    </span>
+  );
+}
+
+/** Text on one side, a product shot with an overlapping chip on the other. */
+function AltSection({
+  id,
+  pill,
+  heading,
+  children,
+  visual,
+  chip,
+  chipClassName,
+  reverse = false,
+  tint = false,
+}: {
+  id?: string;
+  pill: string;
+  heading: string;
+  children: ReactNode;
+  visual?: ReactNode;
+  chip?: ReactNode;
+  chipClassName?: string;
+  reverse?: boolean;
+  tint?: boolean;
+}) {
+  return (
+    <section
+      id={id}
+      className={cn(
+        "scroll-mt-8 py-20 lg:py-28",
+        tint ? "landing-wash-alt" : "landing-wash",
+      )}
+    >
+      <div
+        className={cn(
+          "mx-auto grid max-w-6xl items-center gap-12 px-5",
+          visual && "lg:grid-cols-2 lg:gap-16",
+        )}
+      >
+        <Reveal className={cn(reverse && "lg:order-2")}>
+          <SectionPill>{pill}</SectionPill>
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground">{heading}</h2>
+          <div className="mt-6">{children}</div>
+        </Reveal>
+
+        {visual ? (
+          <div className={cn("relative", reverse && "lg:order-1")}>
+            <Reveal>{visual}</Reveal>
+            {chip ? (
+              <Reveal delay={150} className={cn("absolute z-10", chipClassName)}>
+                {chip}
+              </Reveal>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+function ProblemPoints() {
   const reduced = usePrefersReducedMotion();
-  const { ref, inView } = useInView<HTMLElement>("-10% 0px");
+  const { ref, inView } = useInView<HTMLDivElement>("-10% 0px");
   const show = reduced || inView;
 
   return (
-    <section ref={ref} className="bg-background py-24">
-      <div className="mx-auto max-w-6xl px-5">
-        <div
-          className={cn(
-            "mb-12",
-            show ? "animate-problem-reveal" : "opacity-0",
-          )}
-          style={{ animationDelay: "0ms" }}
-        >
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            The problem
-          </p>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground">
-            Reviews decide who gets called.
-          </h2>
-        </div>
-
-        <div className="grid gap-10 md:grid-cols-3">
-          {PROBLEMS.map((text, i) => {
-            const [first, second] = splitSentences(text);
-            return (
-              <div key={text} className="relative">
-                <div
-                  className={cn(
-                    "absolute left-0 top-0 h-full w-0.5 origin-top bg-brand-purple",
-                    show ? "animate-line-draw" : "scale-y-0",
-                  )}
-                  style={{ animationDelay: `${i * 120 + 200}ms` }}
-                />
-                <div
-                  className={cn(
-                    "pl-5",
-                    show ? "animate-problem-reveal" : "opacity-0",
-                  )}
-                  style={{ animationDelay: `${i * 120}ms` }}
-                >
-                  <p className="text-xl font-light leading-snug text-foreground">
-                    {first}
-                    {second ? (
-                      <span className="text-muted-foreground"> {second}</span>
-                    ) : null}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
+    <div ref={ref} className="grid gap-8">
+      {PROBLEMS.map((text, i) => {
+        const [first, second] = splitSentences(text);
+        return (
+          <div key={text} className="relative">
+            <div
+              className={cn(
+                "absolute left-0 top-0 h-full w-0.5 origin-top bg-brand-purple",
+                show ? "animate-line-draw" : "scale-y-0",
+              )}
+              style={{ animationDelay: `${i * 120 + 200}ms` }}
+            />
+            <div
+              className={cn("pl-5", show ? "animate-problem-reveal" : "opacity-0")}
+              style={{ animationDelay: `${i * 120}ms` }}
+            >
+              <p className="text-lg font-light leading-snug text-foreground">
+                {first}
+                {second ? <span className="text-muted-foreground"> {second}</span> : null}
+              </p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
