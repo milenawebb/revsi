@@ -71,3 +71,35 @@ export function Reveal({
     </Tag>
   );
 }
+
+/** Counts from 0 to `target` once `run` becomes true. Visual only. */
+export function useCountUp(target: number, run: boolean, duration = 900, delay = 0) {
+  const reduced = usePrefersReducedMotion();
+  const [value, setValue] = useState(reduced ? target : 0);
+
+  useEffect(() => {
+    if (!run) return;
+    if (reduced) {
+      setValue(target);
+      return;
+    }
+    let frame = 0;
+    let start: number | null = null;
+    const timer = window.setTimeout(() => {
+      const step = (t: number) => {
+        if (start === null) start = t;
+        const p = Math.min(1, (t - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        setValue(Math.round(target * eased));
+        if (p < 1) frame = requestAnimationFrame(step);
+      };
+      frame = requestAnimationFrame(step);
+    }, delay);
+    return () => {
+      window.clearTimeout(timer);
+      cancelAnimationFrame(frame);
+    };
+  }, [run, reduced, target, duration, delay]);
+
+  return value;
+}
