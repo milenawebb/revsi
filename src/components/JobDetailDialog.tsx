@@ -47,6 +47,7 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
   const queryClient = useQueryClient();
   const [editing, setEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [confirmCancelId, setConfirmCancelId] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: "",
@@ -203,6 +204,22 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
     onError: (e: Error) => toast.error("Couldn't delete job", { description: e.message }),
   });
 
+  const cancelReminder = useMutation({
+    mutationFn: async (requestId: string) => {
+      const { error } = await supabase
+        .from("review_requests")
+        .update({ status: "cancelled" })
+        .eq("id", requestId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Reminder cancelled");
+      setConfirmCancelId(null);
+      queryClient.invalidateQueries();
+    },
+    onError: (e: Error) => toast.error("Couldn't cancel reminder", { description: e.message }),
+  });
+
   return (
     <>
       <Dialog open={!!jobId} onOpenChange={onOpenChange}>
@@ -320,11 +337,24 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
                 ) : (
                   list.map((r) => (
                     <div key={r.id} className="rounded-lg border p-3">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="capitalize">
-                          {r.kind}
-                        </Badge>
-                        <span className="capitalize text-muted-foreground">{r.status}</span>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary" className="capitalize">
+                            {r.kind}
+                          </Badge>
+                          <span className="capitalize text-muted-foreground">{r.status}</span>
+                        </div>
+                        {r.kind === "reminder" && r.status === "queued" && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-auto px-0 py-0 text-xs text-primary hover:text-primary/80"
+                            onClick={() => setConfirmCancelId(r.id)}
+                          >
+                            Cancel reminder
+                          </Button>
+                        )}
                       </div>
                       <div className="mt-2 space-y-1 text-xs text-muted-foreground">
                         <p>Sends {formatDateTime(r.send_after)}</p>
@@ -383,6 +413,26 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction disabled={remove.isPending} onClick={() => remove.mutate()}>
               Delete job
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={!!confirmCancelId} onOpenChange={() => setConfirmCancelId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel reminder</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cancel this reminder? No follow-up email will be sent to this customer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setConfirmCancelId(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={cancelReminder.isPending}
+              onClick={() => confirmCancelId && cancelReminder.mutate(confirmCancelId)}
+            >
+              Cancel reminder
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
