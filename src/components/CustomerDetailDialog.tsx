@@ -274,6 +274,29 @@ export function CustomerDetailDialog({
                   <Button type="button" variant="outline" onClick={() => setJobOpen(true)}>
                     Add job for this customer
                   </Button>
+                  <div className="w-full space-y-1 sm:w-auto sm:flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Button
+                        type="button"
+                        disabled={askBlocked || canAsk.isLoading}
+                        onClick={() => {
+                          setAskServiceType(mostRecentType);
+                          setAskOpen(true);
+                        }}
+                      >
+                        Ask now
+                      </Button>
+                    </div>
+                    {noEmail ? (
+                      <p className="text-xs text-muted-foreground">No email address on file.</p>
+                    ) : canAsk.data && !canAsk.data.allowed ? (
+                      <p className="text-xs text-muted-foreground">{canAsk.data.reason}</p>
+                    ) : null}
+                    <p className="text-xs text-muted-foreground">
+                      This records a completed job for this customer, which is what sends the
+                      request.
+                    </p>
+                  </div>
                 </div>
               </form>
 
