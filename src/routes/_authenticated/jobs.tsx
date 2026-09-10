@@ -276,6 +276,12 @@ function JobsPage() {
       </div>
 
       <NewJobDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+      <JobDetailDialog
+        jobId={selectedJobId}
+        onOpenChange={(v) => {
+          if (!v) setSelectedJobId(null);
+        }}
+      />
     </div>
   );
 }
