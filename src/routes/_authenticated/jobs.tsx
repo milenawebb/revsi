@@ -36,6 +36,7 @@ function JobsPage() {
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+  const [completingId, setCompletingId] = useState<string | null>(null);
 
   const jobs = useQuery({
     queryKey: ["jobs", business.id],
@@ -100,15 +101,16 @@ function JobsPage() {
   });
 
   const complete = useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async ({ id, completedAt }: { id: string; completedAt: string }) => {
       const { error } = await supabase
         .from("services")
-        .update({ status: "completed", completed_at: new Date().toISOString() })
+        .update({ status: "completed", completed_at: completedAt })
         .eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
       toast.success("Job completed", { description: "A review request has been scheduled." });
+      setCompletingId(null);
       queryClient.invalidateQueries();
     },
     onError: (e: Error) => toast.error("Couldn't complete job", { description: e.message }),
