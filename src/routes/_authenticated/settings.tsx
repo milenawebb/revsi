@@ -108,6 +108,7 @@ function SettingsForm() {
           reminder_delay_days: Number(form.reminder_delay_days) || 0,
           email_template: form.email_template,
           custom_intro: form.custom_intro.trim() || null,
+          custom_body: form.custom_body.trim() || null,
           sender_photo_url: form.sender_photo_url,
         })
         .eq("id", business.id);
