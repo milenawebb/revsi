@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -20,25 +20,6 @@ import { parseCsv, guessMapping, isValidEmail, type CsvTable } from "@/lib/csv";
 import { formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/_authenticated/import")({
-  head: () => ({
-    meta: [
-      { title: "Import contacts — Review Requests" },
-      {
-        name: "description",
-        content: "Bring past customers in from a CSV, as contacts only or with a review request.",
-      },
-      { property: "og:title", content: "Import contacts — Review Requests" },
-      {
-        property: "og:description",
-        content: "Bring past customers in from a CSV, as contacts only or with a review request.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: () => <ImportPage />,
-});
 
 const MAX_BYTES = 2 * 1024 * 1024;
 
