@@ -26,7 +26,7 @@ function PrivacyPage() {
         "Service").
       </p>
 
-      <LegalSection heading="1. Our role and your role'>
+      <LegalSection heading="1. Our role and your role">
         <p>
           For information associated with your Revsi account, such as your
           name, email address, login information, billing information, and
