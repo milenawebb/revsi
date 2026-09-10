@@ -73,7 +73,7 @@ function MockLogo() {
     <img
       src={riverbendLogo.url}
       alt="Riverbend Notary"
-      className="h-9 w-auto"
+      className="h-18 w-auto"
       aria-hidden="true"
     />
   );
