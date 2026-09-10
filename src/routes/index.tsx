@@ -327,36 +327,9 @@ function LandingPage() {
         <AltSection
           pill="For notaries"
           heading="Built for notaries"
-          visual={<SettingsShot />}
-          chip={
-            <FloatingChip>
-              <p className="text-xs font-medium text-foreground">Button colour</p>
-              <div className="mt-2 flex items-center gap-2">
-                {["#4F6EF7", "#0F766E", "#7C3AED", "#B91C4B", "#14141B"].map((c) => (
-                  <span
-                    key={c}
-                    aria-hidden
-                    style={{ backgroundColor: c }}
-                    className={cn(
-                      "size-5 rounded-full",
-                      c === "#B91C4B" && "ring-2 ring-foreground ring-offset-2",
-                    )}
-                  />
-                ))}
-              </div>
-            </FloatingChip>
-          }
-          chipClassName="-bottom-6 -left-4 sm:-left-8"
-          chipRotate={-2}
+          visual={<NotariesVisual />}
         >
-          <ul className="grid gap-6">
-            {NOTARY_POINTS.map((point) => (
-              <li key={point} className="flex gap-3 text-base text-foreground">
-                <span className="mt-2 size-2 shrink-0 rounded-full bg-pink" aria-hidden />
-                <span>{point}</span>
-              </li>
-            ))}
-          </ul>
+          <NotaryPoints />
         </AltSection>
 
         <AltSection
