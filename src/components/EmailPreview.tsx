@@ -133,8 +133,13 @@ export function EmailPreview({
           </span>
         </div>
 
-        <p className="mt-5 text-sm text-foreground">Thanks again,</p>
-        <p className="text-sm text-foreground">{fromName.trim() || biz}</p>
+        {!isCustom ? (
+          <>
+            <p className="mt-5 text-sm text-foreground">Thanks again,</p>
+            <p className="text-sm text-foreground">{fromName.trim() || biz}</p>
+          </>
+        ) : null}
+
 
         <div className="mt-6 border-t pt-4 text-xs text-muted-foreground">
           {logoUrl ? (

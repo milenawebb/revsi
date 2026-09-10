@@ -519,10 +519,12 @@ function SettingsForm() {
                   />
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <p className="max-w-md text-xs text-muted-foreground">
-                      Separate paragraphs with a blank line. Use {"{name}"} for the customer's
-                      first name, {"{business}"} for your business name, and {"{service}"} for
-                      the service type.
+                      The whole email is yours, including how you sign off. Separate paragraphs
+                      with a blank line. Use {"{name}"} for the customer's first name,{" "}
+                      {"{business}"} for your business name, and {"{service}"} for the service
+                      type.
                     </p>
+
                     <p className="text-xs text-muted-foreground">
                       {form.custom_body.length}/{CUSTOM_BODY_MAX}
                     </p>
