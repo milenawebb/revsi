@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,9 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { EmailPreview, FIXED_ASK_LINE } from "@/components/EmailPreview";
+import { EmailPreview } from "@/components/EmailPreview";
 import { cn } from "@/lib/utils";
-import { Lock } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
@@ -72,6 +71,33 @@ function SettingsForm() {
 
   const photoEnabled = form.email_template === "personal";
   const isCustom = form.email_template === "custom";
+
+  type CopyCheck = { verdict: string; matched: string; reason: string };
+  const [copyCheck, setCopyCheck] = useState<CopyCheck | null>(null);
+
+  useEffect(() => {
+    if (!isCustom) {
+      setCopyCheck(null);
+      return;
+    }
+    const text = form.custom_body.trim();
+    if (!text) {
+      setCopyCheck(null);
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      const { data, error } = await supabase.rpc("check_review_copy", { p_text: text });
+      if (cancelled || error) return;
+      setCopyCheck(data?.[0] ?? null);
+    }, 500);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [form.custom_body, isCustom]);
+
+  const saveBlocked = copyCheck?.verdict === "block";
 
   function insertPlaceholder(token: string) {
     const el = bodyRef.current;
