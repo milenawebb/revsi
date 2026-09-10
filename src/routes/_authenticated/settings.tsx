@@ -448,6 +448,7 @@ function SettingsForm() {
             businessName={form.name}
             fromName={form.from_name}
             customIntro={form.custom_intro}
+            customBody={form.custom_body}
             senderPhotoUrl={form.sender_photo_url}
             postalAddress={form.postal_address}
           />
