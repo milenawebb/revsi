@@ -112,6 +112,24 @@ export function CustomerDetailDialog({
     },
   });
 
+  const prefs = useMutation({
+    mutationFn: async (patch: {
+      reviewed_at?: string | null;
+      do_not_ask?: boolean;
+      role?: string;
+    }) => {
+      const { error: pErr } = await supabase
+        .from("customers")
+        .update(patch)
+        .eq("id", customerId!);
+      if (pErr) throw pErr;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+    },
+    onError: (e: Error) => toast.error("Couldn't update", { description: e.message }),
+  });
+
   const remove = useMutation({
     mutationFn: async () => {
       const { error: dErr } = await supabase.from("customers").delete().eq("id", customerId!);
