@@ -185,7 +185,9 @@ export function NewJobDialog({
                   className="text-xs font-medium text-primary hover:underline"
                   onClick={() => {
                     setSelectedId(null);
-                    setForm({ ...form, email: "", phone: "" });
+                    setForm({ ...form, name: "", email: "", phone: "" });
+                    setSearch("");
+                    setEmailError(null);
                   }}
                 >
                   Change
