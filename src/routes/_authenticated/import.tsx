@@ -510,7 +510,7 @@ function ImportFlow() {
                 {review.rows.length} contacts at {capNumber} a day, finishing around{" "}
                 {formatDate(finishDate)}.
               </p>
-              <div className="flex gap-3 rounded-lg border border-status-queued-fg/30 bg-status-queued-bg p-4 text-status-queued-fg">
+              <div className="flex gap-3 rounded-lg border border-status-queued-foreground/30 bg-status-queued p-4 text-status-queued-foreground">
                 <AlertTriangle className="mt-0.5 size-4 shrink-0" />
                 <p className="text-sm">
                   These people may not remember you. Only send to customers you actually worked
