@@ -111,6 +111,7 @@ export function NewJobDialog({
   const save = useMutation({
     mutationFn: async () => {
       let customerId = selectedId;
+      setEmailError(null);
 
       if (!customerId) {
         const { data: created, error: insertError } = await supabase
@@ -123,7 +124,13 @@ export function NewJobDialog({
           })
           .select("id")
           .single();
-        if (insertError) throw insertError;
+        if (insertError) {
+          if (insertError.code === "23505" || /duplicate key|unique/i.test(insertError.message)) {
+            setEmailError("A customer with this email already exists for this business.");
+            throw new Error("DUPLICATE_EMAIL");
+          }
+          throw insertError;
+        }
         customerId = created.id;
       }
 
