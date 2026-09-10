@@ -63,6 +63,7 @@ function SettingsForm() {
     reminder_delay_days: String(business.reminder_delay_days),
     email_template: business.email_template ?? "personal",
     custom_intro: business.custom_intro ?? "",
+    custom_body: business.custom_body ?? "",
     sender_photo_url: business.sender_photo_url ?? null,
   });
   const [urlError, setUrlError] = useState<string | null>(null);
