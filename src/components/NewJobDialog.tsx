@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useCanAsk } from "@/lib/can-ask";
 import { cn } from "@/lib/utils";
 
 export type PresetCustomer = {
@@ -92,6 +93,8 @@ export function NewJobDialog({
   });
 
   const readOnlyContact = Boolean(selectedId);
+  const { data: canAsk } = useCanAsk(selectedId, open);
+  const blockedReason = canAsk && !canAsk.allowed ? canAsk.reason : null;
 
   const save = useMutation({
     mutationFn: async () => {
@@ -307,6 +310,14 @@ export function NewJobDialog({
               Completed now
             </Label>
           </div>
+          {blockedReason ? (
+            <div className="rounded-lg border bg-status-queued p-3">
+              <p className="text-sm text-status-queued-foreground">{blockedReason}</p>
+              <p className="mt-1 text-sm text-status-queued-foreground">
+                Saving this job will not send a review request.
+              </p>
+            </div>
+          ) : null}
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               Cancel
