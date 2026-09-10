@@ -9,7 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { EmailPreview } from "@/components/EmailPreview";
+import {
+  EmailPreview,
+  DEFAULT_BUTTON_COLOR,
+  HEX_RE,
+  buttonLuminance,
+} from "@/components/EmailPreview";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/settings")({
