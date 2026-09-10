@@ -1,7 +1,18 @@
 import { useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Briefcase, Send, Settings, LogOut, Menu, X, Check, ChevronsUpDown, Plus } from "lucide-react";
+import {
+  Briefcase,
+  Send,
+  Settings,
+  LogOut,
+  Menu,
+  X,
+  Check,
+  ChevronsUpDown,
+  Plus,
+  UploadCloud,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useBusinesses } from "@/lib/business-context";
 import { AddBusinessDialog } from "@/components/AddBusinessDialog";
@@ -18,6 +29,7 @@ import { cn } from "@/lib/utils";
 const nav = [
   { to: "/jobs", label: "Jobs", icon: Briefcase },
   { to: "/requests", label: "Requests", icon: Send },
+  { to: "/import", label: "Import", icon: UploadCloud },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
