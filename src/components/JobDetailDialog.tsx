@@ -417,6 +417,26 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <AlertDialog open={!!confirmCancelId} onOpenChange={() => setConfirmCancelId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel reminder</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cancel this reminder? No follow-up email will be sent to this customer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setConfirmCancelId(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={cancelReminder.isPending}
+              onClick={() => confirmCancelId && cancelReminder.mutate(confirmCancelId)}
+            >
+              Cancel reminder
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
