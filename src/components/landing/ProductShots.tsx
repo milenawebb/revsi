@@ -256,3 +256,47 @@ export function SettingsShot() {
     </BrowserFrame>
   );
 }
+
+/**
+ * Photography.
+ *
+ * Note on sourcing: Unsplash blocks downloads from this build environment, so
+ * these photographs were generated to the agreed constraints instead of being
+ * pulled from Unsplash. No licence or attribution is required for them — they
+ * are project-owned files under src/assets/landing/.
+ *   - signing-table.jpg  hands only, no faces, no logos
+ *   - car-seat.jpg       no plates, street signs or house numbers
+ *   - stamp-seal.jpg     no people, no branding
+ */
+export function PhotoFrame({
+  src,
+  alt,
+  className,
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "relative overflow-hidden rounded-2xl shadow-[0_24px_60px_-24px_rgb(20_20_27/0.3)]",
+        className,
+      )}
+    >
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        width={1280}
+        height={960}
+        className="h-full w-full object-cover"
+      />
+      {/* keeps the photography sitting with the brand rather than fighting it */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-brand-purple/10 mix-blend-multiply"
+      />
+    </div>
+  );
+}
