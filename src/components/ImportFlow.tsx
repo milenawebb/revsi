@@ -269,7 +269,8 @@ function ImportFlowInner({ onFinished, showHeading = true }: ImportFlowProps) {
         .update({ imported_count: imported, skipped_count: skippedCount })
         .eq("id", batch.id);
 
-      setResult({ imported, skipped: skippedCount });
+      if (onFinished) onFinished();
+      else setResult({ imported, skipped: skippedCount });
       toast.success("Import finished", {
         description: `${imported} added, ${skippedCount} skipped.`,
       });
