@@ -25,9 +25,9 @@ function PrivacyPage() {
 
       <LegalSection heading="The two roles we play">
         <p>
-          For your own account data — your name, email, and business details —
-          we are the controller. We decide how that data is used to run your
-          account.
+          For your own account data, meaning your name, email, and business
+          details, we are the controller. We decide how that data is used to
+          run your account.
         </p>
         <p>
           For the contact data you upload about your customers, you are the

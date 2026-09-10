@@ -202,7 +202,7 @@ function JobsPage() {
                   ) : job.completed_at ? (
                     <span className="text-muted-foreground">{formatDate(job.completed_at)}</span>
                   ) : (
-                    <span className="text-muted-foreground">—</span>
+                    <span className="text-muted-foreground">–</span>
                   )}
                 </div>
               </div>
