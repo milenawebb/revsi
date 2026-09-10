@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useBusiness } from "@/lib/business-context";
 import {
   Dialog,
   DialogContent,
@@ -35,7 +34,6 @@ export function CustomerDetailDialog({
   customerId: string | null;
   onOpenChange: (open: boolean) => void;
 }) {
-  const business = useBusiness();
   const queryClient = useQueryClient();
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const [error, setError] = useState<string | null>(null);
@@ -265,7 +263,6 @@ export function CustomerDetailDialog({
           }}
         />
       ) : null}
-      <span className="hidden">{business.id}</span>
     </>
   );
 }

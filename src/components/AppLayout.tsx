@@ -29,7 +29,7 @@ import { cn } from "@/lib/utils";
 const nav = [
   { to: "/jobs", label: "Jobs", icon: Briefcase },
   { to: "/requests", label: "Requests", icon: Send },
-  { to: "/import", label: "Import", icon: UploadCloud },
+  { to: "/customers", label: "Customers", icon: Users },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
