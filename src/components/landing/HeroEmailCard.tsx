@@ -86,12 +86,13 @@ export function HeroEmailCard() {
   const { counts, done } = useTypedLines(mounted && !reduced);
 
   return (
-    <div
-      className={
-        "rounded-2xl border border-border/60 bg-card p-5 shadow-2xl " +
-        (reduced ? "" : "animate-land-in")
-      }
-    >
+    <div className={reduced ? "" : "animate-hero-tilt"}>
+      <div
+        className={
+          "rounded-2xl border border-border/60 bg-card p-5 shadow-2xl " +
+          (reduced ? "" : "animate-land-in animate-hero-float")
+        }
+      >
       <div className="space-y-1">
         <p className="text-sm font-bold text-foreground">Dana at Riverbend Notary</p>
         <p className="text-xs text-muted-foreground">Thanks for choosing Riverbend Notary</p>
