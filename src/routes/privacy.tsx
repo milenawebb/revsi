@@ -4,10 +4,10 @@ import { LegalPage, LegalSection } from "@/components/LegalPage";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy Policy — newreview.app" },
-      { name: "description", content: "Privacy Policy for newreview.app, operated by Webb Consulting LLC." },
-      { property: "og:title", content: "Privacy Policy — newreview.app" },
-      { property: "og:description", content: "Privacy Policy for newreview.app, operated by Webb Consulting LLC." },
+      { title: "Privacy Policy — revsi.app" },
+      { name: "description", content: "Privacy Policy for revsi.app, operated by Webb Consulting LLC." },
+      { property: "og:title", content: "Privacy Policy — revsi.app" },
+      { property: "og:description", content: "Privacy Policy for revsi.app, operated by Webb Consulting LLC." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -19,7 +19,7 @@ function PrivacyPage() {
   return (
     <LegalPage title="Privacy Policy" updated="September 10, 2026">
       <p>
-        This policy explains how newreview.app, operated by Webb Consulting
+        This policy explains how revsi.app, operated by Webb Consulting
         LLC, handles personal data. We keep two roles clearly separate.
       </p>
 
@@ -58,7 +58,7 @@ function PrivacyPage() {
       </LegalSection>
 
       <LegalSection heading="Subprocessors">
-        <p>We use these services to run newreview.app:</p>
+        <p>We use these services to run revsi.app:</p>
         <ul className="list-disc space-y-1 pl-5">
           <li>Supabase, for database and hosting.</li>
           <li>Resend, for email delivery.</li>
@@ -79,8 +79,8 @@ function PrivacyPage() {
         <p>
           Every email we send on your behalf includes an unsubscribe link.
           People can also ask to have their data deleted by contacting us at{" "}
-          <a href="mailto:info@newreview.app" className="underline underline-offset-2">
-            info@newreview.app
+          <a href="mailto:info@revsi.app" className="underline underline-offset-2">
+            info@revsi.app
           </a>{" "}
           or by contacting the business that sent them the request.
         </p>
@@ -116,8 +116,8 @@ function PrivacyPage() {
       <LegalSection heading="Contact">
         <p>
           Questions about privacy:{" "}
-          <a href="mailto:info@newreview.app" className="underline underline-offset-2">
-            info@newreview.app
+          <a href="mailto:info@revsi.app" className="underline underline-offset-2">
+            info@revsi.app
           </a>
         </p>
       </LegalSection>
