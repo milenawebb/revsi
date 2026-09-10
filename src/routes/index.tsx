@@ -1,5 +1,5 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -106,28 +106,38 @@ const NOTARY_POINTS = [
 ];
 
 function LandingPage() {
-  const navigate = useNavigate();
+  const [signedIn, setSignedIn] = useState(false);
 
   useEffect(() => {
     let active = true;
     supabase.auth.getSession().then(({ data }) => {
-      if (active && data.session) navigate({ to: "/jobs", replace: true });
+      if (active) setSignedIn(!!data.session);
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      setSignedIn(!!session);
     });
     return () => {
       active = false;
+      listener.subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
         <span className="text-sm font-semibold tracking-tight">newreview.app</span>
-        <Link
-          to="/login"
-          className="text-sm font-medium text-muted-foreground hover:text-foreground"
-        >
-          Sign in
-        </Link>
+        {signedIn ? (
+          <Button asChild size="sm">
+            <Link to="/jobs">Go to dashboard</Link>
+          </Button>
+        ) : (
+          <Link
+            to="/login"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground"
+          >
+            Sign in
+          </Link>
+        )}
       </header>
 
       <main>
