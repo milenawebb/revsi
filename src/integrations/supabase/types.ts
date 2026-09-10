@@ -17,6 +17,7 @@ export type Database = {
       businesses: {
         Row: {
           created_at: string
+          custom_body: string | null
           custom_intro: string | null
           email_template: string
           from_name: string
@@ -36,6 +37,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          custom_body?: string | null
           custom_intro?: string | null
           email_template?: string
           from_name: string
@@ -55,6 +57,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          custom_body?: string | null
           custom_intro?: string | null
           email_template?: string
           from_name?: string
@@ -290,6 +293,7 @@ export type Database = {
         Returns: {
           business_name: string
           click_token: string
+          custom_body: string
           custom_intro: string
           customer_email: string
           customer_name: string

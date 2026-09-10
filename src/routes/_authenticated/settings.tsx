@@ -9,8 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { EmailPreview } from "@/components/EmailPreview";
+import { EmailPreview, FIXED_ASK_LINE } from "@/components/EmailPreview";
 import { cn } from "@/lib/utils";
+import { Lock } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
@@ -31,9 +32,12 @@ const TEMPLATES = [
   { value: "short", label: "Short", sub: "Two lines and a button." },
   { value: "question", label: "Question", sub: "Asks what they'd tell a friend." },
   { value: "warm", label: "Classic", sub: "Polite and formal." },
+  { value: "custom", label: "Custom", sub: "Write it yourself." },
 ] as const;
 
 const INTRO_MAX = 300;
+const CUSTOM_BODY_MAX = 1500;
+const PLACEHOLDER_CHIPS = ["{name}", "{business}", "{service}"] as const;
 const MAX_PHOTO_BYTES = 2 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
@@ -59,11 +63,35 @@ function SettingsForm() {
     reminder_delay_days: String(business.reminder_delay_days),
     email_template: business.email_template ?? "personal",
     custom_intro: business.custom_intro ?? "",
+    custom_body: business.custom_body ?? "",
     sender_photo_url: business.sender_photo_url ?? null,
   });
   const [urlError, setUrlError] = useState<string | null>(null);
+  const [bodyError, setBodyError] = useState<string | null>(null);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
 
   const photoEnabled = form.email_template === "personal";
+  const isCustom = form.email_template === "custom";
+
+  function insertPlaceholder(token: string) {
+    const el = bodyRef.current;
+    if (!el) {
+      setForm((f) => ({ ...f, custom_body: f.custom_body + token }));
+      return;
+    }
+    const start = el.selectionStart ?? el.value.length;
+    const end = el.selectionEnd ?? start;
+    const next = (el.value.slice(0, start) + token + el.value.slice(end)).slice(
+      0,
+      CUSTOM_BODY_MAX,
+    );
+    setForm((f) => ({ ...f, custom_body: next }));
+    requestAnimationFrame(() => {
+      el.focus();
+      const pos = Math.min(start + token.length, CUSTOM_BODY_MAX);
+      el.setSelectionRange(pos, pos);
+    });
+  }
 
   const save = useMutation({
     mutationFn: async () => {
@@ -80,6 +108,7 @@ function SettingsForm() {
           reminder_delay_days: Number(form.reminder_delay_days) || 0,
           email_template: form.email_template,
           custom_intro: form.custom_intro.trim() || null,
+          custom_body: form.custom_body.trim() || null,
           sender_photo_url: form.sender_photo_url,
         })
         .eq("id", business.id);
@@ -136,6 +165,11 @@ function SettingsForm() {
       return;
     }
     setUrlError(null);
+    if (isCustom && !form.custom_body.trim()) {
+      setBodyError("Write your message before saving, or choose a different template.");
+      return;
+    }
+    setBodyError(null);
     save.mutate();
   }
 
@@ -245,25 +279,77 @@ function SettingsForm() {
               })}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="custom_intro">Add a line of your own (optional)</Label>
-              <Textarea
-                id="custom_intro"
-                rows={3}
-                maxLength={INTRO_MAX}
-                value={form.custom_intro}
-                onChange={(e) => setForm({ ...form, custom_intro: e.target.value })}
-              />
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <p className="max-w-md text-xs text-muted-foreground">
-                  This appears as the second line of the email, in your words. For example: I hope
-                  the paperwork all went through smoothly.
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {form.custom_intro.length}/{INTRO_MAX}
-                </p>
+            {isCustom ? (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="custom_body">Your message</Label>
+                  <Textarea
+                    ref={bodyRef}
+                    id="custom_body"
+                    rows={8}
+                    maxLength={CUSTOM_BODY_MAX}
+                    value={form.custom_body}
+                    onChange={(e) => setForm({ ...form, custom_body: e.target.value })}
+                  />
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <p className="max-w-md text-xs text-muted-foreground">
+                      Separate paragraphs with a blank line. Use {"{name}"} for the customer's
+                      first name, {"{business}"} for your business name, and {"{service}"} for
+                      the service type.
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {form.custom_body.length}/{CUSTOM_BODY_MAX}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {PLACEHOLDER_CHIPS.map((chip) => (
+                      <button
+                        key={chip}
+                        type="button"
+                        onClick={() => insertPlaceholder(chip)}
+                        className="rounded-full border bg-card px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+                      >
+                        {chip}
+                      </button>
+                    ))}
+                  </div>
+                  {bodyError ? <p className="text-sm text-destructive">{bodyError}</p> : null}
+                </div>
+
+                <div className="rounded-lg border bg-muted/40 p-4">
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Lock className="h-3.5 w-3.5" />
+                    <p className="text-[11px] font-semibold uppercase tracking-widest">
+                      Fixed ending
+                    </p>
+                  </div>
+                  <p className="mt-2 text-sm text-muted-foreground">{FIXED_ASK_LINE}</p>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    This line is always added to the end and cannot be changed.
+                  </p>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="space-y-2">
+                <Label htmlFor="custom_intro">Add a line of your own (optional)</Label>
+                <Textarea
+                  id="custom_intro"
+                  rows={3}
+                  maxLength={INTRO_MAX}
+                  value={form.custom_intro}
+                  onChange={(e) => setForm({ ...form, custom_intro: e.target.value })}
+                />
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <p className="max-w-md text-xs text-muted-foreground">
+                    This appears as the second line of the email, in your words. For example: I
+                    hope the paperwork all went through smoothly.
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {form.custom_intro.length}/{INTRO_MAX}
+                  </p>
+                </div>
+              </div>
+            )}
 
             <div className={cn("space-y-3", !photoEnabled && "opacity-50")}>
               <Label>Sender photo</Label>
@@ -362,6 +448,7 @@ function SettingsForm() {
             businessName={form.name}
             fromName={form.from_name}
             customIntro={form.custom_intro}
+            customBody={form.custom_body}
             senderPhotoUrl={form.sender_photo_url}
             postalAddress={form.postal_address}
           />
