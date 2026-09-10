@@ -6,10 +6,11 @@ import { HeroEmailCard } from "@/components/landing/HeroEmailCard";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Reveal, useInView, usePrefersReducedMotion } from "@/components/landing/motion";
 import {
+  ChipReveal,
   FloatingChip,
   JobsShot,
+  NotariesVisual,
   RequestsShot,
-  SettingsShot,
 } from "@/components/landing/ProductShots";
 import { Badge } from "@/components/ui/badge";
 import revsiLogo from "@/assets/revsi-logo.png.asset.json";
@@ -100,6 +101,7 @@ function AltSection({
   visual,
   chip,
   chipClassName,
+  chipRotate = -2,
   reverse = false,
   tint = false,
 }: {
@@ -110,6 +112,7 @@ function AltSection({
   visual?: ReactNode;
   chip?: ReactNode;
   chipClassName?: string;
+  chipRotate?: number;
   reverse?: boolean;
   tint?: boolean;
 }) {
@@ -294,7 +297,8 @@ function LandingPage() {
               <p className="mt-2 text-xs text-muted-foreground">Sent 9:30 AM</p>
             </FloatingChip>
           }
-          chipClassName="-bottom-6 -left-4 rotate-[-2deg] sm:-left-8"
+          chipClassName="-bottom-6 -left-4 sm:-left-8"
+          chipRotate={-2}
         >
           <ProblemPoints />
         </AltSection>
@@ -314,7 +318,8 @@ function LandingPage() {
               <p className="mt-2 text-xs text-muted-foreground">Reminder cancelled</p>
             </FloatingChip>
           }
-          chipClassName="-bottom-6 -right-4 rotate-[2deg] sm:-right-8"
+          chipClassName="-bottom-6 -right-4 sm:-right-8"
+          chipRotate={2}
         >
           <HowItWorks />
         </AltSection>
@@ -341,7 +346,8 @@ function LandingPage() {
               </div>
             </FloatingChip>
           }
-          chipClassName="-bottom-6 -left-4 rotate-[-2deg] sm:-left-8"
+          chipClassName="-bottom-6 -left-4 sm:-left-8"
+          chipRotate={-2}
         >
           <ul className="grid gap-6">
             {NOTARY_POINTS.map((point) => (
