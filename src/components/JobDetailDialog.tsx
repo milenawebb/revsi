@@ -118,6 +118,9 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
     !requests.isLoading && !initial && job.data?.status === "completed";
   const { data: canAsk } = useCanAsk(job.data?.customer_id, Boolean(missingInitial));
 
+  const parsedCompleted = fromLocalInput(form.completed_date);
+  const completedFuture = Boolean(parsedCompleted && parsedCompleted.getTime() > Date.now());
+
   const save = useMutation({
     mutationFn: async () => {
       setEmailError(null);
