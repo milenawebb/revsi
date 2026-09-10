@@ -117,11 +117,11 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
       const customerId = job.data?.customers?.id ?? job.data?.customer_id;
       if (!customerId) throw new Error("Missing customer");
 
-      const customerPatch: Record<string, string | null> = {
+      const customerPatch = {
         name: form.name.trim(),
         phone: form.phone.trim() || null,
+        ...(emailLocked ? {} : { email: form.email.trim() || null }),
       };
-      if (!emailLocked) customerPatch['email'] = form.email.trim() || null;
 
       const { error: custErr } = await supabase
         .from("customers")
