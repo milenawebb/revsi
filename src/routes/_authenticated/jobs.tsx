@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NewJobDialog } from "@/components/NewJobDialog";
 import { JobDetailDialog } from "@/components/JobDetailDialog";
+import { MarkCompletedDialog } from "@/components/MarkCompletedDialog";
 import { formatDate } from "@/lib/format";
 import { requestBadge, type RequestSummary } from "@/lib/request-state";
 
