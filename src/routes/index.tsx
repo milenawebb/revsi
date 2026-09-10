@@ -112,6 +112,9 @@ function LandingPage() {
           </div>
           <div className="lg:pl-6">
             <HeroEmailCard />
+            <p className="mt-4 text-center text-sm text-white/80">
+              Your logo, your colours, your words.
+            </p>
           </div>
         </section>
       </div>
