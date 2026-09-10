@@ -151,6 +151,8 @@ function SettingsForm() {
           custom_intro: form.custom_intro.trim() || null,
           custom_body: form.custom_body.trim() || null,
           sender_photo_url: form.sender_photo_url,
+          logo_url: form.logo_url,
+          button_color: form.button_color,
         })
         .eq("id", business.id);
       if (error) throw error;
