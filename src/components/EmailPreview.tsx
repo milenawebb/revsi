@@ -90,6 +90,8 @@ export function EmailPreview({
   customBody,
   senderPhotoUrl,
   postalAddress,
+  logoUrl,
+  buttonColor = DEFAULT_BUTTON_COLOR,
 }: Props) {
   const biz = businessName.trim() || "Your business";
   const isCustom = template === "custom";
