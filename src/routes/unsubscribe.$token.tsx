@@ -112,6 +112,7 @@ function UnsubscribePage() {
             </Button>
           </div>
         )}
+        </div>
       </div>
     </main>
   );
