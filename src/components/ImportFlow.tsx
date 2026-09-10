@@ -132,8 +132,8 @@ function ImportFlowInner({ onFinished, showHeading = true }: ImportFlowProps) {
       const email = get("email").toLowerCase();
       const record = {
         row: i + 2,
-        name: name || "—",
-        email: email || "—",
+        name: name || "–",
+        email: email || "–",
       };
       const reason = !email
         ? "No email address"
@@ -547,7 +547,7 @@ function ImportFlowInner({ onFinished, showHeading = true }: ImportFlowProps) {
               className="grid gap-1 border-t border-border/60 px-5 py-3 text-sm md:grid-cols-[1fr_1.6fr_1fr_0.7fr_0.7fr] md:items-center md:gap-4"
             >
               <span className="text-muted-foreground">{formatDate(b.created_at)}</span>
-              <span className="truncate font-medium">{b.filename ?? "—"}</span>
+              <span className="truncate font-medium">{b.filename ?? "–"}</span>
               <span className="text-muted-foreground">
                 {b.mode === "ask" ? "Add and ask" : "Contacts only"}
               </span>

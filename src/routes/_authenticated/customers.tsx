@@ -28,9 +28,9 @@ import { formatDate } from "@/lib/format";
 export const Route = createFileRoute("/_authenticated/customers")({
   head: () => ({
     meta: [
-      { title: "Customers — Review Requests" },
+      { title: "Customers · Review Requests" },
       { name: "description", content: "Everyone you have worked with, and their job history." },
-      { property: "og:title", content: "Customers — Review Requests" },
+      { property: "og:title", content: "Customers · Review Requests" },
       {
         property: "og:description",
         content: "Everyone you have worked with, and their job history.",
@@ -210,8 +210,8 @@ function CustomersPage() {
                   </TooltipProvider>
                 ) : null}
               </span>
-              <span className="truncate text-muted-foreground">{c.email ?? "—"}</span>
-              <span className="text-muted-foreground">{c.phone ?? "—"}</span>
+              <span className="truncate text-muted-foreground">{c.email ?? "–"}</span>
+              <span className="text-muted-foreground">{c.phone ?? "–"}</span>
               <span className="text-muted-foreground">{c.jobCount}</span>
               <span className="text-muted-foreground md:text-right">{formatDate(c.lastJob)}</span>
             </div>

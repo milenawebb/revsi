@@ -4,9 +4,9 @@ import { LegalPage, LegalSection } from "@/components/LegalPage";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy Policy — revsi.app" },
+      { title: "Privacy Policy · revsi.app" },
       { name: "description", content: "Privacy Policy for revsi.app, operated by Webb Consulting LLC." },
-      { property: "og:title", content: "Privacy Policy — revsi.app" },
+      { property: "og:title", content: "Privacy Policy · revsi.app" },
       { property: "og:description", content: "Privacy Policy for revsi.app, operated by Webb Consulting LLC." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

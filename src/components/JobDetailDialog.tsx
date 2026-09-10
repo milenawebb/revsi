@@ -479,7 +479,7 @@ function Field({ label, value }: { label: string; value?: string | null }) {
       <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
         {label}
       </p>
-      <p className="mt-1 break-words capitalize-none">{value || "—"}</p>
+      <p className="mt-1 break-words capitalize-none">{value || "–"}</p>
     </div>
   );
 }

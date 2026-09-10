@@ -21,9 +21,9 @@ import { ApiKeysSection } from "@/components/ApiKeysSection";
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — Review Requests" },
+      { title: "Settings · Review Requests" },
       { name: "description", content: "Business details, timing and reminder settings." },
-      { property: "og:title", content: "Settings — Review Requests" },
+      { property: "og:title", content: "Settings · Review Requests" },
       { property: "og:description", content: "Business details, timing and reminder settings." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

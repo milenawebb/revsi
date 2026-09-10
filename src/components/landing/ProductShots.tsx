@@ -237,7 +237,7 @@ const REQUEST_ROWS: {
     status: "Cancelled",
     variant: "cancelled",
     sendAfter: "11 Sep, 2:15 PM",
-    sent: "—",
+    sent: "–",
     clicked: "No",
   },
   {
@@ -246,7 +246,7 @@ const REQUEST_ROWS: {
     status: "Queued",
     variant: "queued",
     sendAfter: "10 Sep, 8:00 AM",
-    sent: "—",
+    sent: "–",
     clicked: "No",
   },
 ];

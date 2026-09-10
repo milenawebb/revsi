@@ -4,9 +4,9 @@ import { LegalPage, LegalSection } from "@/components/LegalPage";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms of Service — revsi.app" },
+      { title: "Terms of Service · revsi.app" },
       { name: "description", content: "Terms of Service for revsi.app, operated by Webb Consulting LLC." },
-      { property: "og:title", content: "Terms of Service — revsi.app" },
+      { property: "og:title", content: "Terms of Service · revsi.app" },
       { property: "og:description", content: "Terms of Service for revsi.app, operated by Webb Consulting LLC." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

@@ -16,9 +16,9 @@ import { formatDateTime, statusTone } from "@/lib/format";
 export const Route = createFileRoute("/_authenticated/requests")({
   head: () => ({
     meta: [
-      { title: "Requests — Review Requests" },
+      { title: "Requests · Review Requests" },
       { name: "description", content: "Every review request queued, sent, clicked or failed." },
-      { property: "og:title", content: "Requests — Review Requests" },
+      { property: "og:title", content: "Requests · Review Requests" },
       {
         property: "og:description",
         content: "Every review request queued, sent, clicked or failed.",
@@ -95,7 +95,7 @@ function RequestsPage() {
           data.map((r) => (
             <div key={r.id} className="border-t border-border/60 px-5 py-4 text-sm">
               <div className="grid gap-2 md:grid-cols-[1.4fr_0.8fr_0.8fr_1fr_1fr_0.7fr] md:items-center md:gap-4">
-                <span className="font-medium">{r.customers?.name ?? "—"}</span>
+                <span className="font-medium">{r.customers?.name ?? "–"}</span>
                 <span className="text-muted-foreground capitalize">{r.kind}</span>
                 <span>
                   <Badge variant={statusTone(r.status)} className="capitalize">
