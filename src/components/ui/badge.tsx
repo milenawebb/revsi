@@ -17,6 +17,13 @@ const badgeVariants = cva(
         clicked: "border-transparent bg-status-clicked text-status-clicked-foreground",
         failed: "border-transparent bg-status-failed text-status-failed-foreground",
         cancelled: "border-transparent bg-status-cancelled text-status-cancelled-foreground",
+        notAsked: "border-transparent bg-status-not-asked text-status-not-asked-foreground",
+        scheduled: "border-transparent bg-status-scheduled text-status-scheduled-foreground",
+        requestSent: "border-transparent bg-status-request-sent text-status-request-sent-foreground",
+        delivered: "border-transparent bg-status-delivered text-status-delivered-foreground",
+        bounced: "border-transparent bg-status-bounced text-status-bounced-foreground",
+        requestFailed: "border-transparent bg-status-failed text-status-failed-foreground",
+        requestCancelled: "border-transparent bg-status-cancelled text-status-cancelled-foreground",
       },
     },
     defaultVariants: {
