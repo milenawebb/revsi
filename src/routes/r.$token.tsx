@@ -81,6 +81,7 @@ function ReviewRedirectPage() {
             </p>
           </>
         )}
+        </div>
       </div>
     </main>
   );
