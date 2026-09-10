@@ -322,7 +322,7 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
                 <Button type="button" variant="ghost" onClick={() => setEditing(false)}>
                   Cancel
                 </Button>
-                <Button type="submit" disabled={save.isPending}>
+                <Button type="submit" disabled={save.isPending || completedFuture}>
                   {save.isPending ? "Saving…" : "Save changes"}
                 </Button>
               </DialogFooter>
@@ -461,6 +461,14 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <MarkCompletedDialog
+        open={confirmComplete}
+        onOpenChange={setConfirmComplete}
+        delayMinutes={business.request_delay_minutes ?? 0}
+        pending={complete.isPending}
+        onConfirm={(completedAt) => complete.mutate(completedAt)}
+      />
     </>
   );
 }
