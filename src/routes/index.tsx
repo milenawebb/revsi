@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
 import { HeroEmailCard } from "@/components/landing/HeroEmailCard";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Reveal, useInView, usePrefersReducedMotion } from "@/components/landing/motion";
@@ -13,8 +12,6 @@ import {
   RequestsShot,
 } from "@/components/landing/ProductShots";
 import { Badge } from "@/components/ui/badge";
-import logoHeader from "@/assets/logo-header.png.asset.json";
-import logoFooter from "@/assets/logo-footer.png.asset.json";
 import { cn } from "@/lib/utils";
 import { SiteFooter, SiteHeader } from "@/components/site/SiteChrome";
 
