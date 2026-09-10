@@ -22,7 +22,7 @@ export function LegalPage({
           {children}
         </div>
         <p className="mt-10 text-sm text-muted-foreground">
-          <Link to="/auth" className="underline underline-offset-2 hover:text-foreground">
+          <Link to="/login" className="underline underline-offset-2 hover:text-foreground">
             Back to sign in
           </Link>
         </p>
