@@ -307,7 +307,7 @@ function LandingPage() {
         </AltSection>
 
         <AltSection
-          pill="For notaries"
+          pill="Industries"
           heading="Built for notaries"
           visual={<NotariesVisual />}
         >
