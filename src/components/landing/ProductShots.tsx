@@ -99,11 +99,21 @@ export function ChipReveal({
 }
 
 const STAT_CARDS = [
-  { label: "Jobs completed", value: "38" },
-  { label: "Requests sent", value: "36" },
-  { label: "Requests clicked", value: "19" },
-  { label: "Click rate", value: "53%" },
+  { label: "Jobs completed", value: 38, suffix: "" },
+  { label: "Requests sent", value: 36, suffix: "" },
+  { label: "Requests clicked", value: 19, suffix: "" },
+  { label: "Click rate", value: 53, suffix: "%" },
 ];
+
+function StatValue({ value, suffix, run }: { value: number; suffix: string; run: boolean }) {
+  const shown = useCountUp(value, run);
+  return (
+    <p className="mt-1 text-lg font-semibold tracking-tight tabular-nums">
+      {shown}
+      {suffix}
+    </p>
+  );
+}
 
 const JOB_ROWS: {
   name: string;
