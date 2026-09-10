@@ -37,9 +37,16 @@ function UnsubscribePage() {
       return;
     }
 
-    setResult(data[0]);
+    const row = data[0];
+    if (!row) {
+      setStatus("invalid");
+      return;
+    }
+
+    setResult(row);
     setStatus("success");
   }
+
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-4">

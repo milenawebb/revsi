@@ -35,9 +35,16 @@ function ReviewRedirectPage() {
         return;
       }
 
+      const reviewUrl = data[0]?.review_url;
+      if (!reviewUrl) {
+        setStatus("invalid");
+        return;
+      }
+
       setStatus("redirecting");
-      window.location.href = data[0].review_url;
+      window.location.href = reviewUrl;
     }
+
 
     recordClick();
   }, [token]);
