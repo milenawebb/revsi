@@ -292,9 +292,15 @@ export function RequestsShot() {
   );
 }
 
-export function SettingsShot() {
+export function SettingsShot({
+  buttonColor = "#7C3AED",
+  onSettled,
+}: {
+  buttonColor?: string;
+  onSettled?: (settled: boolean) => void;
+}) {
   return (
-    <BrowserFrame>
+    <BrowserFrame onSettled={onSettled}>
       <div className="space-y-4">
         <div>
           <p className="text-lg font-bold tracking-tight">Settings</p>
@@ -311,11 +317,57 @@ export function SettingsShot() {
             senderPhotoUrl={null}
             postalAddress="118 Mill Street, Richmond, VA"
             logoUrl={null}
-            buttonColor="#7C3AED"
+            buttonColor={buttonColor}
           />
         </div>
       </div>
     </BrowserFrame>
+  );
+}
+
+const SWATCHES = ["#4F6EF7", "#0F766E", "#7C3AED", "#14141B", "#B91C4B"];
+
+/** Settings frame plus its colour chip, whose selection runs once through the swatches. */
+export function NotariesVisual() {
+  const reduced = usePrefersReducedMotion();
+  const [settled, setSettled] = useState(false);
+  const [index, setIndex] = useState(reduced ? SWATCHES.length - 1 : 0);
+
+  useEffect(() => {
+    if (!settled) return;
+    if (reduced) {
+      setIndex(SWATCHES.length - 1);
+      return;
+    }
+    const step = 3000 / (SWATCHES.length - 1);
+    const timers = SWATCHES.map((_, i) =>
+      window.setTimeout(() => setIndex(i), 400 + i * step),
+    );
+    return () => timers.forEach((t) => window.clearTimeout(t));
+  }, [settled, reduced]);
+
+  return (
+    <div className="relative">
+      <SettingsShot buttonColor={SWATCHES[index]!} onSettled={setSettled} />
+      <ChipReveal rotate={-2} className="absolute -bottom-6 -left-4 sm:-left-8">
+        <FloatingChip>
+          <p className="text-xs font-medium text-foreground">Button colour</p>
+          <div className="mt-2 flex items-center gap-2">
+            {SWATCHES.map((c, i) => (
+              <span
+                key={c}
+                aria-hidden
+                style={{ backgroundColor: c }}
+                className={cn(
+                  "size-5 rounded-full transition-shadow duration-200",
+                  i === index && "ring-2 ring-foreground ring-offset-2",
+                )}
+              />
+            ))}
+          </div>
+        </FloatingChip>
+      </ChipReveal>
+    </div>
   );
 }
 
