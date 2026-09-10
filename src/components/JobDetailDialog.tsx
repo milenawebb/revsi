@@ -26,8 +26,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { formatDate, formatDateTime } from "@/lib/format";
+import { formatDateTime } from "@/lib/format";
 import { useCanAsk } from "@/lib/can-ask";
+import { MarkCompletedDialog } from "@/components/MarkCompletedDialog";
+import { FUTURE_ERROR_SHORT, fromLocalInput, toLocalInput } from "@/lib/completion-time";
 
 const SENT_STATUSES = ["sending", "sent", "delivered", "bounced", "failed"];
 
@@ -39,8 +41,7 @@ type Props = {
 function toDateInput(value: string | null) {
   if (!value) return "";
   const d = new Date(value);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  return Number.isNaN(d.getTime()) ? "" : toLocalInput(d);
 }
 
 export function JobDetailDialog({ jobId, onOpenChange }: Props) {
@@ -48,6 +49,7 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
   const queryClient = useQueryClient();
   const [editing, setEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [confirmComplete, setConfirmComplete] = useState(false);
   const [confirmCancelId, setConfirmCancelId] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [form, setForm] = useState({
@@ -116,6 +118,9 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
     !requests.isLoading && !initial && job.data?.status === "completed";
   const { data: canAsk } = useCanAsk(job.data?.customer_id, Boolean(missingInitial));
 
+  const parsedCompleted = fromLocalInput(form.completed_date);
+  const completedFuture = Boolean(parsedCompleted && parsedCompleted.getTime() > Date.now());
+
   const save = useMutation({
     mutationFn: async () => {
       setEmailError(null);
@@ -142,9 +147,8 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
 
       const originalDate = toDateInput(job.data?.completed_at ?? null);
       const dateChanged = form.completed_date !== originalDate;
-      const completedAt = form.completed_date
-        ? new Date(`${form.completed_date}T12:00:00`).toISOString()
-        : null;
+      const parsed = fromLocalInput(form.completed_date);
+      const completedAt = parsed ? parsed.toISOString() : null;
 
       const { error: svcErr } = await supabase
         .from("services")
@@ -180,15 +184,16 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
   });
 
   const complete = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (completedAt: string) => {
       const { error } = await supabase
         .from("services")
-        .update({ status: "completed", completed_at: new Date().toISOString() })
+        .update({ status: "completed", completed_at: completedAt })
         .eq("id", job.data!.id);
       if (error) throw error;
     },
     onSuccess: () => {
       toast.success("Job completed", { description: "A review request has been scheduled." });
+      setConfirmComplete(false);
       queryClient.invalidateQueries();
     },
     onError: (e: Error) => toast.error("Couldn't complete job", { description: e.message }),
@@ -291,13 +296,17 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="d-date">Completed date</Label>
+                  <Label htmlFor="d-date">Completed date and time</Label>
                   <Input
                     id="d-date"
-                    type="date"
+                    type="datetime-local"
+                    aria-invalid={completedFuture ? true : undefined}
                     value={form.completed_date}
                     onChange={(e) => setForm({ ...form, completed_date: e.target.value })}
                   />
+                  {completedFuture ? (
+                    <p className="text-xs text-destructive">{FUTURE_ERROR_SHORT}</p>
+                  ) : null}
                 </div>
               </div>
               <div className="space-y-2">
@@ -313,7 +322,7 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
                 <Button type="button" variant="ghost" onClick={() => setEditing(false)}>
                   Cancel
                 </Button>
-                <Button type="submit" disabled={save.isPending}>
+                <Button type="submit" disabled={save.isPending || completedFuture}>
                   {save.isPending ? "Saving…" : "Save changes"}
                 </Button>
               </DialogFooter>
@@ -326,7 +335,7 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
                 <Field label="Phone" value={job.data.customers?.phone} />
                 <Field label="Service type" value={job.data.service_type} />
                 <Field label="Job status" value={job.data.status} />
-                <Field label="Completed" value={formatDate(job.data.completed_at)} />
+                <Field label="Completed" value={formatDateTime(job.data.completed_at)} />
               </div>
               {job.data.notes && <Field label="Notes" value={job.data.notes} />}
 
@@ -399,7 +408,7 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
                       type="button"
                       variant="outline"
                       disabled={complete.isPending}
-                      onClick={() => complete.mutate()}
+                      onClick={() => setConfirmComplete(true)}
                     >
                       Mark completed
                     </Button>
@@ -452,6 +461,14 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <MarkCompletedDialog
+        open={confirmComplete}
+        onOpenChange={setConfirmComplete}
+        delayMinutes={business.request_delay_minutes ?? 0}
+        pending={complete.isPending}
+        onConfirm={(completedAt) => complete.mutate(completedAt)}
+      />
     </>
   );
 }

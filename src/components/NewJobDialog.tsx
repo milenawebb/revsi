@@ -15,7 +15,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
+import {
+  CompletionTimeControl,
+  isFuture,
+  type CompletionMode,
+} from "@/components/CompletionTimeControl";
+import { fromLocalInput, nowLocalInput } from "@/lib/completion-time";
 import { useCanAsk } from "@/lib/can-ask";
 import { useCustomerMatches } from "@/lib/customer-match";
 import { CustomerMatchHint } from "@/components/CustomerMatchHint";
@@ -42,7 +47,8 @@ export function NewJobDialog({
   const business = useBusiness();
   const queryClient = useQueryClient();
   const [form, setForm] = useState(empty);
-  const [completedNow, setCompletedNow] = useState(true);
+  const [completionMode, setCompletionMode] = useState<CompletionMode>("now");
+  const [completedAtInput, setCompletedAtInput] = useState(nowLocalInput());
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
 
@@ -63,7 +69,8 @@ export function NewJobDialog({
       setForm(empty);
     }
     setEmailError(null);
-    setCompletedNow(true);
+    setCompletionMode("now");
+    setCompletedAtInput(nowLocalInput());
   }, [open, presetCustomer]);
 
   const { matches } = useCustomerMatches({
@@ -76,7 +83,19 @@ export function NewJobDialog({
   const { data: canAsk } = useCanAsk(selectedId, open);
   const blockedReason = canAsk && !canAsk.allowed ? canAsk.reason : null;
 
-  const canSave = Boolean(form.name.trim()) && Boolean(form.email.trim() || form.phone.trim());
+  const completionInvalid =
+    completionMode === "earlier" && (!completedAtInput || isFuture(completedAtInput));
+
+  const completedAtIso = () => {
+    if (completionMode === "not_yet") return null;
+    if (completionMode === "now") return new Date().toISOString();
+    return (fromLocalInput(completedAtInput) ?? new Date()).toISOString();
+  };
+
+  const canSave =
+    Boolean(form.name.trim()) &&
+    Boolean(form.email.trim() || form.phone.trim()) &&
+    !completionInvalid;
 
   const save = useMutation({
     mutationFn: async () => {
@@ -109,20 +128,22 @@ export function NewJobDialog({
         customer_id: customerId,
         service_type: form.service_type.trim() || null,
         notes: form.notes.trim() || null,
-        status: completedNow ? "completed" : "scheduled",
-        completed_at: completedNow ? new Date().toISOString() : null,
+        status: completionMode === "not_yet" ? "scheduled" : "completed",
+        completed_at: completedAtIso(),
       });
       if (serviceError) throw serviceError;
     },
     onSuccess: () => {
       toast.success("Job saved", {
-        description: completedNow
-          ? "A review request has been scheduled."
-          : "Mark it completed when the work is done.",
+        description:
+          completionMode === "not_yet"
+            ? "Mark it completed when the work is done."
+            : "A review request has been scheduled.",
       });
       setForm(empty);
       setSelectedId(null);
-      setCompletedNow(true);
+      setCompletionMode("now");
+      setCompletedAtInput(nowLocalInput());
       onOpenChange(false);
       queryClient.invalidateQueries();
     },
@@ -219,15 +240,16 @@ export function NewJobDialog({
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
             />
           </div>
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="completed"
-              checked={completedNow}
-              onCheckedChange={(v) => setCompletedNow(v === true)}
+          <div className="space-y-2">
+            <Label>Completion</Label>
+            <CompletionTimeControl
+              mode={completionMode}
+              onModeChange={setCompletionMode}
+              value={completedAtInput}
+              onValueChange={setCompletedAtInput}
+              delayMinutes={business.request_delay_minutes ?? 0}
+              idPrefix="new-job"
             />
-            <Label htmlFor="completed" className="font-normal">
-              Completed now
-            </Label>
           </div>
           {blockedReason ? (
             <div className="rounded-lg border bg-status-queued p-3">

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NewJobDialog } from "@/components/NewJobDialog";
 import { JobDetailDialog } from "@/components/JobDetailDialog";
+import { MarkCompletedDialog } from "@/components/MarkCompletedDialog";
 import { formatDate } from "@/lib/format";
 import { requestBadge, type RequestSummary } from "@/lib/request-state";
 
@@ -35,6 +36,7 @@ function JobsPage() {
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+  const [completingId, setCompletingId] = useState<string | null>(null);
 
   const jobs = useQuery({
     queryKey: ["jobs", business.id],
@@ -99,15 +101,16 @@ function JobsPage() {
   });
 
   const complete = useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async ({ id, completedAt }: { id: string; completedAt: string }) => {
       const { error } = await supabase
         .from("services")
-        .update({ status: "completed", completed_at: new Date().toISOString() })
+        .update({ status: "completed", completed_at: completedAt })
         .eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
       toast.success("Job completed", { description: "A review request has been scheduled." });
+      setCompletingId(null);
       queryClient.invalidateQueries();
     },
     onError: (e: Error) => toast.error("Couldn't complete job", { description: e.message }),
@@ -191,7 +194,7 @@ function JobsPage() {
                       disabled={complete.isPending}
                       onClick={(e) => {
                         e.stopPropagation();
-                        complete.mutate(job.id);
+                        setCompletingId(job.id);
                       }}
                     >
                       Mark completed
@@ -216,6 +219,17 @@ function JobsPage() {
         onOpenChange={(v) => {
           if (!v) setSelectedJobId(null);
         }}
+      />
+      <MarkCompletedDialog
+        open={!!completingId}
+        onOpenChange={(v) => {
+          if (!v) setCompletingId(null);
+        }}
+        delayMinutes={business.request_delay_minutes ?? 0}
+        pending={complete.isPending}
+        onConfirm={(completedAt) =>
+          completingId && complete.mutate({ id: completingId, completedAt })
+        }
       />
     </div>
   );
