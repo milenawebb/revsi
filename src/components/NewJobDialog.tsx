@@ -129,7 +129,7 @@ export function NewJobDialog({
         service_type: form.service_type.trim() || null,
         notes: form.notes.trim() || null,
         status: completionMode === "not_yet" ? "scheduled" : "completed",
-        completed_at: completedAtIso,
+        completed_at: completedAtIso(),
       });
       if (serviceError) throw serviceError;
     },
