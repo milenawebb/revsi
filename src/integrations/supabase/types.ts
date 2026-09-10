@@ -403,6 +403,7 @@ export type Database = {
           review_url: string
           sender_photo_url: string
           service_type: string
+          website_url: string
         }[]
       }
       next_send_slot: { Args: { p_business_id: string }; Returns: string }
