@@ -204,6 +204,22 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
     onError: (e: Error) => toast.error("Couldn't delete job", { description: e.message }),
   });
 
+  const cancelReminder = useMutation({
+    mutationFn: async (requestId: string) => {
+      const { error } = await supabase
+        .from("review_requests")
+        .update({ status: "cancelled" })
+        .eq("id", requestId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Reminder cancelled");
+      setConfirmCancelId(null);
+      queryClient.invalidateQueries();
+    },
+    onError: (e: Error) => toast.error("Couldn't cancel reminder", { description: e.message }),
+  });
+
   return (
     <>
       <Dialog open={!!jobId} onOpenChange={onOpenChange}>
