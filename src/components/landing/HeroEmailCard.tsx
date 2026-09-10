@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePrefersReducedMotion } from "./motion";
+import danaPhoto from "@/assets/dana-photo.png.asset.json";
 
 const LINES = [
   "Hi Sarah,",
