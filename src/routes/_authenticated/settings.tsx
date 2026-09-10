@@ -279,25 +279,77 @@ function SettingsForm() {
               })}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="custom_intro">Add a line of your own (optional)</Label>
-              <Textarea
-                id="custom_intro"
-                rows={3}
-                maxLength={INTRO_MAX}
-                value={form.custom_intro}
-                onChange={(e) => setForm({ ...form, custom_intro: e.target.value })}
-              />
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <p className="max-w-md text-xs text-muted-foreground">
-                  This appears as the second line of the email, in your words. For example: I hope
-                  the paperwork all went through smoothly.
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {form.custom_intro.length}/{INTRO_MAX}
-                </p>
+            {isCustom ? (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="custom_body">Your message</Label>
+                  <Textarea
+                    ref={bodyRef}
+                    id="custom_body"
+                    rows={8}
+                    maxLength={CUSTOM_BODY_MAX}
+                    value={form.custom_body}
+                    onChange={(e) => setForm({ ...form, custom_body: e.target.value })}
+                  />
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <p className="max-w-md text-xs text-muted-foreground">
+                      Separate paragraphs with a blank line. Use {"{name}"} for the customer's
+                      first name, {"{business}"} for your business name, and {"{service}"} for
+                      the service type.
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {form.custom_body.length}/{CUSTOM_BODY_MAX}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {PLACEHOLDER_CHIPS.map((chip) => (
+                      <button
+                        key={chip}
+                        type="button"
+                        onClick={() => insertPlaceholder(chip)}
+                        className="rounded-full border bg-card px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+                      >
+                        {chip}
+                      </button>
+                    ))}
+                  </div>
+                  {bodyError ? <p className="text-sm text-destructive">{bodyError}</p> : null}
+                </div>
+
+                <div className="rounded-lg border bg-muted/40 p-4">
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Lock className="h-3.5 w-3.5" />
+                    <p className="text-[11px] font-semibold uppercase tracking-widest">
+                      Fixed ending
+                    </p>
+                  </div>
+                  <p className="mt-2 text-sm text-muted-foreground">{FIXED_ASK_LINE}</p>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    This line is always added to the end and cannot be changed.
+                  </p>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="space-y-2">
+                <Label htmlFor="custom_intro">Add a line of your own (optional)</Label>
+                <Textarea
+                  id="custom_intro"
+                  rows={3}
+                  maxLength={INTRO_MAX}
+                  value={form.custom_intro}
+                  onChange={(e) => setForm({ ...form, custom_intro: e.target.value })}
+                />
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <p className="max-w-md text-xs text-muted-foreground">
+                    This appears as the second line of the email, in your words. For example: I
+                    hope the paperwork all went through smoothly.
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {form.custom_intro.length}/{INTRO_MAX}
+                  </p>
+                </div>
+              </div>
+            )}
 
             <div className={cn("space-y-3", !photoEnabled && "opacity-50")}>
               <Label>Sender photo</Label>
