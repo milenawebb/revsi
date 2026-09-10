@@ -5,7 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { HeroEmailCard } from "@/components/landing/HeroEmailCard";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { ReviewBoxMock } from "@/components/landing/ReviewBoxMock";
-import { Reveal } from "@/components/landing/motion";
+import { Reveal, useInView, usePrefersReducedMotion } from "@/components/landing/motion";
+import { cn } from "@/lib/utils";
 
 const WAITLIST_MAILTO =
   "mailto:info@newreview.app?subject=newreview.app%20waitlist&body=Please%20add%20me%20to%20the%20waitlist.";
