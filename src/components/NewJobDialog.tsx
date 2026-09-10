@@ -156,7 +156,10 @@ export function NewJobDialog({
       onOpenChange(false);
       queryClient.invalidateQueries();
     },
-    onError: (e: Error) => toast.error("Couldn't save job", { description: e.message }),
+    onError: (e: Error) => {
+      if (e.message === "DUPLICATE_EMAIL") return;
+      toast.error("Couldn't save job", { description: e.message });
+    },
   });
 
   return (
