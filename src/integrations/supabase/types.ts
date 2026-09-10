@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           ask_window_days: number
           ask_window_days_requestor: number
+          button_color: string
           created_at: string
           custom_body: string | null
           custom_intro: string | null
@@ -26,6 +27,7 @@ export type Database = {
           from_name: string
           id: string
           is_active: boolean
+          logo_url: string | null
           name: string
           owner_id: string
           postal_address: string | null
@@ -41,6 +43,7 @@ export type Database = {
         Insert: {
           ask_window_days?: number
           ask_window_days_requestor?: number
+          button_color?: string
           created_at?: string
           custom_body?: string | null
           custom_intro?: string | null
@@ -49,6 +52,7 @@ export type Database = {
           from_name: string
           id?: string
           is_active?: boolean
+          logo_url?: string | null
           name: string
           owner_id: string
           postal_address?: string | null
@@ -64,6 +68,7 @@ export type Database = {
         Update: {
           ask_window_days?: number
           ask_window_days_requestor?: number
+          button_color?: string
           created_at?: string
           custom_body?: string | null
           custom_intro?: string | null
@@ -72,6 +77,7 @@ export type Database = {
           from_name?: string
           id?: string
           is_active?: boolean
+          logo_url?: string | null
           name?: string
           owner_id?: string
           postal_address?: string | null
@@ -377,6 +383,7 @@ export type Database = {
         Args: { p_limit?: number }
         Returns: {
           business_name: string
+          button_color: string
           click_token: string
           custom_body: string
           custom_intro: string
@@ -385,6 +392,7 @@ export type Database = {
           email_template: string
           from_name: string
           kind: string
+          logo_url: string
           optout_token: string
           postal_address: string
           reply_to_email: string
