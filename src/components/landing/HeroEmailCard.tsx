@@ -8,6 +8,7 @@ const LINES = [
 ];
 
 const SPEED = 14; // ms per character
+const BRAND_PURPLE = "#7C3AED";
 
 /** Types the lines in sequence. Full text is always in the DOM for readers. */
 function useTypedLines(enabled: boolean) {
@@ -63,11 +64,11 @@ function MockAvatar() {
       aria-hidden="true"
       role="img"
     >
-      <circle cx="28" cy="28" r="28" fill="#E7E5E4" />
-      <circle cx="28" cy="22" r="9" fill="#A8A29E" />
+      <circle cx="28" cy="28" r="28" fill="#F2ECE4" />
+      <circle cx="28" cy="21" r="9" fill="#C9B8A3" />
       <path
-        d="M12 48c0-10 7-18 16-18h0c9 0 16 8 16 18v2H12v-2z"
-        fill="#A8A29E"
+        d="M10 50c0-11 8-19 18-19s18 8 18 19v2H10v-2z"
+        fill="#BBA68F"
       />
     </svg>
   );
@@ -77,7 +78,7 @@ function MockLogo() {
   return (
     <div className="inline-flex h-9 items-center gap-2" aria-hidden="true">
       <svg viewBox="0 0 32 32" className="size-8" aria-hidden="true">
-        <rect width="32" height="32" rx="7" fill="#0F766E" />
+        <rect width="32" height="32" rx="7" fill={BRAND_PURPLE} />
         <text
           x="16"
           y="22"
@@ -92,7 +93,7 @@ function MockLogo() {
       </svg>
       <span
         className="text-sm font-semibold"
-        style={{ color: "#0F766E" }}
+        style={{ color: BRAND_PURPLE }}
       >
         Riverbend Notary
       </span>
@@ -142,7 +143,7 @@ export function HeroEmailCard() {
             "inline-block cursor-default rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity duration-500 " +
             (done ? "opacity-100 " + (reduced ? "" : "animate-pulse-once") : "opacity-0")
           }
-          style={{ backgroundColor: "#0F766E" }}
+          style={{ backgroundColor: BRAND_PURPLE }}
         >
           Leave a review
         </span>
