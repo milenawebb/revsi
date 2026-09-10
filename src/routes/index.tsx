@@ -292,19 +292,6 @@ function LandingPage() {
                 Queued
               </Badge>
               <p className="mt-2 text-xs text-muted-foreground">Sends 1 hour after the job</p>
-              <div className="mt-2 flex items-center gap-2">
-                {["#4F6EF7", "#0F766E", "#7C3AED", "#B91C4B", "#14141B"].map((c) => (
-                  <span
-                    key={c}
-                    aria-hidden
-                    style={{ backgroundColor: c }}
-                    className={cn(
-                      "size-5 rounded-full",
-                      c === "#B91C4B" && "ring-2 ring-foreground ring-offset-2",
-                    )}
-                  />
-                ))}
-              </div>
             </FloatingChip>
           }
           chipClassName="-bottom-6 -left-4 rotate-[-2deg] sm:-left-8"
