@@ -337,7 +337,7 @@ function LandingPage() {
         </AltSection>
 
         {/* Pricing — the second and final gradient moment */}
-        <section className="landing-wash py-20 lg:py-28">
+        <section id="pricing" className="landing-wash scroll-mt-8 py-20 lg:py-28">
           <div className="mx-auto max-w-3xl px-5">
             <Reveal>
               <div className="rounded-2xl bg-brand-gradient p-8 text-center text-primary-foreground shadow-[0_24px_60px_-24px_rgb(20_20_27/0.35)] sm:p-12">
