@@ -16,6 +16,7 @@ import {
   buttonLuminance,
 } from "@/components/EmailPreview";
 import { cn } from "@/lib/utils";
+import { ApiKeysSection } from "@/components/ApiKeysSection";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
@@ -736,6 +737,8 @@ function SettingsForm() {
           />
         </div>
       </div>
+
+      <ApiKeysSection />
     </div>
   );
 }
