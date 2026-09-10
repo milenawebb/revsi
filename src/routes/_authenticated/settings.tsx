@@ -63,6 +63,7 @@ function SettingsForm() {
   const [form, setForm] = useState({
     name: business.name,
     review_url: business.review_url,
+    website_url: business.website_url ?? "",
     from_name: business.from_name,
     reply_to_email: business.reply_to_email ?? "",
     postal_address: business.postal_address ?? "",
@@ -83,6 +84,7 @@ function SettingsForm() {
   const [colorText, setColorText] = useState(business.button_color ?? DEFAULT_BUTTON_COLOR);
   const [colorError, setColorError] = useState<string | null>(null);
   const [urlError, setUrlError] = useState<string | null>(null);
+  const [websiteError, setWebsiteError] = useState<string | null>(null);
   const [bodyError, setBodyError] = useState<string | null>(null);
   const bodyRef = useRef<HTMLTextAreaElement>(null);
 
@@ -143,6 +145,7 @@ function SettingsForm() {
         .update({
           name: form.name.trim(),
           review_url: form.review_url.trim(),
+          website_url: form.website_url.trim() || null,
           from_name: form.from_name.trim(),
           reply_to_email: form.reply_to_email.trim() || null,
           postal_address: form.postal_address.trim() || null,
@@ -263,6 +266,16 @@ function SettingsForm() {
       return;
     }
     setUrlError(null);
+    if (form.website_url.trim()) {
+      try {
+        const website = new URL(form.website_url.trim());
+        if (!website.protocol.startsWith("http")) throw new Error();
+      } catch {
+        setWebsiteError("Enter a valid URL starting with https://");
+        return;
+      }
+    }
+    setWebsiteError(null);
     if (isCustom && !form.custom_body.trim()) {
       setBodyError("Write your message before saving, or choose a different template.");
       return;
@@ -300,6 +313,18 @@ function SettingsForm() {
                   onChange={(e) => setForm({ ...form, from_name: e.target.value })}
                 />
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="website_url">Website</Label>
+              <Input
+                id="website_url"
+                type="url"
+                placeholder="https://www.example.com"
+                value={form.website_url}
+                onChange={(e) => setForm({ ...form, website_url: e.target.value })}
+              />
+              {websiteError ? <p className="text-sm text-destructive">{websiteError}</p> : null}
             </div>
 
             <div className="space-y-2">

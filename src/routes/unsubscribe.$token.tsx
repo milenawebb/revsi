@@ -60,11 +60,26 @@ function UnsubscribePage() {
       <div className="w-full max-w-md">
         {branding?.logo_url ? (
           <div className="mb-6 flex justify-center">
-            <img
-              src={branding.logo_url}
-              alt={branding.business_name}
-              className="max-h-12 w-auto object-contain"
-            />
+            {branding.website_url ? (
+              <a
+                href={branding.website_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Visit ${branding.business_name} website`}
+              >
+                <img
+                  src={branding.logo_url}
+                  alt={branding.business_name}
+                  className="max-h-12 w-auto object-contain"
+                />
+              </a>
+            ) : (
+              <img
+                src={branding.logo_url}
+                alt={branding.business_name}
+                className="max-h-12 w-auto object-contain"
+              />
+            )}
           </div>
         ) : null}
         <div className="rounded-xl border bg-card p-8 shadow-card">

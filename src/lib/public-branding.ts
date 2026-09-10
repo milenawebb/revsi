@@ -5,6 +5,7 @@ export type PublicBranding = {
   business_name: string;
   logo_url: string | null;
   button_color: string | null;
+  website_url: string | null;
 };
 
 /**

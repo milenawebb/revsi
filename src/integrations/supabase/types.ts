@@ -39,6 +39,7 @@ export type Database = {
           sender_photo_url: string | null
           timezone: string
           updated_at: string
+          website_url: string | null
         }
         Insert: {
           ask_window_days?: number
@@ -64,6 +65,7 @@ export type Database = {
           sender_photo_url?: string | null
           timezone?: string
           updated_at?: string
+          website_url?: string | null
         }
         Update: {
           ask_window_days?: number
@@ -89,6 +91,7 @@ export type Database = {
           sender_photo_url?: string | null
           timezone?: string
           updated_at?: string
+          website_url?: string | null
         }
         Relationships: []
       }
@@ -417,6 +420,7 @@ export type Database = {
           business_name: string
           button_color: string
           logo_url: string
+          website_url: string
         }[]
       }
       record_click_by_token: {
