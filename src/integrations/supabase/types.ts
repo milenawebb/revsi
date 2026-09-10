@@ -288,6 +288,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_review_copy: {
+        Args: { p_text: string }
+        Returns: {
+          matched: string
+          reason: string
+          verdict: string
+        }[]
+      }
       claim_due_review_requests: {
         Args: { p_limit?: number }
         Returns: {

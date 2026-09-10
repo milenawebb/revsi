@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,9 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { EmailPreview, FIXED_ASK_LINE } from "@/components/EmailPreview";
+import { EmailPreview } from "@/components/EmailPreview";
 import { cn } from "@/lib/utils";
-import { Lock } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
@@ -73,6 +72,33 @@ function SettingsForm() {
   const photoEnabled = form.email_template === "personal";
   const isCustom = form.email_template === "custom";
 
+  type CopyCheck = { verdict: string; matched: string; reason: string };
+  const [copyCheck, setCopyCheck] = useState<CopyCheck | null>(null);
+
+  useEffect(() => {
+    if (!isCustom) {
+      setCopyCheck(null);
+      return;
+    }
+    const text = form.custom_body.trim();
+    if (!text) {
+      setCopyCheck(null);
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      const { data, error } = await supabase.rpc("check_review_copy", { p_text: text });
+      if (cancelled || error) return;
+      setCopyCheck(data?.[0] ?? null);
+    }, 500);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [form.custom_body, isCustom]);
+
+  const saveBlocked = copyCheck?.verdict === "block";
+
   function insertPlaceholder(token: string) {
     const el = bodyRef.current;
     if (!el) {
@@ -118,7 +144,14 @@ function SettingsForm() {
       toast.success("Settings saved");
       queryClient.invalidateQueries();
     },
-    onError: (e: Error) => toast.error("Couldn't save settings", { description: e.message }),
+    onError: (e: Error) => {
+      if (e.message.includes("REVIEW_COPY_BLOCKED")) {
+        const detail = e.message.split("REVIEW_COPY_BLOCKED")[1]?.replace(/^[:\s]+/, "").trim();
+        setBodyError(detail || "This message cannot be sent.");
+        return;
+      }
+      toast.error("Couldn't save settings", { description: e.message });
+    },
   });
 
   async function onPhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -316,18 +349,31 @@ function SettingsForm() {
                   {bodyError ? <p className="text-sm text-destructive">{bodyError}</p> : null}
                 </div>
 
-                <div className="rounded-lg border bg-muted/40 p-4">
-                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <Lock className="h-3.5 w-3.5" />
-                    <p className="text-[11px] font-semibold uppercase tracking-widest">
-                      Fixed ending
+                {copyCheck?.verdict === "ok" ? (
+                  <p className="text-sm text-status-sent-foreground">Looks good.</p>
+                ) : null}
+                {copyCheck?.verdict === "warn" ? (
+                  <div className="rounded-lg border bg-status-queued p-4">
+                    <p className="text-sm font-medium text-status-queued-foreground">
+                      Worth reconsidering
                     </p>
+                    <p className="mt-1 text-sm text-status-queued-foreground">{copyCheck.reason}</p>
                   </div>
-                  <p className="mt-2 text-sm text-muted-foreground">{FIXED_ASK_LINE}</p>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    This line is always added to the end and cannot be changed.
-                  </p>
-                </div>
+                ) : null}
+                {copyCheck?.verdict === "block" ? (
+                  <div className="rounded-lg border bg-status-failed p-4">
+                    <p className="text-sm font-medium text-status-failed-foreground">
+                      This cannot be sent
+                    </p>
+                    <p className="mt-1 text-sm text-status-failed-foreground">{copyCheck.reason}</p>
+                  </div>
+                ) : null}
+
+                <p className="text-xs text-muted-foreground">
+                  Review requests must go to every customer the same way, and must not ask for a
+                  rating, a positive review, or offer anything in return. These rules come from
+                  Google's review policy and the FTC's rule on consumer reviews.
+                </p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -436,7 +482,7 @@ function SettingsForm() {
               />
             </div>
 
-            <Button type="submit" disabled={save.isPending}>
+            <Button type="submit" disabled={save.isPending || saveBlocked}>
               {save.isPending ? "Saving…" : "Save changes"}
             </Button>
           </div>
