@@ -162,6 +162,31 @@ export function CustomerDetailDialog({
     onError: (e: Error) => toast.error("Couldn't delete customer", { description: e.message }),
   });
 
+  const mostRecentType = data?.jobs.find((j) => j.service_type)?.service_type ?? "";
+  const sendLabel = sendTimeLabel(business.request_delay_minutes);
+  const sendTimeShort = sendLabel.replace(/^Sends around /, "").replace(/\.$/, "");
+  const noEmail = Boolean(data) && !data!.customer.email;
+  const askBlocked = noEmail || (canAsk.data != null && !canAsk.data.allowed);
+
+  const askNow = useMutation({
+    mutationFn: async () => {
+      const { error: iErr } = await supabase.from("services").insert({
+        business_id: business.id,
+        customer_id: customerId!,
+        status: "completed",
+        completed_at: new Date().toISOString(),
+        service_type: askServiceType.trim() || null,
+      });
+      if (iErr) throw iErr;
+    },
+    onSuccess: () => {
+      toast.success(`Job created. The request sends around ${sendTimeShort}.`);
+      setAskOpen(false);
+      queryClient.invalidateQueries();
+    },
+    onError: (e: Error) => toast.error("Couldn't create job", { description: e.message }),
+  });
+
   return (
     <>
       <Dialog open={Boolean(customerId)} onOpenChange={onOpenChange}>
