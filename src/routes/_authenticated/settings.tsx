@@ -350,22 +350,22 @@ function SettingsForm() {
                 </div>
 
                 {copyCheck?.verdict === "ok" ? (
-                  <p className="text-sm text-status-sent-text">Looks good.</p>
+                  <p className="text-sm text-status-sent-foreground">Looks good.</p>
                 ) : null}
                 {copyCheck?.verdict === "warn" ? (
-                  <div className="rounded-lg border bg-status-queued-bg p-4">
-                    <p className="text-sm font-medium text-status-queued-text">
+                  <div className="rounded-lg border bg-status-queued p-4">
+                    <p className="text-sm font-medium text-status-queued-foreground">
                       Worth reconsidering
                     </p>
-                    <p className="mt-1 text-sm text-status-queued-text">{copyCheck.reason}</p>
+                    <p className="mt-1 text-sm text-status-queued-foreground">{copyCheck.reason}</p>
                   </div>
                 ) : null}
                 {copyCheck?.verdict === "block" ? (
-                  <div className="rounded-lg border bg-status-failed-bg p-4">
-                    <p className="text-sm font-medium text-status-failed-text">
+                  <div className="rounded-lg border bg-status-failed p-4">
+                    <p className="text-sm font-medium text-status-failed-foreground">
                       This cannot be sent
                     </p>
-                    <p className="mt-1 text-sm text-status-failed-text">{copyCheck.reason}</p>
+                    <p className="mt-1 text-sm text-status-failed-foreground">{copyCheck.reason}</p>
                   </div>
                 ) : null}
 
