@@ -61,6 +61,10 @@ export function CustomerDetailDialog({
   const [error, setError] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [jobOpen, setJobOpen] = useState(false);
+  const [askOpen, setAskOpen] = useState(false);
+  const [askServiceType, setAskServiceType] = useState("");
+  const business = useBusiness();
+  const canAsk = useCanAsk(customerId);
 
   const { data, isLoading } = useQuery({
     queryKey: ["customer", customerId],
