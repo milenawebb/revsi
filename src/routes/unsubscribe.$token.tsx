@@ -60,6 +60,7 @@ function UnsubscribePage() {
               {result.customer_email} will no longer receive review request emails from{" "}
               {result.business_name}.
             </p>
+            <p className="mt-4 text-xs text-muted-foreground">Thank you for your business.</p>
           </div>
         ) : status === "invalid" ? (
           <div className="text-center">
@@ -76,8 +77,7 @@ function UnsubscribePage() {
               Unsubscribe from review requests
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              Click below to stop receiving review request emails. You can resubscribe at any time
-              by contacting the business directly.
+              Click below to stop receiving review request emails from this business.
             </p>
             <Button
               className="mt-6 w-full"
