@@ -17,6 +17,12 @@ import {
 import { ImportFlow } from "@/components/ImportFlow";
 import { AddCustomerDialog } from "@/components/AddCustomerDialog";
 import { CustomerDetailDialog } from "@/components/CustomerDetailDialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { formatDate } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/customers")({
