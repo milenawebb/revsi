@@ -129,7 +129,10 @@ export function EmailPreview({
         ))}
 
         <div className="mt-5">
-          <span className="inline-block cursor-default rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">
+          <span
+            style={{ backgroundColor: effectiveButtonColor(buttonColor) }}
+            className="inline-block cursor-default rounded-lg px-4 py-2 text-sm font-medium text-primary-foreground"
+          >
             Leave a review
           </span>
         </div>
