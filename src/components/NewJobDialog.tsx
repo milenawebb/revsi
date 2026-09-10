@@ -95,24 +95,22 @@ export function NewJobDialog({
   const readOnlyContact = Boolean(selectedId);
   const { data: canAsk } = useCanAsk(selectedId, open);
   const blockedReason = canAsk && !canAsk.allowed ? canAsk.reason : null;
+  const [emailError, setEmailError] = useState<string | null>(null);
+
+  const typed = search.trim();
+  const exactMatch = matches.some(
+    (c) =>
+      c.name.trim().toLowerCase() === typed.toLowerCase() ||
+      (c.email ?? "").trim().toLowerCase() === typed.toLowerCase(),
+  );
+
+  const canSave = selectedId
+    ? true
+    : Boolean(form.name.trim()) && Boolean(form.email.trim() || form.phone.trim());
 
   const save = useMutation({
     mutationFn: async () => {
       let customerId = selectedId;
-
-      if (!customerId) {
-        const email = form.email.trim();
-        if (email) {
-          const { data: existing, error: findError } = await supabase
-            .from("customers")
-            .select("id")
-            .eq("business_id", business.id)
-            .ilike("email", email)
-            .maybeSingle();
-          if (findError) throw findError;
-          customerId = existing?.id ?? null;
-        }
-      }
 
       if (!customerId) {
         const { data: created, error: insertError } = await supabase
