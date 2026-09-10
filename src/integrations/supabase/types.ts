@@ -19,6 +19,7 @@ export type Database = {
           created_at: string
           custom_body: string | null
           custom_intro: string | null
+          daily_send_cap: number
           email_template: string
           from_name: string
           id: string
@@ -39,6 +40,7 @@ export type Database = {
           created_at?: string
           custom_body?: string | null
           custom_intro?: string | null
+          daily_send_cap?: number
           email_template?: string
           from_name: string
           id?: string
@@ -59,6 +61,7 @@ export type Database = {
           created_at?: string
           custom_body?: string | null
           custom_intro?: string | null
+          daily_send_cap?: number
           email_template?: string
           from_name?: string
           id?: string
@@ -153,6 +156,47 @@ export type Database = {
           },
         ]
       }
+      import_batches: {
+        Row: {
+          business_id: string
+          created_at: string
+          filename: string | null
+          id: string
+          imported_count: number
+          mode: string
+          row_count: number
+          skipped_count: number
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          filename?: string | null
+          id?: string
+          imported_count?: number
+          mode: string
+          row_count?: number
+          skipped_count?: number
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          filename?: string | null
+          id?: string
+          imported_count?: number
+          mode?: string
+          row_count?: number
+          skipped_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "import_batches_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       review_requests: {
         Row: {
           business_id: string
@@ -239,6 +283,7 @@ export type Database = {
           created_at: string
           customer_id: string
           id: string
+          import_batch_id: string | null
           notes: string | null
           service_type: string | null
           status: string
@@ -250,6 +295,7 @@ export type Database = {
           created_at?: string
           customer_id: string
           id?: string
+          import_batch_id?: string | null
           notes?: string | null
           service_type?: string | null
           status?: string
@@ -261,6 +307,7 @@ export type Database = {
           created_at?: string
           customer_id?: string
           id?: string
+          import_batch_id?: string | null
           notes?: string | null
           service_type?: string | null
           status?: string
@@ -279,6 +326,13 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "services_import_batch_id_fkey"
+            columns: ["import_batch_id"]
+            isOneToOne: false
+            referencedRelation: "import_batches"
             referencedColumns: ["id"]
           },
         ]
@@ -317,6 +371,7 @@ export type Database = {
           service_type: string
         }[]
       }
+      next_send_slot: { Args: { p_business_id: string }; Returns: string }
       optout_by_token: {
         Args: { p_token: string }
         Returns: {
