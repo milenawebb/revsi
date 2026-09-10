@@ -135,11 +135,14 @@ function AltSection({
 
         {visual ? (
           <div className={cn("relative", reverse && "lg:order-1")}>
-            <Reveal>{visual}</Reveal>
+            {visual}
             {chip ? (
-              <Reveal delay={150} className={cn("absolute z-10", chipClassName)}>
+              <ChipReveal
+                rotate={chipRotate}
+                className={cn("absolute", chipClassName)}
+              >
                 {chip}
-              </Reveal>
+              </ChipReveal>
             ) : null}
           </div>
         ) : null}
@@ -157,6 +160,7 @@ function ProblemPoints() {
     <div ref={ref} className="grid gap-8">
       {PROBLEMS.map((text, i) => {
         const [first, second] = splitSentences(text);
+        const lineDelay = i * 120;
         return (
           <div key={text} className="relative">
             <div
@@ -164,11 +168,11 @@ function ProblemPoints() {
                 "absolute left-0 top-0 h-full w-0.5 origin-top bg-brand-purple",
                 show ? "animate-line-draw" : "scale-y-0",
               )}
-              style={{ animationDelay: `${i * 120 + 200}ms` }}
+              style={{ animationDelay: `${lineDelay}ms`, animationDuration: "350ms" }}
             />
             <div
               className={cn("pl-5", show ? "animate-problem-reveal" : "opacity-0")}
-              style={{ animationDelay: `${i * 120}ms` }}
+              style={{ animationDelay: `${lineDelay + 80}ms` }}
             >
               <p className="text-lg font-light leading-snug text-foreground">
                 {first}
@@ -179,6 +183,37 @@ function ProblemPoints() {
         );
       })}
     </div>
+  );
+}
+
+function NotaryPoints() {
+  const reduced = usePrefersReducedMotion();
+  const { ref, inView } = useInView<HTMLUListElement>();
+  const show = reduced || inView;
+
+  return (
+    <ul ref={ref} className="grid gap-6">
+      {NOTARY_POINTS.map((point, i) => (
+        <li
+          key={point}
+          className={cn(
+            "flex gap-3 text-base text-foreground",
+            show ? "animate-problem-reveal" : "opacity-0",
+          )}
+          style={{ animationDelay: `${i * 100}ms` }}
+        >
+          <span
+            aria-hidden
+            className={cn(
+              "mt-2 size-2 shrink-0 rounded-full bg-pink",
+              show ? "animate-dot-pop" : "scale-0",
+            )}
+            style={{ animationDelay: `${i * 100 + 120}ms` }}
+          />
+          <span>{point}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
