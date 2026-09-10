@@ -17,6 +17,8 @@ export type Database = {
       businesses: {
         Row: {
           created_at: string
+          custom_intro: string | null
+          email_template: string
           from_name: string
           id: string
           is_active: boolean
@@ -28,11 +30,14 @@ export type Database = {
           reply_to_email: string | null
           request_delay_minutes: number
           review_url: string
+          sender_photo_url: string | null
           timezone: string
           updated_at: string
         }
         Insert: {
           created_at?: string
+          custom_intro?: string | null
+          email_template?: string
           from_name: string
           id?: string
           is_active?: boolean
@@ -44,11 +49,14 @@ export type Database = {
           reply_to_email?: string | null
           request_delay_minutes?: number
           review_url: string
+          sender_photo_url?: string | null
           timezone?: string
           updated_at?: string
         }
         Update: {
           created_at?: string
+          custom_intro?: string | null
+          email_template?: string
           from_name?: string
           id?: string
           is_active?: boolean
@@ -60,6 +68,7 @@ export type Database = {
           reply_to_email?: string | null
           request_delay_minutes?: number
           review_url?: string
+          sender_photo_url?: string | null
           timezone?: string
           updated_at?: string
         }
@@ -107,6 +116,7 @@ export type Database = {
           email: string | null
           id: string
           name: string
+          optout_token: string
           phone: string | null
           updated_at: string
         }
@@ -116,6 +126,7 @@ export type Database = {
           email?: string | null
           id?: string
           name: string
+          optout_token?: string
           phone?: string | null
           updated_at?: string
         }
@@ -125,6 +136,7 @@ export type Database = {
           email?: string | null
           id?: string
           name?: string
+          optout_token?: string
           phone?: string | null
           updated_at?: string
         }
@@ -278,18 +290,36 @@ export type Database = {
         Returns: {
           business_name: string
           click_token: string
+          custom_intro: string
           customer_email: string
           customer_name: string
+          email_template: string
           from_name: string
           kind: string
+          optout_token: string
           postal_address: string
           reply_to_email: string
           request_id: string
           review_url: string
+          sender_photo_url: string
           service_type: string
         }[]
       }
+      optout_by_token: {
+        Args: { p_token: string }
+        Returns: {
+          business_name: string
+          customer_email: string
+        }[]
+      }
       owns_business: { Args: { p_business_id: string }; Returns: boolean }
+      record_click_by_token: {
+        Args: { p_token: string }
+        Returns: {
+          business_name: string
+          review_url: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
