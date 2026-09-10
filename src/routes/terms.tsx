@@ -4,10 +4,10 @@ import { LegalPage, LegalSection } from "@/components/LegalPage";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms of Service — newreview.app" },
-      { name: "description", content: "Terms of Service for newreview.app, operated by Webb Consulting LLC." },
-      { property: "og:title", content: "Terms of Service — newreview.app" },
-      { property: "og:description", content: "Terms of Service for newreview.app, operated by Webb Consulting LLC." },
+      { title: "Terms of Service — revsi.app" },
+      { name: "description", content: "Terms of Service for revsi.app, operated by Webb Consulting LLC." },
+      { property: "og:title", content: "Terms of Service — revsi.app" },
+      { property: "og:description", content: "Terms of Service for revsi.app, operated by Webb Consulting LLC." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -20,13 +20,13 @@ function TermsPage() {
     <LegalPage title="Terms of Service" updated="September 10, 2026">
       <p>
         These terms are between you and Webb Consulting LLC, a Virginia limited
-        liability company. They govern your use of newreview.app. By using the
+        liability company. They govern your use of revsi.app. By using the
         service, you agree to them.
       </p>
 
       <LegalSection heading="What the service does">
         <p>
-          newreview.app sends review requests to a business's own customers on
+          revsi.app sends review requests to a business's own customers on
           that business's behalf. You tell us about a completed job, and we
           email your customer a link to leave you a review. We also manage
           reminders, unsubscribes, and simple reporting.
@@ -130,8 +130,8 @@ function TermsPage() {
       <LegalSection heading="Contact">
         <p>
           Questions about these terms:{" "}
-          <a href="mailto:info@newreview.app" className="underline underline-offset-2">
-            info@newreview.app
+          <a href="mailto:info@revsi.app" className="underline underline-offset-2">
+            info@revsi.app
           </a>
         </p>
       </LegalSection>

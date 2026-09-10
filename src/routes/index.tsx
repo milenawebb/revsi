@@ -18,11 +18,11 @@ import logoFooter from "@/assets/logo-footer.png.asset.json";
 import { cn } from "@/lib/utils";
 
 const WAITLIST_MAILTO =
-  "mailto:info@newreview.app?subject=newreview.app%20waitlist&body=Please%20add%20me%20to%20the%20waitlist.";
+  "mailto:info@revsi.app?subject=revsi.app%20waitlist&body=Please%20add%20me%20to%20the%20waitlist.";
 
-const TITLE = "Get Google reviews after every signing — newreview.app";
+const TITLE = "Get Google reviews after every signing — revsi.app";
 const DESC =
-  "newreview.app asks your signers for an honest Google review an hour after the job is done. Built for notaries, mobile notaries and signing services.";
+  "revsi.app asks your signers for an honest Google review an hour after the job is done. Built for notaries, mobile notaries and signing services.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -261,7 +261,7 @@ function LandingPage() {
               Get Google reviews after every signing.
             </h1>
             <p className="mt-5 text-lg opacity-90">
-              newreview.app asks your signers for an honest review, on its own, an hour after the
+              revsi.app asks your signers for an honest review, on its own, an hour after the
               job is done. No app to remember, no awkward ask.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
