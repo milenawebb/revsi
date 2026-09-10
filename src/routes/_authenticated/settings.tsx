@@ -44,6 +44,9 @@ const CUSTOM_BODY_MAX = 1500;
 const PLACEHOLDER_CHIPS = ["{name}", "{business}", "{service}"] as const;
 const MAX_PHOTO_BYTES = 2 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+const MAX_LOGO_BYTES = 1024 * 1024;
+const LOGO_TYPES = [...ALLOWED_TYPES, "image/svg+xml"];
+const PRESET_COLORS = ["#4F6EF7", "#1a1a1a", "#0F766E", "#B45309", "#9D174D", "#4338CA"];
 
 function SettingsPage() {
   const business = useBusiness();
