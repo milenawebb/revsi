@@ -16,6 +16,8 @@ export type Database = {
     Tables: {
       businesses: {
         Row: {
+          ask_window_days: number
+          ask_window_days_requestor: number
           created_at: string
           custom_body: string | null
           custom_intro: string | null
@@ -37,6 +39,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          ask_window_days?: number
+          ask_window_days_requestor?: number
           created_at?: string
           custom_body?: string | null
           custom_intro?: string | null
@@ -58,6 +62,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          ask_window_days?: number
+          ask_window_days_requestor?: number
           created_at?: string
           custom_body?: string | null
           custom_intro?: string | null
@@ -119,31 +125,40 @@ export type Database = {
         Row: {
           business_id: string
           created_at: string
+          do_not_ask: boolean
           email: string | null
           id: string
           name: string
           optout_token: string
           phone: string | null
+          reviewed_at: string | null
+          role: string
           updated_at: string
         }
         Insert: {
           business_id: string
           created_at?: string
+          do_not_ask?: boolean
           email?: string | null
           id?: string
           name: string
           optout_token?: string
           phone?: string | null
+          reviewed_at?: string | null
+          role?: string
           updated_at?: string
         }
         Update: {
           business_id?: string
           created_at?: string
+          do_not_ask?: boolean
           email?: string | null
           id?: string
           name?: string
           optout_token?: string
           phone?: string | null
+          reviewed_at?: string | null
+          role?: string
           updated_at?: string
         }
         Relationships: [
@@ -342,6 +357,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_ask_customer: {
+        Args: { p_customer_id: string }
+        Returns: {
+          allowed: boolean
+          last_asked: string
+          reason: string
+        }[]
+      }
       check_review_copy: {
         Args: { p_text: string }
         Returns: {

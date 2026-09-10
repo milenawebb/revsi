@@ -17,6 +17,12 @@ import {
 import { ImportFlow } from "@/components/ImportFlow";
 import { AddCustomerDialog } from "@/components/AddCustomerDialog";
 import { CustomerDetailDialog } from "@/components/CustomerDetailDialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { formatDate } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/customers")({
@@ -47,10 +53,10 @@ function CustomersPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["customers", business.id],
     queryFn: async () => {
-      const [customers, jobs, optouts] = await Promise.all([
+      const [customers, jobs, optouts, asks] = await Promise.all([
         supabase
           .from("customers")
-          .select("id, name, email, phone, created_at")
+          .select("id, name, email, phone, created_at, reviewed_at, do_not_ask, role")
           .eq("business_id", business.id)
           .order("created_at", { ascending: false })
           .limit(1000),
@@ -64,10 +70,18 @@ function CustomersPage() {
           .select("email")
           .eq("business_id", business.id)
           .limit(2000),
+        supabase
+          .from("review_requests")
+          .select("customer_id, sent_at")
+          .eq("business_id", business.id)
+          .not("sent_at", "is", null)
+          .limit(2000),
       ]);
       if (customers.error) throw customers.error;
       if (jobs.error) throw jobs.error;
       if (optouts.error) throw optouts.error;
+      if (asks.error) throw asks.error;
+
 
       const counts: Record<string, { jobs: number; last: string | null }> = {};
       for (const j of jobs.data ?? []) {
@@ -81,12 +95,43 @@ function CustomersPage() {
         (optouts.data ?? []).map((o) => (o.email ?? "").toLowerCase().trim()).filter(Boolean),
       );
 
-      return (customers.data ?? []).map((c) => ({
-        ...c,
-        jobCount: counts[c.id]?.jobs ?? 0,
-        lastJob: counts[c.id]?.last ?? null,
-        unsubscribed: optedOut.has((c.email ?? "").toLowerCase().trim()),
-      }));
+      const lastAsked: Record<string, string> = {};
+      for (const r of asks.data ?? []) {
+        if (!r.sent_at) continue;
+        const prev = lastAsked[r.customer_id];
+        if (!prev || r.sent_at > prev) lastAsked[r.customer_id] = r.sent_at;
+      }
+
+      return (customers.data ?? []).map((c) => {
+        const unsubscribed = optedOut.has((c.email ?? "").toLowerCase().trim());
+        const windowDays =
+          c.role === "requestor" ? business.ask_window_days_requestor : business.ask_window_days;
+        const asked = lastAsked[c.id] ?? null;
+        const withinWindow =
+          asked && Date.now() - new Date(asked).getTime() < windowDays * 86_400_000;
+
+        let block: { label: string; reason: string } | null = null;
+        if (c.do_not_ask) {
+          block = { label: "Do not ask", reason: "This person is marked never ask." };
+        } else if (unsubscribed) {
+          block = { label: "Unsubscribed", reason: "They unsubscribed from review requests." };
+        } else if (c.reviewed_at) {
+          block = { label: "Reviewed", reason: "They have already left a review." };
+        } else if (withinWindow) {
+          block = {
+            label: "Asked recently",
+            reason: `Asked ${formatDate(asked)}, within the ${windowDays} day gap between asks.`,
+          };
+        }
+
+        return {
+          ...c,
+          jobCount: counts[c.id]?.jobs ?? 0,
+          lastJob: counts[c.id]?.last ?? null,
+          unsubscribed,
+          block,
+        };
+      });
     },
   });
 
@@ -152,7 +197,18 @@ function CustomersPage() {
             >
               <span className="flex items-center gap-2 font-medium">
                 {c.name}
-                {c.unsubscribed ? <Badge variant="cancelled">Unsubscribed</Badge> : null}
+                {c.block ? (
+                  <TooltipProvider delayDuration={150}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span onClick={(e) => e.stopPropagation()}>
+                          <Badge variant="cancelled">{c.block.label}</Badge>
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>{c.block.reason}</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : null}
               </span>
               <span className="truncate text-muted-foreground">{c.email ?? "—"}</span>
               <span className="text-muted-foreground">{c.phone ?? "—"}</span>

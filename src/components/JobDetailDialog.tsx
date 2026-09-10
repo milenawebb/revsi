@@ -27,6 +27,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { formatDate, formatDateTime } from "@/lib/format";
+import { useCanAsk } from "@/lib/can-ask";
 
 const SENT_STATUSES = ["sending", "sent", "delivered", "bounced", "failed"];
 
@@ -111,6 +112,9 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
   const initial = list.find((r) => r.kind === "initial");
   const hasSent = list.some((r) => SENT_STATUSES.includes(r.status));
   const emailLocked = hasSent;
+  const missingInitial =
+    !requests.isLoading && !initial && job.data?.status === "completed";
+  const { data: canAsk } = useCanAsk(job.data?.customer_id, Boolean(missingInitial));
 
   const save = useMutation({
     mutationFn: async () => {
@@ -333,7 +337,18 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
                 {requests.isLoading ? (
                   <p className="text-muted-foreground">Loading…</p>
                 ) : list.length === 0 ? (
-                  <p className="text-muted-foreground">No request yet.</p>
+                  missingInitial ? (
+                    <div className="rounded-lg border bg-status-queued p-3">
+                      <p className="text-sm font-medium text-status-queued-foreground">
+                        No request was sent
+                      </p>
+                      <p className="mt-1 text-sm text-status-queued-foreground">
+                        {canAsk?.reason ?? "This customer cannot be asked right now."}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground">No request yet.</p>
+                  )
                 ) : (
                   list.map((r) => (
                     <div key={r.id} className="rounded-lg border p-3">

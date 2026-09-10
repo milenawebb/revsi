@@ -23,6 +23,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { NewJobDialog } from "@/components/NewJobDialog";
 import { formatDate } from "@/lib/format";
 import { requestBadge, type RequestSummary } from "@/lib/request-state";
@@ -46,7 +54,7 @@ export function CustomerDetailDialog({
     queryFn: async () => {
       const { data: customer, error: cErr } = await supabase
         .from("customers")
-        .select("id, name, email, phone")
+        .select("id, name, email, phone, reviewed_at, do_not_ask, role")
         .eq("id", customerId!)
         .single();
       if (cErr) throw cErr;
@@ -102,6 +110,24 @@ export function CustomerDetailDialog({
       }
       toast.error("Couldn't save changes", { description: e.message });
     },
+  });
+
+  const prefs = useMutation({
+    mutationFn: async (patch: {
+      reviewed_at?: string | null;
+      do_not_ask?: boolean;
+      role?: string;
+    }) => {
+      const { error: pErr } = await supabase
+        .from("customers")
+        .update(patch)
+        .eq("id", customerId!);
+      if (pErr) throw pErr;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+    },
+    onError: (e: Error) => toast.error("Couldn't update", { description: e.message }),
   });
 
   const remove = useMutation({
@@ -177,6 +203,56 @@ export function CustomerDetailDialog({
                   </Button>
                 </div>
               </form>
+
+              <div className="space-y-4 rounded-lg border p-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-medium">Mark as reviewed</p>
+                    <p className="text-xs text-muted-foreground">
+                      Stops future review requests for this person.
+                    </p>
+                  </div>
+                  <Switch
+                    checked={Boolean(data.customer.reviewed_at)}
+                    disabled={prefs.isPending}
+                    onCheckedChange={(v) =>
+                      prefs.mutate({ reviewed_at: v ? new Date().toISOString() : null })
+                    }
+                  />
+                </div>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-medium">Never ask</p>
+                    <p className="text-xs text-muted-foreground">
+                      They will never be sent a review request.
+                    </p>
+                  </div>
+                  <Switch
+                    checked={Boolean(data.customer.do_not_ask)}
+                    disabled={prefs.isPending}
+                    onCheckedChange={(v) => prefs.mutate({ do_not_ask: v })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="d-role">Role</Label>
+                  <Select
+                    value={data.customer.role ?? "customer"}
+                    onValueChange={(v) => prefs.mutate({ role: v })}
+                  >
+                    <SelectTrigger id="d-role">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="customer">Customer</SelectItem>
+                      <SelectItem value="requestor">Requestor</SelectItem>
+                      <SelectItem value="signer">Signer</SelectItem>
+                      <SelectItem value="attendee">Attendee</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+
 
               <div className="space-y-2">
                 <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">

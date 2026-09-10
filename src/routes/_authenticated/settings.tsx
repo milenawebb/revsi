@@ -60,6 +60,8 @@ function SettingsForm() {
     request_delay_minutes: String(business.request_delay_minutes),
     reminder_enabled: business.reminder_enabled,
     reminder_delay_days: String(business.reminder_delay_days),
+    ask_window_days: String(business.ask_window_days ?? 90),
+    ask_window_days_requestor: String(business.ask_window_days_requestor ?? 180),
     email_template: business.email_template ?? "personal",
     custom_intro: business.custom_intro ?? "",
     custom_body: business.custom_body ?? "",
@@ -132,6 +134,8 @@ function SettingsForm() {
           request_delay_minutes: Number(form.request_delay_minutes) || 0,
           reminder_enabled: form.reminder_enabled,
           reminder_delay_days: Number(form.reminder_delay_days) || 0,
+          ask_window_days: Number(form.ask_window_days) || 90,
+          ask_window_days_requestor: Number(form.ask_window_days_requestor) || 180,
           email_template: form.email_template,
           custom_intro: form.custom_intro.trim() || null,
           custom_body: form.custom_body.trim() || null,
@@ -453,6 +457,41 @@ function SettingsForm() {
                 This photo is stored publicly so email apps can display it. JPG, PNG or WEBP, up to
                 2MB.
               </p>
+            </div>
+          </div>
+
+          <div className="space-y-4 rounded-xl border bg-card p-5 shadow-card md:p-6">
+            <div>
+              <h2 className="text-lg font-semibold">How often to ask</h2>
+              <p className="text-sm text-muted-foreground">
+                How long to wait before asking the same person again.
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="ask_window_days">Days between asks</Label>
+                <Input
+                  id="ask_window_days"
+                  type="number"
+                  min={0}
+                  value={form.ask_window_days}
+                  onChange={(e) => setForm({ ...form, ask_window_days: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="ask_window_days_requestor">
+                  Days between asks for business contacts
+                </Label>
+                <Input
+                  id="ask_window_days_requestor"
+                  type="number"
+                  min={0}
+                  value={form.ask_window_days_requestor}
+                  onChange={(e) =>
+                    setForm({ ...form, ask_window_days_requestor: e.target.value })
+                  }
+                />
+              </div>
             </div>
           </div>
 
