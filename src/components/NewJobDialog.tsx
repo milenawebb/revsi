@@ -338,7 +338,7 @@ export function NewJobDialog({
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={save.isPending || !form.name.trim()}>
+            <Button type="submit" disabled={save.isPending || !canSave}>
               {save.isPending ? "Saving…" : "Save job"}
             </Button>
           </DialogFooter>
