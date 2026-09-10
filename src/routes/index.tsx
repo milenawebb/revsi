@@ -232,42 +232,79 @@ function LandingPage() {
       </div>
 
       <main>
-        <ProblemSection />
+        <AltSection
+          pill="The problem"
+          heading="Reviews decide who gets called."
+          visual={<JobsShot />}
+          chip={
+            <FloatingChip>
+              <Badge variant="delivered" className="text-[10px]">
+                Delivered
+              </Badge>
+              <p className="mt-2 text-xs text-muted-foreground">Sent 9:30 AM</p>
+            </FloatingChip>
+          }
+          chipClassName="-bottom-6 -left-4 rotate-[-2deg] sm:-left-8"
+        >
+          <ProblemPoints />
+        </AltSection>
 
-        {/* How it works */}
-        <section id="how-it-works" className="mx-auto max-w-3xl scroll-mt-8 px-5 py-16 lg:py-24">
-          <Reveal as="h2" className="text-3xl font-bold tracking-tight">
-            How it works
-          </Reveal>
+        <AltSection
+          id="how-it-works"
+          pill="How it works"
+          heading="How it works"
+          reverse
+          tint
+          visual={<RequestsShot />}
+          chip={
+            <FloatingChip>
+              <Badge variant="clicked" className="text-[10px]">
+                Clicked
+              </Badge>
+              <p className="mt-2 text-xs text-muted-foreground">Reminder cancelled</p>
+            </FloatingChip>
+          }
+          chipClassName="-bottom-6 -right-4 rotate-[2deg] sm:-right-8"
+        >
           <HowItWorks />
-        </section>
+        </AltSection>
 
-        {/* Built for notaries */}
-        <section className="border-y bg-card">
-          <div className="mx-auto max-w-6xl px-5 py-16 lg:py-24">
-            <Reveal as="h2" className="text-3xl font-bold tracking-tight">
-              Built for notaries
-            </Reveal>
-            <div className="mt-10 grid gap-10 lg:grid-cols-2 lg:items-center">
-              <ul className="grid gap-6">
-                {NOTARY_POINTS.map((point) => (
-                  <li key={point} className="flex gap-3 text-base text-foreground">
-                    <span className="mt-2 size-2 shrink-0 rounded-full bg-pink" aria-hidden />
-                    <span>{point}</span>
-                  </li>
+        <AltSection
+          pill="For notaries"
+          heading="Built for notaries"
+          visual={<SettingsShot />}
+          chip={
+            <FloatingChip>
+              <p className="text-xs font-medium text-foreground">Button colour</p>
+              <div className="mt-2 flex items-center gap-2">
+                {["#4F6EF7", "#0F766E", "#7C3AED", "#B91C4B", "#14141B"].map((c) => (
+                  <span
+                    key={c}
+                    aria-hidden
+                    style={{ backgroundColor: c }}
+                    className={cn(
+                      "size-5 rounded-full",
+                      c === "#B91C4B" && "ring-2 ring-foreground ring-offset-2",
+                    )}
+                  />
                 ))}
-              </ul>
-              <ReviewBoxMock />
-            </div>
-          </div>
-        </section>
+              </div>
+            </FloatingChip>
+          }
+          chipClassName="-bottom-6 -left-4 rotate-[-2deg] sm:-left-8"
+        >
+          <ul className="grid gap-6">
+            {NOTARY_POINTS.map((point) => (
+              <li key={point} className="flex gap-3 text-base text-foreground">
+                <span className="mt-2 size-2 shrink-0 rounded-full bg-pink" aria-hidden />
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+        </AltSection>
 
-        {/* Compliance */}
-        <section className="mx-auto max-w-3xl px-5 py-16 lg:py-24">
-          <Reveal as="h2" className="text-3xl font-bold tracking-tight">
-            Built to keep you out of trouble.
-          </Reveal>
-          <div className="mt-6 space-y-4 text-base leading-relaxed text-muted-foreground">
+        <AltSection pill="Compliance" heading="Built to keep you out of trouble." tint>
+          <div className="max-w-3xl space-y-4 text-base leading-relaxed text-muted-foreground">
             <p>
               The tool will not let you ask for a five star review, offer anything in return, or
               ask only the customers you think are happy. Google&apos;s review policies and the
@@ -280,18 +317,23 @@ function LandingPage() {
               order, whether you expect praise or not.
             </p>
           </div>
-        </section>
+        </AltSection>
 
         {/* Pricing — the second and final gradient moment */}
-        <section className="mx-auto max-w-3xl px-5 pb-16 lg:pb-24">
-          <div className="rounded-2xl bg-brand-gradient p-8 text-center text-primary-foreground shadow-card sm:p-12">
-            <h2 className="text-2xl font-bold tracking-tight">Pricing</h2>
-            <p className="mx-auto mt-4 max-w-md text-base opacity-90">
-              Pricing announced at launch. Waitlist members get founding pricing.
-            </p>
-            <div className="mt-8">
-              <WaitlistButton variant="secondary" className="w-full sm:w-auto" />
-            </div>
+        <section className="landing-wash pb-20 lg:pb-28">
+          <div className="mx-auto max-w-3xl px-5">
+            <Reveal>
+              <div className="rounded-2xl bg-brand-gradient p-8 text-center text-primary-foreground shadow-[0_24px_60px_-24px_rgb(20_20_27/0.35)] sm:p-12">
+                <SectionPill>Pricing</SectionPill>
+                <h2 className="mt-4 text-2xl font-bold tracking-tight">Pricing</h2>
+                <p className="mx-auto mt-4 max-w-md text-base opacity-90">
+                  Pricing announced at launch. Waitlist members get founding pricing.
+                </p>
+                <div className="mt-8">
+                  <WaitlistButton variant="secondary" className="w-full sm:w-auto" />
+                </div>
+              </div>
+            </Reveal>
           </div>
         </section>
       </main>
