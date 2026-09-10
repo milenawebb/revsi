@@ -8,6 +8,7 @@ import { useBusiness } from "@/lib/business-context";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NewJobDialog } from "@/components/NewJobDialog";
+import { JobDetailDialog } from "@/components/JobDetailDialog";
 import { formatDate, formatDateTime } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/jobs")({
