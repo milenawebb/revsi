@@ -128,7 +128,7 @@ function AltSection({
         )}
       >
         <Reveal className={cn(reverse && "lg:order-2")}>
-          <SectionPill>{pill}</SectionPill>
+          <SectionLabel>{pill}</SectionLabel>
           <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground">{heading}</h2>
           <div className="mt-6">{children}</div>
         </Reveal>
@@ -344,9 +344,7 @@ function LandingPage() {
           <div className="mx-auto max-w-3xl px-5">
             <Reveal>
               <div className="rounded-2xl bg-brand-gradient p-8 text-center text-primary-foreground shadow-[0_24px_60px_-24px_rgb(20_20_27/0.35)] sm:p-12">
-                <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
-                  Pricing
-                </span>
+                <SectionLabel centered>Pricing</SectionLabel>
                 <h2 className="mt-4 text-2xl font-bold tracking-tight">Pricing</h2>
                 <p className="mx-auto mt-4 max-w-md text-base opacity-90">
                   Pricing announced at launch. Waitlist members get founding pricing.
