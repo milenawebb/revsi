@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { usePrefersReducedMotion } from "./motion";
 import danaPhoto from "@/assets/dana-photo.png.asset.json";
+import riverbendLogo from "@/assets/riverbend-logo.png.asset.json";
 
 const LINES = [
   "Hi Sarah,",
@@ -69,28 +70,12 @@ function MockAvatar() {
 
 function MockLogo() {
   return (
-    <div className="inline-flex h-9 items-center gap-2" aria-hidden="true">
-      <svg viewBox="0 0 32 32" className="size-8" aria-hidden="true">
-        <rect width="32" height="32" rx="7" fill={BRAND_PURPLE} />
-        <text
-          x="16"
-          y="22"
-          textAnchor="middle"
-          fill="white"
-          fontSize="13"
-          fontWeight="600"
-          fontFamily="system-ui, sans-serif"
-        >
-          RN
-        </text>
-      </svg>
-      <span
-        className="text-sm font-semibold"
-        style={{ color: BRAND_PURPLE }}
-      >
-        Riverbend Notary
-      </span>
-    </div>
+    <img
+      src={riverbendLogo.url}
+      alt="Riverbend Notary"
+      className="h-9 w-auto"
+      aria-hidden="true"
+    />
   );
 }
 
