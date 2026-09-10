@@ -147,13 +147,21 @@ function ImportFlow() {
         name: name || "—",
         email: email || "—",
       };
-      if (!email) return skipped.push({ ...record, reason: "No email address" });
-      if (!isValidEmail(email)) return skipped.push({ ...record, reason: "Email looks invalid" });
-      if (seen.has(email)) return skipped.push({ ...record, reason: "Duplicate in this file" });
-      if (existing?.customers.has(email))
-        return skipped.push({ ...record, reason: "Already a customer" });
-      if (existing?.optouts.has(email))
-        return skipped.push({ ...record, reason: "Unsubscribed" });
+      const reason = !email
+        ? "No email address"
+        : !isValidEmail(email)
+          ? "Email looks invalid"
+          : seen.has(email)
+            ? "Duplicate in this file"
+            : existing?.customers.has(email)
+              ? "Already a customer"
+              : existing?.optouts.has(email)
+                ? "Unsubscribed"
+                : null;
+      if (reason) {
+        skipped.push({ ...record, reason });
+        return;
+      }
       seen.add(email);
       rows.push({
         name: name || email,
