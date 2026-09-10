@@ -312,6 +312,9 @@ function SettingsForm() {
                   value={form.from_name}
                   onChange={(e) => setForm({ ...form, from_name: e.target.value })}
                 />
+                <p className="text-xs text-muted-foreground">
+                  The name recipients see in their inbox, above the subject line.
+                </p>
               </div>
             </div>
 
@@ -723,6 +726,7 @@ function SettingsForm() {
             template={form.email_template}
             businessName={form.name}
             fromName={form.from_name}
+            replyToEmail={form.reply_to_email}
             customIntro={form.custom_intro}
             customBody={form.custom_body}
             senderPhotoUrl={form.sender_photo_url}
