@@ -1,29 +1,46 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { EmailPreview } from "@/components/EmailPreview";
 import { cn } from "@/lib/utils";
+import { useCountUp, useInView, usePrefersReducedMotion } from "./motion";
 
 /** Light browser chrome around a product view. */
 export function BrowserFrame({
   children,
   className,
+  onSettled,
 }: {
   children: ReactNode;
   className?: string;
+  onSettled?: (settled: boolean) => void;
 }) {
+  const reduced = usePrefersReducedMotion();
+  const { ref, inView } = useInView<HTMLDivElement>();
+  const show = reduced || inView;
+
+  useEffect(() => {
+    if (!show || !onSettled) return;
+    if (reduced) {
+      onSettled(true);
+      return;
+    }
+    const t = window.setTimeout(() => onSettled(true), 500);
+    return () => window.clearTimeout(t);
+  }, [show, reduced, onSettled]);
+
   return (
     <div
-      className={cn(
-        "overflow-hidden rounded-2xl bg-card shadow-[0_24px_60px_-24px_rgb(20_20_27/0.25)]",
-        className,
-      )}
+      ref={ref}
+      className={cn("will-change-transform", show ? "animate-frame-in" : "opacity-0", className)}
     >
-      <div className="flex items-center gap-2 border-b border-border/60 bg-muted/60 px-4 py-3">
-        <span className="size-2.5 rounded-full bg-[#f0a5a5]" aria-hidden />
-        <span className="size-2.5 rounded-full bg-[#f2d08a]" aria-hidden />
-        <span className="size-2.5 rounded-full bg-[#a9d8b0]" aria-hidden />
+      <div className="overflow-hidden rounded-2xl bg-card shadow-[0_24px_60px_-24px_rgb(20_20_27/0.25)] transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_34px_80px_-24px_rgb(20_20_27/0.38)]">
+        <div className="flex items-center gap-2 border-b border-border/60 bg-muted/60 px-4 py-3">
+          <span className="size-2.5 rounded-full bg-[#f0a5a5]" aria-hidden />
+          <span className="size-2.5 rounded-full bg-[#f2d08a]" aria-hidden />
+          <span className="size-2.5 rounded-full bg-[#a9d8b0]" aria-hidden />
+        </div>
+        <div className="bg-background p-4 sm:p-5">{children}</div>
       </div>
-      <div className="bg-background p-4 sm:p-5">{children}</div>
     </div>
   );
 }
@@ -44,6 +61,39 @@ export function FloatingChip({
       )}
     >
       {children}
+    </div>
+  );
+}
+
+/**
+ * Chip wrapper: arrives 200ms after its frame, rising and settling into its
+ * slight rotation rather than starting rotated.
+ */
+export function ChipReveal({
+  children,
+  rotate,
+  className,
+}: {
+  children: ReactNode;
+  rotate: number;
+  className?: string;
+}) {
+  const reduced = usePrefersReducedMotion();
+  const { ref, inView } = useInView<HTMLDivElement>();
+  const show = reduced || inView;
+
+  return (
+    <div
+      ref={ref}
+      className={cn("z-10", show ? "animate-chip-in" : "opacity-0", className)}
+      style={show && !reduced ? { animationDelay: "200ms" } : undefined}
+    >
+      <div
+        className="transition-transform duration-500 ease-out will-change-transform"
+        style={{ transform: `rotate(${show ? rotate : 0}deg)`, transitionDelay: "200ms" }}
+      >
+        {children}
+      </div>
     </div>
   );
 }
