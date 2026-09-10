@@ -69,7 +69,8 @@ export function NewJobDialog({
       setForm(empty);
     }
     setEmailError(null);
-    setCompletedNow(true);
+    setCompletionMode("now");
+    setCompletedAtInput(nowLocalInput());
   }, [open, presetCustomer]);
 
   const { matches } = useCustomerMatches({
@@ -82,7 +83,19 @@ export function NewJobDialog({
   const { data: canAsk } = useCanAsk(selectedId, open);
   const blockedReason = canAsk && !canAsk.allowed ? canAsk.reason : null;
 
-  const canSave = Boolean(form.name.trim()) && Boolean(form.email.trim() || form.phone.trim());
+  const completionInvalid =
+    completionMode === "earlier" && (!completedAtInput || isFuture(completedAtInput));
+
+  const completedAtIso = () => {
+    if (completionMode === "not_yet") return null;
+    if (completionMode === "now") return new Date().toISOString();
+    return (fromLocalInput(completedAtInput) ?? new Date()).toISOString();
+  };
+
+  const canSave =
+    Boolean(form.name.trim()) &&
+    Boolean(form.email.trim() || form.phone.trim()) &&
+    !completionInvalid;
 
   const save = useMutation({
     mutationFn: async () => {
