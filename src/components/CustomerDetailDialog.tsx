@@ -34,6 +34,20 @@ import {
 import { NewJobDialog } from "@/components/NewJobDialog";
 import { formatDate } from "@/lib/format";
 import { requestBadge, type RequestSummary } from "@/lib/request-state";
+import { useCanAsk } from "@/lib/can-ask";
+import { useBusiness } from "@/lib/business-context";
+
+function sendTimeLabel(delayMinutes: number) {
+  const sendAt = new Date(Date.now() + delayMinutes * 60_000);
+  const time = sendAt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  const now = new Date();
+  const sameDay = sendAt.toDateString() === now.toDateString();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(now.getDate() + 1);
+  if (sameDay) return `Sends around ${time} today.`;
+  if (sendAt.toDateString() === tomorrow.toDateString()) return `Sends around ${time} tomorrow.`;
+  return `Sends around ${time} on ${formatDate(sendAt.toISOString())}.`;
+}
 
 export function CustomerDetailDialog({
   customerId,
@@ -47,6 +61,10 @@ export function CustomerDetailDialog({
   const [error, setError] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [jobOpen, setJobOpen] = useState(false);
+  const [askOpen, setAskOpen] = useState(false);
+  const [askServiceType, setAskServiceType] = useState("");
+  const business = useBusiness();
+  const canAsk = useCanAsk(customerId);
 
   const { data, isLoading } = useQuery({
     queryKey: ["customer", customerId],
@@ -144,6 +162,31 @@ export function CustomerDetailDialog({
     onError: (e: Error) => toast.error("Couldn't delete customer", { description: e.message }),
   });
 
+  const mostRecentType = data?.jobs.find((j) => j.service_type)?.service_type ?? "";
+  const sendLabel = sendTimeLabel(business.request_delay_minutes);
+  const sendTimeShort = sendLabel.replace(/^Sends around /, "").replace(/\.$/, "");
+  const noEmail = Boolean(data) && !data!.customer.email;
+  const askBlocked = noEmail || (canAsk.data != null && !canAsk.data.allowed);
+
+  const askNow = useMutation({
+    mutationFn: async () => {
+      const { error: iErr } = await supabase.from("services").insert({
+        business_id: business.id,
+        customer_id: customerId!,
+        status: "completed",
+        completed_at: new Date().toISOString(),
+        service_type: askServiceType.trim() || null,
+      });
+      if (iErr) throw iErr;
+    },
+    onSuccess: () => {
+      toast.success(`Job created. The request sends around ${sendTimeShort}.`);
+      setAskOpen(false);
+      queryClient.invalidateQueries();
+    },
+    onError: (e: Error) => toast.error("Couldn't create job", { description: e.message }),
+  });
+
   return (
     <>
       <Dialog open={Boolean(customerId)} onOpenChange={onOpenChange}>
@@ -155,6 +198,36 @@ export function CustomerDetailDialog({
 
           {isLoading || !data ? (
             <p className="text-sm text-muted-foreground">Loading…</p>
+          ) : askOpen ? (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="ask-service-type">Service type</Label>
+                <Input
+                  id="ask-service-type"
+                  value={askServiceType}
+                  onChange={(e) => setAskServiceType(e.target.value)}
+                  placeholder="e.g. Deep clean"
+                />
+              </div>
+              <p className="text-sm text-muted-foreground">{sendLabel}</p>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setAskOpen(false)}
+                  disabled={askNow.isPending}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => askNow.mutate()}
+                  disabled={askNow.isPending}
+                >
+                  {askNow.isPending ? "Creating…" : "Create job and ask"}
+                </Button>
+              </div>
+            </div>
           ) : (
             <div className="space-y-6">
               <form
@@ -201,6 +274,29 @@ export function CustomerDetailDialog({
                   <Button type="button" variant="outline" onClick={() => setJobOpen(true)}>
                     Add job for this customer
                   </Button>
+                  <div className="w-full space-y-1 sm:w-auto sm:flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Button
+                        type="button"
+                        disabled={askBlocked || canAsk.isLoading}
+                        onClick={() => {
+                          setAskServiceType(mostRecentType);
+                          setAskOpen(true);
+                        }}
+                      >
+                        Ask now
+                      </Button>
+                    </div>
+                    {noEmail ? (
+                      <p className="text-xs text-muted-foreground">No email address on file.</p>
+                    ) : canAsk.data && !canAsk.data.allowed ? (
+                      <p className="text-xs text-muted-foreground">{canAsk.data.reason}</p>
+                    ) : null}
+                    <p className="text-xs text-muted-foreground">
+                      This records a completed job for this customer, which is what sends the
+                      request.
+                    </p>
+                  </div>
                 </div>
               </form>
 
