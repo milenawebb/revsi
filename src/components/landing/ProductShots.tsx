@@ -12,7 +12,7 @@ export function BrowserFrame({
 }: {
   children: ReactNode;
   className?: string;
-  onSettled?: (settled: boolean) => void;
+  onSettled?: ((settled: boolean) => void) | undefined;
 }) {
   const reduced = usePrefersReducedMotion();
   const { ref, inView } = useInView<HTMLDivElement>();
@@ -296,8 +296,8 @@ export function SettingsShot({
   buttonColor = "#7C3AED",
   onSettled,
 }: {
-  buttonColor?: string;
-  onSettled?: (settled: boolean) => void;
+  buttonColor?: string | undefined;
+  onSettled?: ((settled: boolean) => void) | undefined;
 }) {
   return (
     <BrowserFrame onSettled={onSettled}>
