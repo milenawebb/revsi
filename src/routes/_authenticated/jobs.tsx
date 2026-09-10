@@ -99,6 +99,7 @@ function JobsPage() {
   const business = useBusiness();
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 
   const jobs = useQuery({
     queryKey: ["jobs", business.id],
