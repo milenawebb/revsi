@@ -250,17 +250,18 @@ export function NewJobDialog({
                             </span>
                           </CommandItem>
                         ))}
-                        {search.trim() ? (
+                        {typed && !exactMatch ? (
                           <CommandItem
                             value="__create"
                             onSelect={() => {
                               setSelectedId(null);
-                              setForm({ ...form, name: search.trim() });
+                              setForm({ ...form, name: typed, email: "", phone: "" });
+                              setEmailError(null);
                               setPickerOpen(false);
                             }}
                           >
                             <UserPlus className="mr-2 size-4" />
-                            Create new customer: {search.trim()}
+                            Create new customer: {typed}
                           </CommandItem>
                         ) : null}
                       </CommandGroup>
