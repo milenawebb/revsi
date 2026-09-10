@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_keys: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: string
+          key_hash: string
+          key_prefix: string
+          last_used_at: string | null
+          name: string
+          revoked_at: string | null
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: string
+          key_hash: string
+          key_prefix: string
+          last_used_at?: string | null
+          name: string
+          revoked_at?: string | null
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: string
+          key_hash?: string
+          key_prefix?: string
+          last_used_at?: string | null
+          name?: string
+          revoked_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_keys_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       businesses: {
         Row: {
           ask_window_days: number
@@ -306,10 +347,12 @@ export type Database = {
           completed_at: string | null
           created_at: string
           customer_id: string
+          external_id: string | null
           id: string
           import_batch_id: string | null
           notes: string | null
           service_type: string | null
+          source: string
           status: string
           updated_at: string
         }
@@ -318,10 +361,12 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           customer_id: string
+          external_id?: string | null
           id?: string
           import_batch_id?: string | null
           notes?: string | null
           service_type?: string | null
+          source?: string
           status?: string
           updated_at?: string
         }
@@ -330,10 +375,12 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           customer_id?: string
+          external_id?: string | null
           id?: string
           import_batch_id?: string | null
           notes?: string | null
           service_type?: string | null
+          source?: string
           status?: string
           updated_at?: string
         }
@@ -366,6 +413,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      business_for_api_key: { Args: { p_key: string }; Returns: string }
       can_ask_customer: {
         Args: { p_customer_id: string }
         Returns: {
@@ -404,6 +452,31 @@ export type Database = {
           sender_photo_url: string
           service_type: string
           website_url: string
+        }[]
+      }
+      create_api_key: {
+        Args: { p_business_id: string; p_name: string }
+        Returns: {
+          api_key: string
+          key_prefix: string
+        }[]
+      }
+      ingest_completed_job: {
+        Args: {
+          p_business_id: string
+          p_completed_at: string
+          p_email: string
+          p_external_id: string
+          p_name: string
+          p_phone: string
+          p_role?: string
+          p_service_type: string
+        }
+        Returns: {
+          customer_id: string
+          note: string
+          request_created: boolean
+          service_id: string
         }[]
       }
       next_send_slot: { Args: { p_business_id: string }; Returns: string }
