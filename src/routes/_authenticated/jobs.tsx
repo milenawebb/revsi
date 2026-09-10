@@ -194,7 +194,7 @@ function JobsPage() {
                       disabled={complete.isPending}
                       onClick={(e) => {
                         e.stopPropagation();
-                        complete.mutate(job.id);
+                        setCompletingId(job.id);
                       }}
                     >
                       Mark completed
@@ -219,6 +219,17 @@ function JobsPage() {
         onOpenChange={(v) => {
           if (!v) setSelectedJobId(null);
         }}
+      />
+      <MarkCompletedDialog
+        open={!!completingId}
+        onOpenChange={(v) => {
+          if (!v) setCompletingId(null);
+        }}
+        delayMinutes={business.request_delay_minutes ?? 0}
+        pending={complete.isPending}
+        onConfirm={(completedAt) =>
+          completingId && complete.mutate({ id: completingId, completedAt })
+        }
       />
     </div>
   );
