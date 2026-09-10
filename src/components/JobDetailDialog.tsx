@@ -143,9 +143,8 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
 
       const originalDate = toDateInput(job.data?.completed_at ?? null);
       const dateChanged = form.completed_date !== originalDate;
-      const completedAt = form.completed_date
-        ? new Date(`${form.completed_date}T12:00:00`).toISOString()
-        : null;
+      const parsed = fromLocalInput(form.completed_date);
+      const completedAt = parsed ? parsed.toISOString() : null;
 
       const { error: svcErr } = await supabase
         .from("services")
@@ -181,15 +180,16 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
   });
 
   const complete = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (completedAt: string) => {
       const { error } = await supabase
         .from("services")
-        .update({ status: "completed", completed_at: new Date().toISOString() })
+        .update({ status: "completed", completed_at: completedAt })
         .eq("id", job.data!.id);
       if (error) throw error;
     },
     onSuccess: () => {
       toast.success("Job completed", { description: "A review request has been scheduled." });
+      setConfirmComplete(false);
       queryClient.invalidateQueries();
     },
     onError: (e: Error) => toast.error("Couldn't complete job", { description: e.message }),
@@ -292,13 +292,17 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="d-date">Completed date</Label>
+                  <Label htmlFor="d-date">Completed date and time</Label>
                   <Input
                     id="d-date"
-                    type="date"
+                    type="datetime-local"
+                    aria-invalid={completedFuture ? true : undefined}
                     value={form.completed_date}
                     onChange={(e) => setForm({ ...form, completed_date: e.target.value })}
                   />
+                  {completedFuture ? (
+                    <p className="text-xs text-destructive">{FUTURE_ERROR_SHORT}</p>
+                  ) : null}
                 </div>
               </div>
               <div className="space-y-2">
@@ -327,7 +331,7 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
                 <Field label="Phone" value={job.data.customers?.phone} />
                 <Field label="Service type" value={job.data.service_type} />
                 <Field label="Job status" value={job.data.status} />
-                <Field label="Completed" value={formatDate(job.data.completed_at)} />
+                <Field label="Completed" value={formatDateTime(job.data.completed_at)} />
               </div>
               {job.data.notes && <Field label="Notes" value={job.data.notes} />}
 
@@ -400,7 +404,7 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
                       type="button"
                       variant="outline"
                       disabled={complete.isPending}
-                      onClick={() => complete.mutate()}
+                      onClick={() => setConfirmComplete(true)}
                     >
                       Mark completed
                     </Button>
