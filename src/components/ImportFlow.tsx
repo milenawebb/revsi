@@ -295,12 +295,14 @@ function ImportFlowInner({ onFinished, showHeading = true }: ImportFlowProps) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Import</h1>
-        <p className="text-sm text-muted-foreground">
-          Bring past customers in from a spreadsheet.
-        </p>
-      </div>
+      {showHeading ? (
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Import</h1>
+          <p className="text-sm text-muted-foreground">
+            Bring past customers in from a spreadsheet.
+          </p>
+        </div>
+      ) : null}
 
       {result ? (
         <div className="rounded-xl border bg-card p-6 shadow-card">
