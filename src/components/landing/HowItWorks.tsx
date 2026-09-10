@@ -1,7 +1,7 @@
 import { usePrefersReducedMotion, useInView } from "./motion";
 
 const STEPS = [
-  "Mark the signing complete",
+  "Mark the job complete",
   "We wait an hour, so it lands while you are still fresh in their mind",
   "They get a short, personal email with one button",
   "One polite reminder if they do not act, and nothing more",
