@@ -316,6 +316,18 @@ function SettingsForm() {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="website_url">Website</Label>
+              <Input
+                id="website_url"
+                type="url"
+                placeholder="https://www.example.com"
+                value={form.website_url}
+                onChange={(e) => setForm({ ...form, website_url: e.target.value })}
+              />
+              {websiteError ? <p className="text-sm text-destructive">{websiteError}</p> : null}
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="review_url">Review link</Label>
               <Input
                 id="review_url"
