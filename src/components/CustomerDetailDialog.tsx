@@ -34,6 +34,20 @@ import {
 import { NewJobDialog } from "@/components/NewJobDialog";
 import { formatDate } from "@/lib/format";
 import { requestBadge, type RequestSummary } from "@/lib/request-state";
+import { useCanAsk } from "@/lib/can-ask";
+import { useBusiness } from "@/lib/business-context";
+
+function sendTimeLabel(delayMinutes: number) {
+  const sendAt = new Date(Date.now() + delayMinutes * 60_000);
+  const time = sendAt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  const now = new Date();
+  const sameDay = sendAt.toDateString() === now.toDateString();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(now.getDate() + 1);
+  if (sameDay) return `Sends around ${time} today.`;
+  if (sendAt.toDateString() === tomorrow.toDateString()) return `Sends around ${time} tomorrow.`;
+  return `Sends around ${time} on ${formatDate(sendAt.toISOString())}.`;
+}
 
 export function CustomerDetailDialog({
   customerId,
