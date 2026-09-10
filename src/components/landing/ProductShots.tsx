@@ -1,29 +1,46 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { EmailPreview } from "@/components/EmailPreview";
 import { cn } from "@/lib/utils";
+import { useCountUp, useInView, usePrefersReducedMotion } from "./motion";
 
 /** Light browser chrome around a product view. */
 export function BrowserFrame({
   children,
   className,
+  onSettled,
 }: {
   children: ReactNode;
   className?: string;
+  onSettled?: ((settled: boolean) => void) | undefined;
 }) {
+  const reduced = usePrefersReducedMotion();
+  const { ref, inView } = useInView<HTMLDivElement>();
+  const show = reduced || inView;
+
+  useEffect(() => {
+    if (!show || !onSettled) return;
+    if (reduced) {
+      onSettled(true);
+      return;
+    }
+    const t = window.setTimeout(() => onSettled(true), 500);
+    return () => window.clearTimeout(t);
+  }, [show, reduced, onSettled]);
+
   return (
     <div
-      className={cn(
-        "overflow-hidden rounded-2xl bg-card shadow-[0_24px_60px_-24px_rgb(20_20_27/0.25)]",
-        className,
-      )}
+      ref={ref}
+      className={cn("will-change-transform", show ? "animate-frame-in" : "opacity-0", className)}
     >
-      <div className="flex items-center gap-2 border-b border-border/60 bg-muted/60 px-4 py-3">
-        <span className="size-2.5 rounded-full bg-[#f0a5a5]" aria-hidden />
-        <span className="size-2.5 rounded-full bg-[#f2d08a]" aria-hidden />
-        <span className="size-2.5 rounded-full bg-[#a9d8b0]" aria-hidden />
+      <div className="overflow-hidden rounded-2xl bg-card shadow-[0_24px_60px_-24px_rgb(20_20_27/0.25)] transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_34px_80px_-24px_rgb(20_20_27/0.38)]">
+        <div className="flex items-center gap-2 border-b border-border/60 bg-muted/60 px-4 py-3">
+          <span className="size-2.5 rounded-full bg-[#f0a5a5]" aria-hidden />
+          <span className="size-2.5 rounded-full bg-[#f2d08a]" aria-hidden />
+          <span className="size-2.5 rounded-full bg-[#a9d8b0]" aria-hidden />
+        </div>
+        <div className="bg-background p-4 sm:p-5">{children}</div>
       </div>
-      <div className="bg-background p-4 sm:p-5">{children}</div>
     </div>
   );
 }
@@ -48,12 +65,55 @@ export function FloatingChip({
   );
 }
 
+/**
+ * Chip wrapper: arrives 200ms after its frame, rising and settling into its
+ * slight rotation rather than starting rotated.
+ */
+export function ChipReveal({
+  children,
+  rotate,
+  className,
+}: {
+  children: ReactNode;
+  rotate: number;
+  className?: string;
+}) {
+  const reduced = usePrefersReducedMotion();
+  const { ref, inView } = useInView<HTMLDivElement>();
+  const show = reduced || inView;
+
+  return (
+    <div
+      ref={ref}
+      className={cn("z-10", show ? "animate-chip-in" : "opacity-0", className)}
+      style={show && !reduced ? { animationDelay: "200ms" } : undefined}
+    >
+      <div
+        className="transition-transform duration-500 ease-out will-change-transform"
+        style={{ transform: `rotate(${show ? rotate : 0}deg)`, transitionDelay: "200ms" }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 const STAT_CARDS = [
-  { label: "Jobs completed", value: "38" },
-  { label: "Requests sent", value: "36" },
-  { label: "Requests clicked", value: "19" },
-  { label: "Click rate", value: "53%" },
+  { label: "Jobs completed", value: 38, suffix: "" },
+  { label: "Requests sent", value: 36, suffix: "" },
+  { label: "Requests clicked", value: 19, suffix: "" },
+  { label: "Click rate", value: 53, suffix: "%" },
 ];
+
+function StatValue({ value, suffix, run }: { value: number; suffix: string; run: boolean }) {
+  const shown = useCountUp(value, run);
+  return (
+    <p className="mt-1 text-lg font-semibold tracking-tight tabular-nums">
+      {shown}
+      {suffix}
+    </p>
+  );
+}
 
 const JOB_ROWS: {
   name: string;
@@ -90,8 +150,9 @@ const JOB_ROWS: {
 ];
 
 export function JobsShot() {
+  const [settled, setSettled] = useState(false);
   return (
-    <BrowserFrame>
+    <BrowserFrame onSettled={setSettled}>
       <div className="space-y-4">
         <div>
           <p className="text-lg font-bold tracking-tight">Jobs</p>
@@ -106,10 +167,11 @@ export function JobsShot() {
             >
               <div className="absolute inset-x-0 top-0 h-[3px] bg-brand-gradient" />
               <p className="text-[10px] text-muted-foreground">{c.label}</p>
-              <p className="mt-1 text-lg font-semibold tracking-tight">{c.value}</p>
+              <StatValue value={c.value} suffix={c.suffix} run={settled} />
             </div>
           ))}
         </div>
+
 
         <div className="overflow-hidden rounded-xl border bg-card shadow-card">
           <div className="grid grid-cols-[1.2fr_1fr_0.8fr_0.9fr] gap-3 px-4 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
@@ -230,9 +292,15 @@ export function RequestsShot() {
   );
 }
 
-export function SettingsShot() {
+export function SettingsShot({
+  buttonColor = "#7C3AED",
+  onSettled,
+}: {
+  buttonColor?: string | undefined;
+  onSettled?: ((settled: boolean) => void) | undefined;
+}) {
   return (
-    <BrowserFrame>
+    <BrowserFrame onSettled={onSettled}>
       <div className="space-y-4">
         <div>
           <p className="text-lg font-bold tracking-tight">Settings</p>
@@ -249,11 +317,57 @@ export function SettingsShot() {
             senderPhotoUrl={null}
             postalAddress="118 Mill Street, Richmond, VA"
             logoUrl={null}
-            buttonColor="#7C3AED"
+            buttonColor={buttonColor}
           />
         </div>
       </div>
     </BrowserFrame>
+  );
+}
+
+const SWATCHES = ["#4F6EF7", "#0F766E", "#7C3AED", "#14141B", "#B91C4B"];
+
+/** Settings frame plus its colour chip, whose selection runs once through the swatches. */
+export function NotariesVisual() {
+  const reduced = usePrefersReducedMotion();
+  const [settled, setSettled] = useState(false);
+  const [index, setIndex] = useState(reduced ? SWATCHES.length - 1 : 0);
+
+  useEffect(() => {
+    if (!settled) return;
+    if (reduced) {
+      setIndex(SWATCHES.length - 1);
+      return;
+    }
+    const step = 3000 / (SWATCHES.length - 1);
+    const timers = SWATCHES.map((_, i) =>
+      window.setTimeout(() => setIndex(i), 400 + i * step),
+    );
+    return () => timers.forEach((t) => window.clearTimeout(t));
+  }, [settled, reduced]);
+
+  return (
+    <div className="relative">
+      <SettingsShot buttonColor={SWATCHES[index]!} onSettled={setSettled} />
+      <ChipReveal rotate={-2} className="absolute -bottom-6 -left-4 sm:-left-8">
+        <FloatingChip>
+          <p className="text-xs font-medium text-foreground">Button colour</p>
+          <div className="mt-2 flex items-center gap-2">
+            {SWATCHES.map((c, i) => (
+              <span
+                key={c}
+                aria-hidden
+                style={{ backgroundColor: c }}
+                className={cn(
+                  "size-5 rounded-full transition-shadow duration-200",
+                  i === index && "ring-2 ring-foreground ring-offset-2",
+                )}
+              />
+            ))}
+          </div>
+        </FloatingChip>
+      </ChipReveal>
+    </div>
   );
 }
 

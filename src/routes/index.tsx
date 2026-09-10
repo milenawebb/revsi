@@ -6,10 +6,11 @@ import { HeroEmailCard } from "@/components/landing/HeroEmailCard";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Reveal, useInView, usePrefersReducedMotion } from "@/components/landing/motion";
 import {
+  ChipReveal,
   FloatingChip,
   JobsShot,
+  NotariesVisual,
   RequestsShot,
-  SettingsShot,
 } from "@/components/landing/ProductShots";
 import { Badge } from "@/components/ui/badge";
 import revsiLogo from "@/assets/revsi-logo.png.asset.json";
@@ -100,6 +101,7 @@ function AltSection({
   visual,
   chip,
   chipClassName,
+  chipRotate = -2,
   reverse = false,
   tint = false,
 }: {
@@ -110,6 +112,7 @@ function AltSection({
   visual?: ReactNode;
   chip?: ReactNode;
   chipClassName?: string;
+  chipRotate?: number;
   reverse?: boolean;
   tint?: boolean;
 }) {
@@ -135,11 +138,14 @@ function AltSection({
 
         {visual ? (
           <div className={cn("relative", reverse && "lg:order-1")}>
-            <Reveal>{visual}</Reveal>
+            {visual}
             {chip ? (
-              <Reveal delay={150} className={cn("absolute z-10", chipClassName)}>
+              <ChipReveal
+                rotate={chipRotate}
+                className={cn("absolute", chipClassName)}
+              >
                 {chip}
-              </Reveal>
+              </ChipReveal>
             ) : null}
           </div>
         ) : null}
@@ -157,6 +163,7 @@ function ProblemPoints() {
     <div ref={ref} className="grid gap-8">
       {PROBLEMS.map((text, i) => {
         const [first, second] = splitSentences(text);
+        const lineDelay = i * 120;
         return (
           <div key={text} className="relative">
             <div
@@ -164,11 +171,11 @@ function ProblemPoints() {
                 "absolute left-0 top-0 h-full w-0.5 origin-top bg-brand-purple",
                 show ? "animate-line-draw" : "scale-y-0",
               )}
-              style={{ animationDelay: `${i * 120 + 200}ms` }}
+              style={{ animationDelay: `${lineDelay}ms`, animationDuration: "350ms" }}
             />
             <div
               className={cn("pl-5", show ? "animate-problem-reveal" : "opacity-0")}
-              style={{ animationDelay: `${i * 120}ms` }}
+              style={{ animationDelay: `${lineDelay + 80}ms` }}
             >
               <p className="text-lg font-light leading-snug text-foreground">
                 {first}
@@ -179,6 +186,37 @@ function ProblemPoints() {
         );
       })}
     </div>
+  );
+}
+
+function NotaryPoints() {
+  const reduced = usePrefersReducedMotion();
+  const { ref, inView } = useInView<HTMLUListElement>();
+  const show = reduced || inView;
+
+  return (
+    <ul ref={ref} className="grid gap-6">
+      {NOTARY_POINTS.map((point, i) => (
+        <li
+          key={point}
+          className={cn(
+            "flex gap-3 text-base text-foreground",
+            show ? "animate-problem-reveal" : "opacity-0",
+          )}
+          style={{ animationDelay: `${i * 100}ms` }}
+        >
+          <span
+            aria-hidden
+            className={cn(
+              "mt-2 size-2 shrink-0 rounded-full bg-pink",
+              show ? "animate-dot-pop" : "scale-0",
+            )}
+            style={{ animationDelay: `${i * 100 + 120}ms` }}
+          />
+          <span>{point}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -259,7 +297,8 @@ function LandingPage() {
               <p className="mt-2 text-xs text-muted-foreground">Sent 9:30 AM</p>
             </FloatingChip>
           }
-          chipClassName="-bottom-6 -left-4 rotate-[-2deg] sm:-left-8"
+          chipClassName="-bottom-6 -left-4 sm:-left-8"
+          chipRotate={-2}
         >
           <ProblemPoints />
         </AltSection>
@@ -279,7 +318,8 @@ function LandingPage() {
               <p className="mt-2 text-xs text-muted-foreground">Reminder cancelled</p>
             </FloatingChip>
           }
-          chipClassName="-bottom-6 -right-4 rotate-[2deg] sm:-right-8"
+          chipClassName="-bottom-6 -right-4 sm:-right-8"
+          chipRotate={2}
         >
           <HowItWorks />
         </AltSection>
@@ -287,35 +327,9 @@ function LandingPage() {
         <AltSection
           pill="For notaries"
           heading="Built for notaries"
-          visual={<SettingsShot />}
-          chip={
-            <FloatingChip>
-              <p className="text-xs font-medium text-foreground">Button colour</p>
-              <div className="mt-2 flex items-center gap-2">
-                {["#4F6EF7", "#0F766E", "#7C3AED", "#B91C4B", "#14141B"].map((c) => (
-                  <span
-                    key={c}
-                    aria-hidden
-                    style={{ backgroundColor: c }}
-                    className={cn(
-                      "size-5 rounded-full",
-                      c === "#B91C4B" && "ring-2 ring-foreground ring-offset-2",
-                    )}
-                  />
-                ))}
-              </div>
-            </FloatingChip>
-          }
-          chipClassName="-bottom-6 -left-4 rotate-[-2deg] sm:-left-8"
+          visual={<NotariesVisual />}
         >
-          <ul className="grid gap-6">
-            {NOTARY_POINTS.map((point) => (
-              <li key={point} className="flex gap-3 text-base text-foreground">
-                <span className="mt-2 size-2 shrink-0 rounded-full bg-pink" aria-hidden />
-                <span>{point}</span>
-              </li>
-            ))}
-          </ul>
+          <NotaryPoints />
         </AltSection>
 
         <AltSection
