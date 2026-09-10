@@ -141,6 +141,7 @@ export function HeroEmailCard() {
           <span className="cursor-default text-primary underline">Unsubscribe</span>
         </p>
       </div>
+      </div>
     </div>
   );
 }
