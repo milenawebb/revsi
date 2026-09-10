@@ -596,6 +596,8 @@ function SettingsForm() {
             customBody={form.custom_body}
             senderPhotoUrl={form.sender_photo_url}
             postalAddress={form.postal_address}
+            logoUrl={form.logo_url}
+            buttonColor={form.button_color}
           />
         </div>
       </div>
