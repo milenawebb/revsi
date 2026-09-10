@@ -383,8 +383,8 @@ function LandingPage() {
             <Link to="/privacy" className="hover:text-foreground">
               Privacy
             </Link>
-            <a href="mailto:info@newreview.app" className="hover:text-foreground">
-              info@newreview.app
+            <a href="mailto:info@revsi.app" className="hover:text-foreground">
+              info@revsi.app
             </a>
           </div>
         </div>
