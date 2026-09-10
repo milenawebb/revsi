@@ -3,12 +3,35 @@ type Props = {
   businessName: string;
   fromName: string;
   customIntro: string;
+  customBody: string;
   senderPhotoUrl: string | null;
   postalAddress: string;
 };
 
 const SAMPLE_NAME = "Sarah";
 const SAMPLE_SERVICE = "loan signing";
+
+export const FIXED_ASK_LINE =
+  "If you have a moment, would you leave an honest review of your experience? It genuinely helps other people find us.";
+
+export function substitutePlaceholders(text: string, biz: string): string {
+  return text
+    .replaceAll("{name}", SAMPLE_NAME)
+    .replaceAll("{business}", biz)
+    .replaceAll("{service}", SAMPLE_SERVICE);
+}
+
+export function customTemplateBody(body: string, biz: string): string[] {
+  const trimmed = body.trim();
+  if (!trimmed) {
+    return [`Hi ${SAMPLE_NAME},`, `Thank you for choosing ${biz}.`, FIXED_ASK_LINE];
+  }
+  const paragraphs = trimmed
+    .split(/\n\s*\n/)
+    .map((p) => substitutePlaceholders(p.trim(), biz))
+    .filter(Boolean);
+  return [...paragraphs, FIXED_ASK_LINE];
+}
 
 export function templateBody(template: string, biz: string): string[] {
   const name = SAMPLE_NAME;
@@ -29,7 +52,7 @@ export function templateBody(template: string, biz: string): string[] {
       return [
         `Hi ${name},`,
         `Thank you for choosing ${biz}. It was a pleasure working with you.`,
-        "If you have a moment, would you leave an honest review of your experience? It genuinely helps other people find us.",
+        FIXED_ASK_LINE,
       ];
     case "personal":
     default:
@@ -46,11 +69,13 @@ export function EmailPreview({
   businessName,
   fromName,
   customIntro,
+  customBody,
   senderPhotoUrl,
   postalAddress,
 }: Props) {
   const biz = businessName.trim() || "Your business";
-  const lines = templateBody(template, biz);
+  const isCustom = template === "custom";
+  const lines = isCustom ? customTemplateBody(customBody, biz) : templateBody(template, biz);
   const [greeting, ...rest] = lines;
   const intro = customIntro.trim();
 
@@ -69,10 +94,12 @@ export function EmailPreview({
           />
         ) : null}
 
-        <p className="text-sm text-foreground">{greeting}</p>
-        {intro ? <p className="mt-3 text-sm text-foreground">{intro}</p> : null}
+        <p className="whitespace-pre-line text-sm text-foreground">{greeting}</p>
+        {!isCustom && intro ? (
+          <p className="mt-3 text-sm text-foreground">{intro}</p>
+        ) : null}
         {rest.map((line) => (
-          <p key={line} className="mt-3 text-sm text-foreground">
+          <p key={line} className="mt-3 whitespace-pre-line text-sm text-foreground">
             {line}
           </p>
         ))}
