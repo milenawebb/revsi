@@ -13,7 +13,8 @@ import {
   RequestsShot,
 } from "@/components/landing/ProductShots";
 import { Badge } from "@/components/ui/badge";
-import revsiLogo from "@/assets/revsi-logo.png.asset.json";
+import logoHeader from "@/assets/logo-header.png.asset.json";
+import logoFooter from "@/assets/logo-footer.png.asset.json";
 import { cn } from "@/lib/utils";
 
 const WAITLIST_MAILTO =
@@ -242,7 +243,7 @@ function LandingPage() {
       {/* Hero on the brand gradient */}
       <div className="bg-brand-gradient text-primary-foreground">
         <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
-          <img src={revsiLogo.url} alt="revsi" className="h-7 w-auto" />
+          <img src={logoHeader.url} alt="revsi" className="h-7 w-auto" />
           {signedIn ? (
             <Button asChild size="sm" variant="secondary">
               <Link to="/jobs">Go to dashboard</Link>
@@ -374,7 +375,7 @@ function LandingPage() {
 
       <footer className="border-t bg-card">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <span>newreview.app — a Webb Consulting LLC service</span>
+          <img src={logoFooter.url} alt="revsi" className="h-6 w-auto" />
           <div className="flex flex-wrap items-center gap-4">
             <Link to="/terms" className="hover:text-foreground">
               Terms
