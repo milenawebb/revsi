@@ -8,6 +8,7 @@ import { useBusiness } from "@/lib/business-context";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NewJobDialog } from "@/components/NewJobDialog";
+import { JobDetailDialog } from "@/components/JobDetailDialog";
 import { formatDate, formatDateTime } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/jobs")({
@@ -98,6 +99,7 @@ function JobsPage() {
   const business = useBusiness();
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 
   const jobs = useQuery({
     queryKey: ["jobs", business.id],
@@ -222,7 +224,16 @@ function JobsPage() {
             return (
               <div
                 key={job.id}
-                className="grid gap-2 border-t border-border/60 px-5 py-4 text-sm md:grid-cols-[1.2fr_1.4fr_1fr_0.8fr_1.2fr] md:items-center md:gap-4"
+                role="button"
+                tabIndex={0}
+                onClick={() => setSelectedJobId(job.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setSelectedJobId(job.id);
+                  }
+                }}
+                className="grid cursor-pointer gap-2 border-t border-border/60 px-5 py-4 text-sm transition-colors hover:bg-muted/40 md:grid-cols-[1.2fr_1.4fr_1fr_0.8fr_1.2fr] md:items-center md:gap-4"
               >
                 <span className="font-medium">{job.customers?.name ?? "—"}</span>
                 <span className="truncate text-muted-foreground">
@@ -243,7 +254,10 @@ function JobsPage() {
                       size="sm"
                       variant="outline"
                       disabled={complete.isPending}
-                      onClick={() => complete.mutate(job.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        complete.mutate(job.id);
+                      }}
                     >
                       Mark completed
                     </Button>
@@ -262,6 +276,12 @@ function JobsPage() {
       </div>
 
       <NewJobDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+      <JobDetailDialog
+        jobId={selectedJobId}
+        onOpenChange={(v) => {
+          if (!v) setSelectedJobId(null);
+        }}
+      />
     </div>
   );
 }
