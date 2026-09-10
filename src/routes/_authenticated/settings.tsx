@@ -32,9 +32,12 @@ const TEMPLATES = [
   { value: "short", label: "Short", sub: "Two lines and a button." },
   { value: "question", label: "Question", sub: "Asks what they'd tell a friend." },
   { value: "warm", label: "Classic", sub: "Polite and formal." },
+  { value: "custom", label: "Custom", sub: "Write it yourself." },
 ] as const;
 
 const INTRO_MAX = 300;
+const CUSTOM_BODY_MAX = 1500;
+const PLACEHOLDER_CHIPS = ["{name}", "{business}", "{service}"] as const;
 const MAX_PHOTO_BYTES = 2 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
