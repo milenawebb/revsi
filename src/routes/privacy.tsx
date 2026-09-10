@@ -79,8 +79,8 @@ function PrivacyPage() {
         <p>
           Every email we send on your behalf includes an unsubscribe link.
           People can also ask to have their data deleted by contacting us at{" "}
-          <a href="mailto:info@webb-consulting.net" className="underline underline-offset-2">
-            info@webb-consulting.net
+          <a href="mailto:info@newreview.app" className="underline underline-offset-2">
+            info@newreview.app
           </a>{" "}
           or by contacting the business that sent them the request.
         </p>
@@ -116,8 +116,8 @@ function PrivacyPage() {
       <LegalSection heading="Contact">
         <p>
           Questions about privacy:{" "}
-          <a href="mailto:info@webb-consulting.net" className="underline underline-offset-2">
-            info@webb-consulting.net
+          <a href="mailto:info@newreview.app" className="underline underline-offset-2">
+            info@newreview.app
           </a>
         </p>
       </LegalSection>
