@@ -35,12 +35,19 @@ type Mapping = Record<string, string>;
 type Parsed = { name: string; email: string; phone: string; service_type: string; completed_at: string };
 type Skipped = { row: number; name: string; email: string; reason: string };
 
-function ImportPage() {
+export type ImportFlowProps = {
+  /** Called after an import run finishes. Used by the dialog to close itself. */
+  onFinished?: () => void;
+  /** Show the page heading. Off inside the dialog, which has its own title. */
+  showHeading?: boolean;
+};
+
+export function ImportFlow(props: ImportFlowProps) {
   const business = useBusiness();
-  return <ImportFlow key={business.id} />;
+  return <ImportFlowInner key={business.id} {...props} />;
 }
 
-function ImportFlow() {
+function ImportFlowInner({ onFinished, showHeading = true }: ImportFlowProps) {
   const business = useBusiness();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
