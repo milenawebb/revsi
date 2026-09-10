@@ -95,12 +95,43 @@ function CustomersPage() {
         (optouts.data ?? []).map((o) => (o.email ?? "").toLowerCase().trim()).filter(Boolean),
       );
 
-      return (customers.data ?? []).map((c) => ({
-        ...c,
-        jobCount: counts[c.id]?.jobs ?? 0,
-        lastJob: counts[c.id]?.last ?? null,
-        unsubscribed: optedOut.has((c.email ?? "").toLowerCase().trim()),
-      }));
+      const lastAsked: Record<string, string> = {};
+      for (const r of asks.data ?? []) {
+        if (!r.sent_at) continue;
+        const prev = lastAsked[r.customer_id];
+        if (!prev || r.sent_at > prev) lastAsked[r.customer_id] = r.sent_at;
+      }
+
+      return (customers.data ?? []).map((c) => {
+        const unsubscribed = optedOut.has((c.email ?? "").toLowerCase().trim());
+        const windowDays =
+          c.role === "requestor" ? business.ask_window_days_requestor : business.ask_window_days;
+        const asked = lastAsked[c.id] ?? null;
+        const withinWindow =
+          asked && Date.now() - new Date(asked).getTime() < windowDays * 86_400_000;
+
+        let block: { label: string; reason: string } | null = null;
+        if (c.do_not_ask) {
+          block = { label: "Do not ask", reason: "This person is marked never ask." };
+        } else if (unsubscribed) {
+          block = { label: "Unsubscribed", reason: "They unsubscribed from review requests." };
+        } else if (c.reviewed_at) {
+          block = { label: "Reviewed", reason: "They have already left a review." };
+        } else if (withinWindow) {
+          block = {
+            label: "Asked recently",
+            reason: `Asked ${formatDate(asked)}, within the ${windowDays} day gap between asks.`,
+          };
+        }
+
+        return {
+          ...c,
+          jobCount: counts[c.id]?.jobs ?? 0,
+          lastJob: counts[c.id]?.last ?? null,
+          unsubscribed,
+          block,
+        };
+      });
     },
   });
 
