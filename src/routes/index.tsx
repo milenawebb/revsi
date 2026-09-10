@@ -359,8 +359,7 @@ function LandingPage() {
           <div className="mx-auto max-w-3xl px-5">
             <Reveal>
               <div className="rounded-2xl bg-brand-gradient p-8 text-center text-primary-foreground shadow-[0_24px_60px_-24px_rgb(20_20_27/0.35)] sm:p-12">
-                <SectionLabel centered>Pricing</SectionLabel>
-                <h2 className="mt-4 text-2xl font-bold tracking-tight">Pricing</h2>
+                <h2 className="text-2xl font-bold tracking-tight">Pricing</h2>
                 <p className="mx-auto mt-4 max-w-md text-base opacity-90">
                   Pricing announced at launch. Waitlist members get founding pricing.
                 </p>

@@ -201,6 +201,20 @@
   from { opacity: 0; transform: translate3d(0, 24px, 0) scale(0.98); }
   to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 }
+@keyframes hero-float {
+  from {
+    transform: translate3d(0, 0, 0);
+    box-shadow: 0 25px 50px -12px rgb(20 20 27 / 0.25);
+  }
+  to {
+    transform: translate3d(0, -8px, 0);
+    box-shadow: 0 35px 60px -12px rgb(20 20 27 / 0.18);
+  }
+}
+@keyframes hero-tilt {
+  from { transform: rotate(-0.3deg); }
+  to { transform: rotate(0.3deg); }
+}
 @keyframes reveal-up {
   from { opacity: 0; transform: translate3d(0, 16px, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
