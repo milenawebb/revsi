@@ -1,11 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { HeroEmailCard } from "@/components/landing/HeroEmailCard";
 import { HowItWorks } from "@/components/landing/HowItWorks";
-import { ReviewBoxMock } from "@/components/landing/ReviewBoxMock";
 import { Reveal, useInView, usePrefersReducedMotion } from "@/components/landing/motion";
+import {
+  FloatingChip,
+  JobsShot,
+  RequestsShot,
+  SettingsShot,
+} from "@/components/landing/ProductShots";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const WAITLIST_MAILTO =
@@ -62,61 +68,102 @@ function splitSentences(text: string): [string, string | null] {
   return [text, null];
 }
 
-function ProblemSection() {
+function SectionPill({ children }: { children: ReactNode }) {
+  return (
+    <span className="inline-block rounded-full bg-brand-purple/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-purple">
+      {children}
+    </span>
+  );
+}
+
+/** Text on one side, a product shot with an overlapping chip on the other. */
+function AltSection({
+  id,
+  pill,
+  heading,
+  children,
+  visual,
+  chip,
+  chipClassName,
+  reverse = false,
+  tint = false,
+}: {
+  id?: string;
+  pill: string;
+  heading: string;
+  children: ReactNode;
+  visual?: ReactNode;
+  chip?: ReactNode;
+  chipClassName?: string;
+  reverse?: boolean;
+  tint?: boolean;
+}) {
+  return (
+    <section
+      id={id}
+      className={cn(
+        "scroll-mt-8 py-20 lg:py-28",
+        tint ? "landing-wash-alt" : "landing-wash",
+      )}
+    >
+      <div
+        className={cn(
+          "mx-auto grid max-w-6xl items-center gap-12 px-5",
+          visual && "lg:grid-cols-2 lg:gap-16",
+        )}
+      >
+        <Reveal className={cn(reverse && "lg:order-2")}>
+          <SectionPill>{pill}</SectionPill>
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground">{heading}</h2>
+          <div className="mt-6">{children}</div>
+        </Reveal>
+
+        {visual ? (
+          <div className={cn("relative", reverse && "lg:order-1")}>
+            <Reveal>{visual}</Reveal>
+            {chip ? (
+              <Reveal delay={150} className={cn("absolute z-10", chipClassName)}>
+                {chip}
+              </Reveal>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+function ProblemPoints() {
   const reduced = usePrefersReducedMotion();
-  const { ref, inView } = useInView<HTMLElement>("-10% 0px");
+  const { ref, inView } = useInView<HTMLDivElement>("-10% 0px");
   const show = reduced || inView;
 
   return (
-    <section ref={ref} className="bg-background py-24">
-      <div className="mx-auto max-w-6xl px-5">
-        <div
-          className={cn(
-            "mb-12",
-            show ? "animate-problem-reveal" : "opacity-0",
-          )}
-          style={{ animationDelay: "0ms" }}
-        >
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            The problem
-          </p>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground">
-            Reviews decide who gets called.
-          </h2>
-        </div>
-
-        <div className="grid gap-10 md:grid-cols-3">
-          {PROBLEMS.map((text, i) => {
-            const [first, second] = splitSentences(text);
-            return (
-              <div key={text} className="relative">
-                <div
-                  className={cn(
-                    "absolute left-0 top-0 h-full w-0.5 origin-top bg-brand-purple",
-                    show ? "animate-line-draw" : "scale-y-0",
-                  )}
-                  style={{ animationDelay: `${i * 120 + 200}ms` }}
-                />
-                <div
-                  className={cn(
-                    "pl-5",
-                    show ? "animate-problem-reveal" : "opacity-0",
-                  )}
-                  style={{ animationDelay: `${i * 120}ms` }}
-                >
-                  <p className="text-xl font-light leading-snug text-foreground">
-                    {first}
-                    {second ? (
-                      <span className="text-muted-foreground"> {second}</span>
-                    ) : null}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
+    <div ref={ref} className="grid gap-8">
+      {PROBLEMS.map((text, i) => {
+        const [first, second] = splitSentences(text);
+        return (
+          <div key={text} className="relative">
+            <div
+              className={cn(
+                "absolute left-0 top-0 h-full w-0.5 origin-top bg-brand-purple",
+                show ? "animate-line-draw" : "scale-y-0",
+              )}
+              style={{ animationDelay: `${i * 120 + 200}ms` }}
+            />
+            <div
+              className={cn("pl-5", show ? "animate-problem-reveal" : "opacity-0")}
+              style={{ animationDelay: `${i * 120}ms` }}
+            >
+              <p className="text-lg font-light leading-snug text-foreground">
+                {first}
+                {second ? <span className="text-muted-foreground"> {second}</span> : null}
+              </p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -138,7 +185,7 @@ function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="landing-wash min-h-screen">
       {/* Hero on the brand gradient */}
       <div className="bg-brand-gradient text-primary-foreground">
         <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
@@ -185,42 +232,79 @@ function LandingPage() {
       </div>
 
       <main>
-        <ProblemSection />
+        <AltSection
+          pill="The problem"
+          heading="Reviews decide who gets called."
+          visual={<JobsShot />}
+          chip={
+            <FloatingChip>
+              <Badge variant="delivered" className="text-[10px]">
+                Delivered
+              </Badge>
+              <p className="mt-2 text-xs text-muted-foreground">Sent 9:30 AM</p>
+            </FloatingChip>
+          }
+          chipClassName="-bottom-6 -left-4 rotate-[-2deg] sm:-left-8"
+        >
+          <ProblemPoints />
+        </AltSection>
 
-        {/* How it works */}
-        <section id="how-it-works" className="mx-auto max-w-3xl scroll-mt-8 px-5 py-16 lg:py-24">
-          <Reveal as="h2" className="text-3xl font-bold tracking-tight">
-            How it works
-          </Reveal>
+        <AltSection
+          id="how-it-works"
+          pill="How it works"
+          heading="How it works"
+          reverse
+          tint
+          visual={<RequestsShot />}
+          chip={
+            <FloatingChip>
+              <Badge variant="clicked" className="text-[10px]">
+                Clicked
+              </Badge>
+              <p className="mt-2 text-xs text-muted-foreground">Reminder cancelled</p>
+            </FloatingChip>
+          }
+          chipClassName="-bottom-6 -right-4 rotate-[2deg] sm:-right-8"
+        >
           <HowItWorks />
-        </section>
+        </AltSection>
 
-        {/* Built for notaries */}
-        <section className="border-y bg-card">
-          <div className="mx-auto max-w-6xl px-5 py-16 lg:py-24">
-            <Reveal as="h2" className="text-3xl font-bold tracking-tight">
-              Built for notaries
-            </Reveal>
-            <div className="mt-10 grid gap-10 lg:grid-cols-2 lg:items-center">
-              <ul className="grid gap-6">
-                {NOTARY_POINTS.map((point) => (
-                  <li key={point} className="flex gap-3 text-base text-foreground">
-                    <span className="mt-2 size-2 shrink-0 rounded-full bg-pink" aria-hidden />
-                    <span>{point}</span>
-                  </li>
+        <AltSection
+          pill="For notaries"
+          heading="Built for notaries"
+          visual={<SettingsShot />}
+          chip={
+            <FloatingChip>
+              <p className="text-xs font-medium text-foreground">Button colour</p>
+              <div className="mt-2 flex items-center gap-2">
+                {["#4F6EF7", "#0F766E", "#7C3AED", "#B91C4B", "#14141B"].map((c) => (
+                  <span
+                    key={c}
+                    aria-hidden
+                    style={{ backgroundColor: c }}
+                    className={cn(
+                      "size-5 rounded-full",
+                      c === "#B91C4B" && "ring-2 ring-foreground ring-offset-2",
+                    )}
+                  />
                 ))}
-              </ul>
-              <ReviewBoxMock />
-            </div>
-          </div>
-        </section>
+              </div>
+            </FloatingChip>
+          }
+          chipClassName="-bottom-6 -left-4 rotate-[-2deg] sm:-left-8"
+        >
+          <ul className="grid gap-6">
+            {NOTARY_POINTS.map((point) => (
+              <li key={point} className="flex gap-3 text-base text-foreground">
+                <span className="mt-2 size-2 shrink-0 rounded-full bg-pink" aria-hidden />
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+        </AltSection>
 
-        {/* Compliance */}
-        <section className="mx-auto max-w-3xl px-5 py-16 lg:py-24">
-          <Reveal as="h2" className="text-3xl font-bold tracking-tight">
-            Built to keep you out of trouble.
-          </Reveal>
-          <div className="mt-6 space-y-4 text-base leading-relaxed text-muted-foreground">
+        <AltSection pill="Compliance" heading="Built to keep you out of trouble." tint>
+          <div className="max-w-3xl space-y-4 text-base leading-relaxed text-muted-foreground">
             <p>
               The tool will not let you ask for a five star review, offer anything in return, or
               ask only the customers you think are happy. Google&apos;s review policies and the
@@ -233,18 +317,25 @@ function LandingPage() {
               order, whether you expect praise or not.
             </p>
           </div>
-        </section>
+        </AltSection>
 
         {/* Pricing — the second and final gradient moment */}
-        <section className="mx-auto max-w-3xl px-5 pb-16 lg:pb-24">
-          <div className="rounded-2xl bg-brand-gradient p-8 text-center text-primary-foreground shadow-card sm:p-12">
-            <h2 className="text-2xl font-bold tracking-tight">Pricing</h2>
-            <p className="mx-auto mt-4 max-w-md text-base opacity-90">
-              Pricing announced at launch. Waitlist members get founding pricing.
-            </p>
-            <div className="mt-8">
-              <WaitlistButton variant="secondary" className="w-full sm:w-auto" />
-            </div>
+        <section className="landing-wash pb-20 lg:pb-28">
+          <div className="mx-auto max-w-3xl px-5">
+            <Reveal>
+              <div className="rounded-2xl bg-brand-gradient p-8 text-center text-primary-foreground shadow-[0_24px_60px_-24px_rgb(20_20_27/0.35)] sm:p-12">
+                <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
+                  Pricing
+                </span>
+                <h2 className="mt-4 text-2xl font-bold tracking-tight">Pricing</h2>
+                <p className="mx-auto mt-4 max-w-md text-base opacity-90">
+                  Pricing announced at launch. Waitlist members get founding pricing.
+                </p>
+                <div className="mt-8">
+                  <WaitlistButton variant="secondary" className="w-full sm:w-auto" />
+                </div>
+              </div>
+            </Reveal>
           </div>
         </section>
       </main>

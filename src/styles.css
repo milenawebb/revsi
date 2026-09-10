@@ -188,6 +188,14 @@
   }
 }
 
+/* ---- Landing page surfaces ---- */
+.landing-wash {
+  background-color: #fafafe;
+}
+.landing-wash-alt {
+  background-color: #f5f4fd;
+}
+
 /* ---- Landing page motion ---- */
 @keyframes land-in {
   from { opacity: 0; transform: translate3d(0, 24px, 0) scale(0.98); }
