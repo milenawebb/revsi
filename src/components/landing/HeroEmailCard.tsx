@@ -55,6 +55,51 @@ function useTypedLines(enabled: boolean) {
   return { counts, done };
 }
 
+function MockAvatar() {
+  return (
+    <svg
+      viewBox="0 0 56 56"
+      className="size-14"
+      aria-hidden="true"
+      role="img"
+    >
+      <circle cx="28" cy="28" r="28" fill="#E7E5E4" />
+      <circle cx="28" cy="22" r="9" fill="#A8A29E" />
+      <path
+        d="M12 48c0-10 7-18 16-18h0c9 0 16 8 16 18v2H12v-2z"
+        fill="#A8A29E"
+      />
+    </svg>
+  );
+}
+
+function MockLogo() {
+  return (
+    <div className="inline-flex h-9 items-center gap-2" aria-hidden="true">
+      <svg viewBox="0 0 32 32" className="size-8" aria-hidden="true">
+        <rect width="32" height="32" rx="7" fill="#0F766E" />
+        <text
+          x="16"
+          y="22"
+          textAnchor="middle"
+          fill="white"
+          fontSize="13"
+          fontWeight="600"
+          fontFamily="system-ui, sans-serif"
+        >
+          RN
+        </text>
+      </svg>
+      <span
+        className="text-sm font-semibold"
+        style={{ color: "#0F766E" }}
+      >
+        Riverbend Notary
+      </span>
+    </div>
+  );
+}
+
 export function HeroEmailCard() {
   const reduced = usePrefersReducedMotion();
   const [mounted, setMounted] = useState(false);
@@ -76,8 +121,8 @@ export function HeroEmailCard() {
 
       <hr className="my-4 border-border" />
 
-      <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-muted text-sm font-semibold text-muted-foreground">
-        DR
+      <div className="mb-4">
+        <MockAvatar />
       </div>
 
       <div className="space-y-3">
@@ -94,9 +139,10 @@ export function HeroEmailCard() {
       <div className="mt-5">
         <span
           className={
-            "inline-block cursor-default rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity duration-500 " +
+            "inline-block cursor-default rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity duration-500 " +
             (done ? "opacity-100 " + (reduced ? "" : "animate-pulse-once") : "opacity-0")
           }
+          style={{ backgroundColor: "#0F766E" }}
         >
           Leave a review
         </span>
@@ -106,8 +152,8 @@ export function HeroEmailCard() {
       <p className="text-sm text-foreground">Dana at Riverbend Notary</p>
 
       <div className="mt-6 border-t pt-4 text-xs text-muted-foreground">
-        <div className="mb-3 inline-flex h-[36px] items-center rounded-md border px-3 text-[11px] font-semibold uppercase tracking-widest">
-          Riverbend Notary
+        <div className="mb-3">
+          <MockLogo />
         </div>
         <p>You received this because you recently used Riverbend Notary.</p>
         <p className="mt-1">104 Main Street, Suite 2, Richmond, VA</p>
