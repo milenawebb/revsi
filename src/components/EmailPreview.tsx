@@ -87,6 +87,7 @@ export function EmailPreview({
   template,
   businessName,
   fromName,
+  replyToEmail,
   customIntro,
   customBody,
   senderPhotoUrl,
@@ -107,6 +108,17 @@ export function EmailPreview({
       </p>
 
       <div className="mt-4 rounded-lg border bg-background p-5">
+        <div className="space-y-1">
+          <p className="text-sm font-bold text-foreground">
+            {fromName.trim() || biz}
+          </p>
+          <p className="text-xs text-muted-foreground">Thanks for choosing {biz}</p>
+          {replyToEmail?.trim() ? (
+            <p className="text-xs text-muted-foreground">Reply-to: {replyToEmail.trim()}</p>
+          ) : null}
+        </div>
+
+        <hr className="my-4 border-border" />
         {template === "personal" && senderPhotoUrl ? (
           <img
             src={senderPhotoUrl}
