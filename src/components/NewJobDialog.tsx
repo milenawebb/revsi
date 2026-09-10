@@ -15,7 +15,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
+import {
+  CompletionTimeControl,
+  isFuture,
+  type CompletionMode,
+} from "@/components/CompletionTimeControl";
+import { fromLocalInput, nowLocalInput } from "@/lib/completion-time";
 import { useCanAsk } from "@/lib/can-ask";
 import { useCustomerMatches } from "@/lib/customer-match";
 import { CustomerMatchHint } from "@/components/CustomerMatchHint";
