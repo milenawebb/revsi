@@ -130,8 +130,8 @@ function TermsPage() {
       <LegalSection heading="Contact">
         <p>
           Questions about these terms:{" "}
-          <a href="mailto:info@webb-consulting.net" className="underline underline-offset-2">
-            info@webb-consulting.net
+          <a href="mailto:info@newreview.app" className="underline underline-offset-2">
+            info@newreview.app
           </a>
         </p>
       </LegalSection>

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
 const WAITLIST_MAILTO =
-  "mailto:info@webb-consulting.net?subject=newreview.app%20waitlist&body=Please%20add%20me%20to%20the%20waitlist.";
+  "mailto:info@newreview.app?subject=newreview.app%20waitlist&body=Please%20add%20me%20to%20the%20waitlist.";
 
 const TITLE = "Get Google reviews after every signing — newreview.app";
 const DESC =
@@ -237,8 +237,8 @@ function LandingPage() {
             <Link to="/privacy" className="hover:text-foreground">
               Privacy
             </Link>
-            <a href="mailto:info@webb-consulting.net" className="hover:text-foreground">
-              info@webb-consulting.net
+            <a href="mailto:info@newreview.app" className="hover:text-foreground">
+              info@newreview.app
             </a>
           </div>
         </div>
