@@ -150,8 +150,9 @@ const JOB_ROWS: {
 ];
 
 export function JobsShot() {
+  const [settled, setSettled] = useState(false);
   return (
-    <BrowserFrame>
+    <BrowserFrame onSettled={setSettled}>
       <div className="space-y-4">
         <div>
           <p className="text-lg font-bold tracking-tight">Jobs</p>
@@ -166,10 +167,11 @@ export function JobsShot() {
             >
               <div className="absolute inset-x-0 top-0 h-[3px] bg-brand-gradient" />
               <p className="text-[10px] text-muted-foreground">{c.label}</p>
-              <p className="mt-1 text-lg font-semibold tracking-tight">{c.value}</p>
+              <StatValue value={c.value} suffix={c.suffix} run={settled} />
             </div>
           ))}
         </div>
+
 
         <div className="overflow-hidden rounded-xl border bg-card shadow-card">
           <div className="grid grid-cols-[1.2fr_1fr_0.8fr_0.9fr] gap-3 px-4 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
