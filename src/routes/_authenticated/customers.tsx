@@ -197,7 +197,18 @@ function CustomersPage() {
             >
               <span className="flex items-center gap-2 font-medium">
                 {c.name}
-                {c.unsubscribed ? <Badge variant="cancelled">Unsubscribed</Badge> : null}
+                {c.block ? (
+                  <TooltipProvider delayDuration={150}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span onClick={(e) => e.stopPropagation()}>
+                          <Badge variant="cancelled">{c.block.label}</Badge>
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>{c.block.reason}</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : null}
               </span>
               <span className="truncate text-muted-foreground">{c.email ?? "—"}</span>
               <span className="text-muted-foreground">{c.phone ?? "—"}</span>
