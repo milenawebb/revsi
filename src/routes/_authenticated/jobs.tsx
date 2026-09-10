@@ -8,7 +8,7 @@ import { useBusiness } from "@/lib/business-context";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NewJobDialog } from "@/components/NewJobDialog";
-import { formatDate, formatDateTime, statusTone } from "@/lib/format";
+import { formatDate, formatDateTime } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/jobs")({
   head: () => ({
@@ -26,6 +26,72 @@ export const Route = createFileRoute("/_authenticated/jobs")({
 
 function since30() {
   return new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+}
+
+type RequestSummary = {
+  service_id: string;
+  status: string;
+  send_after: string;
+  sent_at: string | null;
+  clicked_at: string | null;
+  error_message: string | null;
+};
+
+function truncate(value: string, max = 70) {
+  if (value.length <= max) return value;
+  return value.slice(0, max) + "…";
+}
+
+function requestBadge(req?: RequestSummary) {
+  if (!req) return { variant: "notAsked" as const, label: "Not asked yet" as const };
+  if (req.clicked_at) {
+    return {
+      variant: "clicked" as const,
+      label: "Clicked" as const,
+      subtext: `Clicked ${formatDateTime(req.clicked_at)}`,
+    };
+  }
+  switch (req.status) {
+    case "queued":
+      return {
+        variant: "scheduled" as const,
+        label: "Scheduled" as const,
+        subtext: `Sends ${formatDateTime(req.send_after)}`,
+      };
+    case "sending":
+    case "sent":
+      return {
+        variant: "requestSent" as const,
+        label: "Sent" as const,
+        subtext: `Sent ${formatDateTime(req.sent_at)}`,
+      };
+    case "delivered":
+      return {
+        variant: "delivered" as const,
+        label: "Delivered" as const,
+        subtext: `Delivered ${formatDateTime(req.sent_at)}`,
+      };
+    case "bounced":
+      return {
+        variant: "bounced" as const,
+        label: "Bounced" as const,
+        subtext: "Email did not reach them",
+      };
+    case "failed":
+      return {
+        variant: "requestFailed" as const,
+        label: "Failed" as const,
+        subtext: req.error_message ? truncate(req.error_message) : undefined,
+      };
+    case "cancelled":
+      return {
+        variant: "requestCancelled" as const,
+        label: "Cancelled" as const,
+        subtext: "Unsubscribed or cancelled",
+      };
+    default:
+      return { variant: "notAsked" as const, label: "Not asked yet" as const };
+  }
 }
 
 function JobsPage() {
@@ -52,13 +118,12 @@ function JobsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("review_requests")
-        .select("service_id, kind, send_after, sent_at, status")
+        .select("service_id, kind, status, send_after, sent_at, clicked_at, error_message")
         .eq("business_id", business.id)
         .eq("kind", "initial")
         .limit(500);
       if (error) throw error;
-      const map: Record<string, { send_after: string; sent_at: string | null; status: string }> =
-        {};
+      const map: Record<string, RequestSummary> = {};
       for (const r of data) map[r.service_id] = r;
       return map;
     },
@@ -145,14 +210,15 @@ function JobsPage() {
           <span>Customer</span>
           <span>Email</span>
           <span>Service</span>
-          <span>Status</span>
-          <span className="text-right">Completed</span>
+          <span>Request</span>
+          <span className="text-right">Job date</span>
         </div>
         {jobs.isLoading ? (
           <p className="px-5 py-8 text-sm text-muted-foreground">Loading…</p>
         ) : jobs.data && jobs.data.length > 0 ? (
           jobs.data.map((job) => {
-            const due = dueByService.data?.[job.id];
+            const req = dueByService.data?.[job.id];
+            const state = requestBadge(req);
             return (
               <div
                 key={job.id}
@@ -163,11 +229,14 @@ function JobsPage() {
                   {job.customers?.email ?? "—"}
                 </span>
                 <span className="text-muted-foreground">{job.service_type ?? "—"}</span>
-                <span>
-                  <Badge variant={statusTone(job.status)} className="capitalize">
-                    {job.status}
+                <div className="space-y-1">
+                  <Badge variant={state.variant} className="capitalize">
+                    {state.label}
                   </Badge>
-                </span>
+                  {state.subtext && (
+                    <div className="text-xs text-muted-foreground">{state.subtext}</div>
+                  )}
+                </div>
                 <div className="md:text-right">
                   {job.status === "scheduled" ? (
                     <Button
@@ -178,15 +247,8 @@ function JobsPage() {
                     >
                       Mark completed
                     </Button>
-                  ) : job.status === "completed" ? (
-                    <div className="text-muted-foreground">
-                      <div>{formatDate(job.completed_at)}</div>
-                      {due && !due.sent_at && due.status === "queued" ? (
-                        <div className="text-xs">Sends {formatDateTime(due.send_after)}</div>
-                      ) : due?.sent_at ? (
-                        <div className="text-xs">Sent {formatDateTime(due.sent_at)}</div>
-                      ) : null}
-                    </div>
+                  ) : job.completed_at ? (
+                    <span className="text-muted-foreground">{formatDate(job.completed_at)}</span>
                   ) : (
                     <span className="text-muted-foreground">—</span>
                   )}
