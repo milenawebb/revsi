@@ -243,7 +243,7 @@ function LandingPage() {
       {/* Hero on the brand gradient */}
       <div className="bg-brand-gradient text-primary-foreground">
         <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
-          <img src={revsiLogo.url} alt="revsi" className="h-7 w-auto" />
+          <img src={logoHeader.url} alt="revsi" className="h-7 w-auto" />
           {signedIn ? (
             <Button asChild size="sm" variant="secondary">
               <Link to="/jobs">Go to dashboard</Link>
