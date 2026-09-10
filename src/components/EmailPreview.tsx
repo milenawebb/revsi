@@ -119,7 +119,7 @@ export function EmailPreview({
         </div>
 
         <hr className="my-4 border-border" />
-        {template === "personal" && senderPhotoUrl ? (
+        {senderPhotoUrl ? (
           <img
             src={senderPhotoUrl}
             alt={`${fromName || biz} sender photo`}

@@ -596,13 +596,12 @@ function SettingsForm() {
               </div>
             )}
 
-            <div className={cn("space-y-3", !photoEnabled && "opacity-50")}>
+            <div className="space-y-3">
               <Label>Sender photo</Label>
-              {!photoEnabled ? (
-                <p className="text-xs text-muted-foreground">
-                  Only shown on the Personal template.
-                </p>
-              ) : null}
+              <p className="text-xs text-muted-foreground">
+                Appears at the top of every review request email. Remove it if you would rather not
+                include a photo.
+              </p>
 
               <div className="flex items-center gap-4">
                 {form.sender_photo_url ? (
