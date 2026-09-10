@@ -5,7 +5,7 @@ import riverbendLogo from "@/assets/riverbend-logo.png.asset.json";
 
 const LINES = [
   "Hi Sarah,",
-  "It was good working with you on your loan signing.",
+  "Thanks for choosing Riverbend Notary. It was a pleasure working with you.",
   "If you have a moment, would you share an honest review of how it went? It makes a real difference to a small business like mine.",
 ];
 

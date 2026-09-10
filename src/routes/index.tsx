@@ -14,13 +14,15 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { SiteFooter, SiteHeader } from "@/components/site/SiteChrome";
+import ogImage from "@/assets/og-revsi.jpg.asset.json";
 
 const WAITLIST_MAILTO =
   "mailto:info@revsi.app?subject=revsi.app%20waitlist&body=Please%20add%20me%20to%20the%20waitlist.";
 
-const TITLE = "Get Google reviews after every signing — revsi.app";
+const TITLE = "Get Google reviews after every job — revsi.app";
 const DESC =
-  "revsi.app asks your signers for an honest Google review an hour after the job is done. Built for notaries, mobile notaries and signing services.";
+  "revsi asks your customers for an honest Google review an hour after the job is done. Built for notaries, mobile notaries and signing services.";
+const OG_IMAGE = `https://revsi.app${ogImage.url}`;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,8 +32,14 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://revsi.app/" },
+      { property: "og:image", content: OG_IMAGE },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: TITLE },
+      { name: "twitter:description", content: DESC },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
+    links: [{ rel: "canonical", href: "https://revsi.app/" }],
   }),
   component: LandingPage,
 });
@@ -231,11 +239,11 @@ function LandingPage() {
         <section className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 pt-8 lg:grid-cols-2 lg:items-center lg:gap-14 lg:pb-28 lg:pt-16">
           <div>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              Get Google reviews after every signing.
+              Get Google reviews after every job.
             </h1>
             <p className="mt-5 text-lg opacity-90">
-              revsi.app asks your signers for an honest review, on its own, an hour after the
-              job is done. No app to remember, no awkward ask.
+              revsi asks your customers for an honest review, on its own, an hour after the job
+              is done. No app to remember, no awkward ask.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <WaitlistButton variant="secondary" />
@@ -307,6 +315,7 @@ function LandingPage() {
         </AltSection>
 
         <AltSection
+          id="compliance"
           pill="Compliance"
           heading="Built to keep you out of trouble."
           reverse
@@ -328,7 +337,7 @@ function LandingPage() {
         </AltSection>
 
         {/* Pricing — the second and final gradient moment */}
-        <section className="landing-wash py-20 lg:py-28">
+        <section id="pricing" className="landing-wash scroll-mt-8 py-20 lg:py-28">
           <div className="mx-auto max-w-3xl px-5">
             <Reveal>
               <div className="rounded-2xl bg-brand-gradient p-8 text-center text-primary-foreground shadow-[0_24px_60px_-24px_rgb(20_20_27/0.35)] sm:p-12">
