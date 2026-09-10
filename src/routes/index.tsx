@@ -12,6 +12,7 @@ import {
   SettingsShot,
 } from "@/components/landing/ProductShots";
 import { Badge } from "@/components/ui/badge";
+import revsiLogo from "@/assets/revsi-logo.png.asset.json";
 import { cn } from "@/lib/utils";
 
 const WAITLIST_MAILTO =
@@ -189,7 +190,7 @@ function LandingPage() {
       {/* Hero on the brand gradient */}
       <div className="bg-brand-gradient text-primary-foreground">
         <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
-          <span className="text-sm font-semibold tracking-tight">newreview.app</span>
+          <img src={revsiLogo.url} alt="revsi" className="h-7 w-auto" />
           {signedIn ? (
             <Button asChild size="sm" variant="secondary">
               <Link to="/jobs">Go to dashboard</Link>

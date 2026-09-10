@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePrefersReducedMotion } from "./motion";
+import danaPhoto from "@/assets/dana-photo.png.asset.json";
 
 const LINES = [
   "Hi Sarah,",
@@ -58,19 +59,11 @@ function useTypedLines(enabled: boolean) {
 
 function MockAvatar() {
   return (
-    <svg
-      viewBox="0 0 56 56"
-      className="size-14"
-      aria-hidden="true"
-      role="img"
-    >
-      <circle cx="28" cy="28" r="28" fill="#F2ECE4" />
-      <circle cx="28" cy="21" r="9" fill="#C9B8A3" />
-      <path
-        d="M10 50c0-11 8-19 18-19s18 8 18 19v2H10v-2z"
-        fill="#BBA68F"
-      />
-    </svg>
+    <img
+      src={danaPhoto.url}
+      alt="Dana at Riverbend Notary"
+      className="size-14 rounded-full object-cover"
+    />
   );
 }
 
