@@ -165,6 +165,11 @@ function SettingsForm() {
       return;
     }
     setUrlError(null);
+    if (isCustom && !form.custom_body.trim()) {
+      setBodyError("Write your message before saving, or choose a different template.");
+      return;
+    }
+    setBodyError(null);
     save.mutate();
   }
 
