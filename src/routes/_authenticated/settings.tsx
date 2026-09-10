@@ -57,6 +57,7 @@ function SettingsForm() {
   const business = useBusiness();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
+  const logoRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
   const [form, setForm] = useState({
