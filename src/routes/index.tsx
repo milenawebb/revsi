@@ -56,6 +56,70 @@ const NOTARY_POINTS = [
   "Connects to OpenSked, so a completed order asks automatically",
 ];
 
+function splitSentences(text: string): [string, string | null] {
+  const parts = text.split(/(?<=[.!?])\s+/).filter(Boolean);
+  if (parts.length > 1) return [parts[0]!, parts.slice(1).join(" ")];
+  return [text, null];
+}
+
+function ProblemSection() {
+  const reduced = usePrefersReducedMotion();
+  const { ref, inView } = useInView<HTMLElement>("-10% 0px");
+  const show = reduced || inView;
+
+  return (
+    <section ref={ref} className="bg-background py-24">
+      <div className="mx-auto max-w-6xl px-5">
+        <div
+          className={cn(
+            "mb-12",
+            show ? "animate-problem-reveal" : "opacity-0",
+          )}
+          style={{ animationDelay: "0ms" }}
+        >
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+            The problem
+          </p>
+          <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground">
+            Reviews decide who gets called.
+          </h2>
+        </div>
+
+        <div className="grid gap-10 md:grid-cols-3">
+          {PROBLEMS.map((text, i) => {
+            const [first, second] = splitSentences(text);
+            return (
+              <div key={text} className="relative">
+                <div
+                  className={cn(
+                    "absolute left-0 top-0 h-full w-0.5 origin-top bg-brand-purple",
+                    show ? "animate-line-draw" : "scale-y-0",
+                  )}
+                  style={{ animationDelay: `${i * 120 + 200}ms` }}
+                />
+                <div
+                  className={cn(
+                    "pl-5",
+                    show ? "animate-problem-reveal" : "opacity-0",
+                  )}
+                  style={{ animationDelay: `${i * 120}ms` }}
+                >
+                  <p className="text-xl font-light leading-snug text-foreground">
+                    {first}
+                    {second ? (
+                      <span className="text-muted-foreground"> {second}</span>
+                    ) : null}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function LandingPage() {
   const [signedIn, setSignedIn] = useState(false);
 
