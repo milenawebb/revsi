@@ -69,11 +69,25 @@ function splitSentences(text: string): [string, string | null] {
   return [text, null];
 }
 
-function SectionPill({ children }: { children: ReactNode }) {
+function SectionLabel({
+  children,
+  centered = false,
+}: {
+  children: ReactNode;
+  centered?: boolean;
+}) {
   return (
-    <span className="inline-block rounded-full bg-brand-purple/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-purple">
-      {children}
-    </span>
+    <div className={cn("flex flex-col", centered ? "items-center" : "items-start")}>
+      <span className="h-[2px] w-6 bg-brand-purple" aria-hidden />
+      <span
+        className={cn(
+          "mt-3 text-[13px] font-medium text-muted-foreground",
+          centered && "text-center",
+        )}
+      >
+        {children}
+      </span>
+    </div>
   );
 }
 
