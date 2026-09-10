@@ -353,6 +353,103 @@ function SettingsForm() {
               </p>
             </div>
 
+            <div className="space-y-3">
+              <Label>Logo</Label>
+              <div className="flex flex-wrap items-center gap-4">
+                {form.logo_url ? (
+                  <img src={form.logo_url} alt="Logo" className="max-h-[44px] w-auto" />
+                ) : (
+                  <div className="flex h-11 items-center rounded-md bg-muted px-3 text-xs text-muted-foreground">
+                    None
+                  </div>
+                )}
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={logoUploading}
+                    onClick={() => logoRef.current?.click()}
+                  >
+                    {logoUploading ? "Uploading…" : form.logo_url ? "Replace logo" : "Upload logo"}
+                  </Button>
+                  {form.logo_url ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setForm({ ...form, logo_url: null })}
+                    >
+                      Remove
+                    </Button>
+                  ) : null}
+                </div>
+                <input
+                  ref={logoRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                  className="hidden"
+                  onChange={onLogoChange}
+                />
+              </div>
+              {logoError ? <p className="text-sm text-destructive">{logoError}</p> : null}
+              <p className="text-xs text-muted-foreground">
+                Appears at the top of every review request email. Stored publicly so email apps
+                can display it.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <Label htmlFor="button_color">Button colour</Label>
+              <div className="flex flex-wrap items-center gap-3">
+                <input
+                  aria-label="Pick button colour"
+                  type="color"
+                  value={HEX_RE.test(colorText) ? colorText : DEFAULT_BUTTON_COLOR}
+                  onChange={(e) => applyColor(e.target.value.toUpperCase())}
+                  className="h-9 w-12 cursor-pointer rounded-md border bg-card p-1"
+                />
+                <Input
+                  id="button_color"
+                  value={colorText}
+                  onChange={(e) => applyColor(e.target.value)}
+                  className="w-36"
+                />
+                <button
+                  type="button"
+                  onClick={() => applyColor(DEFAULT_BUTTON_COLOR)}
+                  className="text-sm text-primary underline underline-offset-4"
+                >
+                  Reset to default
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {PRESET_COLORS.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    aria-label={`Use ${c}`}
+                    onClick={() => applyColor(c)}
+                    style={{ backgroundColor: c }}
+                    className={cn(
+                      "h-7 w-7 rounded-full border",
+                      form.button_color.toLowerCase() === c.toLowerCase() &&
+                        "ring-2 ring-primary ring-offset-2",
+                    )}
+                  />
+                ))}
+              </div>
+              {colorError ? <p className="text-sm text-destructive">{colorError}</p> : null}
+              {!colorError && buttonLuminance(form.button_color) > 0.7 ? (
+                <div className="rounded-lg border bg-status-queued p-4">
+                  <p className="text-sm text-status-queued-foreground">
+                    This colour is too light for white text. The button will be sent in near-black
+                    instead so it stays readable.
+                  </p>
+                </div>
+              ) : null}
+            </div>
+
             <div className="grid gap-3 sm:grid-cols-2">
               {TEMPLATES.map((t) => {
                 const selected = form.email_template === t.value;
