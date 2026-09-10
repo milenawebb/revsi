@@ -14,13 +14,15 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { SiteFooter, SiteHeader } from "@/components/site/SiteChrome";
+import ogImage from "@/assets/og-revsi.jpg.asset.json";
 
 const WAITLIST_MAILTO =
   "mailto:info@revsi.app?subject=revsi.app%20waitlist&body=Please%20add%20me%20to%20the%20waitlist.";
 
-const TITLE = "Get Google reviews after every signing — revsi.app";
+const TITLE = "Get Google reviews after every job — revsi.app";
 const DESC =
-  "revsi.app asks your signers for an honest Google review an hour after the job is done. Built for notaries, mobile notaries and signing services.";
+  "revsi asks your customers for an honest Google review an hour after the job is done. Built for notaries, mobile notaries and signing services.";
+const OG_IMAGE = `https://revsi.app${ogImage.url}`;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,8 +32,14 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://revsi.app/" },
+      { property: "og:image", content: OG_IMAGE },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: TITLE },
+      { name: "twitter:description", content: DESC },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
+    links: [{ rel: "canonical", href: "https://revsi.app/" }],
   }),
   component: LandingPage,
 });
