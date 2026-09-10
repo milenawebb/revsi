@@ -67,8 +67,31 @@ function SettingsForm() {
     sender_photo_url: business.sender_photo_url ?? null,
   });
   const [urlError, setUrlError] = useState<string | null>(null);
+  const [bodyError, setBodyError] = useState<string | null>(null);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
 
   const photoEnabled = form.email_template === "personal";
+  const isCustom = form.email_template === "custom";
+
+  function insertPlaceholder(token: string) {
+    const el = bodyRef.current;
+    if (!el) {
+      setForm((f) => ({ ...f, custom_body: f.custom_body + token }));
+      return;
+    }
+    const start = el.selectionStart ?? el.value.length;
+    const end = el.selectionEnd ?? start;
+    const next = (el.value.slice(0, start) + token + el.value.slice(end)).slice(
+      0,
+      CUSTOM_BODY_MAX,
+    );
+    setForm((f) => ({ ...f, custom_body: next }));
+    requestAnimationFrame(() => {
+      el.focus();
+      const pos = Math.min(start + token.length, CUSTOM_BODY_MAX);
+      el.setSelectionRange(pos, pos);
+    });
+  }
 
   const save = useMutation({
     mutationFn: async () => {
