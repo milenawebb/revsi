@@ -375,7 +375,7 @@ function LandingPage() {
 
       <footer className="border-t bg-card">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <span>newreview.app — a Webb Consulting LLC service</span>
+          <img src={logoFooter.url} alt="revsi" className="h-6 w-auto" />
           <div className="flex flex-wrap items-center gap-4">
             <Link to="/terms" className="hover:text-foreground">
               Terms
