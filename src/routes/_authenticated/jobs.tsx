@@ -254,7 +254,10 @@ function JobsPage() {
                       size="sm"
                       variant="outline"
                       disabled={complete.isPending}
-                      onClick={() => complete.mutate(job.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        complete.mutate(job.id);
+                      }}
                     >
                       Mark completed
                     </Button>
