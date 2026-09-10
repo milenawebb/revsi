@@ -411,6 +411,14 @@ export type Database = {
         }[]
       }
       owns_business: { Args: { p_business_id: string }; Returns: boolean }
+      public_branding: {
+        Args: { p_token: string }
+        Returns: {
+          business_name: string
+          button_color: string
+          logo_url: string
+        }[]
+      }
       record_click_by_token: {
         Args: { p_token: string }
         Returns: {
