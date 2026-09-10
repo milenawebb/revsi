@@ -89,7 +89,7 @@ function SettingsForm() {
   const [bodyError, setBodyError] = useState<string | null>(null);
   const bodyRef = useRef<HTMLTextAreaElement>(null);
 
-  const photoEnabled = form.email_template === "personal";
+  
   const isCustom = form.email_template === "custom";
 
   type CopyCheck = { verdict: string; matched: string; reason: string };
@@ -596,13 +596,12 @@ function SettingsForm() {
               </div>
             )}
 
-            <div className={cn("space-y-3", !photoEnabled && "opacity-50")}>
+            <div className="space-y-3">
               <Label>Sender photo</Label>
-              {!photoEnabled ? (
-                <p className="text-xs text-muted-foreground">
-                  Only shown on the Personal template.
-                </p>
-              ) : null}
+              <p className="text-xs text-muted-foreground">
+                Appears at the top of every review request email. Remove it if you would rather not
+                include a photo.
+              </p>
 
               <div className="flex items-center gap-4">
                 {form.sender_photo_url ? (
@@ -621,7 +620,7 @@ function SettingsForm() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    disabled={!photoEnabled || uploading}
+                    disabled={uploading}
                     onClick={() => fileRef.current?.click()}
                   >
                     {uploading ? "Uploading…" : form.sender_photo_url ? "Replace photo" : "Upload photo"}
@@ -631,7 +630,6 @@ function SettingsForm() {
                       type="button"
                       variant="ghost"
                       size="sm"
-                      disabled={!photoEnabled}
                       onClick={() => setForm({ ...form, sender_photo_url: null })}
                     >
                       Remove
