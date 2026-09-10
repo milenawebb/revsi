@@ -63,6 +63,7 @@ function SettingsForm() {
   const [form, setForm] = useState({
     name: business.name,
     review_url: business.review_url,
+    website_url: business.website_url ?? "",
     from_name: business.from_name,
     reply_to_email: business.reply_to_email ?? "",
     postal_address: business.postal_address ?? "",
@@ -83,6 +84,7 @@ function SettingsForm() {
   const [colorText, setColorText] = useState(business.button_color ?? DEFAULT_BUTTON_COLOR);
   const [colorError, setColorError] = useState<string | null>(null);
   const [urlError, setUrlError] = useState<string | null>(null);
+  const [websiteError, setWebsiteError] = useState<string | null>(null);
   const [bodyError, setBodyError] = useState<string | null>(null);
   const bodyRef = useRef<HTMLTextAreaElement>(null);
 
@@ -143,6 +145,7 @@ function SettingsForm() {
         .update({
           name: form.name.trim(),
           review_url: form.review_url.trim(),
+          website_url: form.website_url.trim() || null,
           from_name: form.from_name.trim(),
           reply_to_email: form.reply_to_email.trim() || null,
           postal_address: form.postal_address.trim() || null,
