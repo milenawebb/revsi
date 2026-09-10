@@ -6,7 +6,7 @@ import riverbendLogo from "@/assets/riverbend-logo.png.asset.json";
 const LINES = [
   "Hi Sarah,",
   "Thanks for choosing Riverbend Notary. It was a pleasure working with you.",
-  "If you have a moment, would you share an honest review of how it went? It makes a real difference to a small business like mine.",
+  "If you have a moment, would you share an honest review of how it went? It makes a real difference to a small business like mine..",
 ];
 
 const SPEED = 14; // ms per character
