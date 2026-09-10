@@ -53,10 +53,10 @@ function CustomersPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["customers", business.id],
     queryFn: async () => {
-      const [customers, jobs, optouts] = await Promise.all([
+      const [customers, jobs, optouts, asks] = await Promise.all([
         supabase
           .from("customers")
-          .select("id, name, email, phone, created_at")
+          .select("id, name, email, phone, created_at, reviewed_at, do_not_ask, role")
           .eq("business_id", business.id)
           .order("created_at", { ascending: false })
           .limit(1000),
@@ -70,10 +70,18 @@ function CustomersPage() {
           .select("email")
           .eq("business_id", business.id)
           .limit(2000),
+        supabase
+          .from("review_requests")
+          .select("customer_id, sent_at")
+          .eq("business_id", business.id)
+          .not("sent_at", "is", null)
+          .limit(2000),
       ]);
       if (customers.error) throw customers.error;
       if (jobs.error) throw jobs.error;
       if (optouts.error) throw optouts.error;
+      if (asks.error) throw asks.error;
+
 
       const counts: Record<string, { jobs: number; last: string | null }> = {};
       for (const j of jobs.data ?? []) {
