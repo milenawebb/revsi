@@ -185,18 +185,7 @@ function LandingPage() {
       </div>
 
       <main>
-        {/* Problem */}
-        <section className="border-b bg-background">
-          <div className="mx-auto grid max-w-6xl gap-6 px-5 py-16 md:grid-cols-3">
-            {PROBLEMS.map((p, i) => (
-              <Reveal key={p} delay={i * 90}>
-                <p className="h-full rounded-xl border bg-card p-6 text-lg font-medium leading-snug text-foreground shadow-card">
-                  {p}
-                </p>
-              </Reveal>
-            ))}
-          </div>
-        </section>
+        <ProblemSection />
 
         {/* How it works */}
         <section id="how-it-works" className="mx-auto max-w-3xl scroll-mt-8 px-5 py-16 lg:py-24">
