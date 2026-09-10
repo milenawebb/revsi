@@ -198,6 +198,36 @@ export function CustomerDetailDialog({
 
           {isLoading || !data ? (
             <p className="text-sm text-muted-foreground">Loading…</p>
+          ) : askOpen ? (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="ask-service-type">Service type</Label>
+                <Input
+                  id="ask-service-type"
+                  value={askServiceType}
+                  onChange={(e) => setAskServiceType(e.target.value)}
+                  placeholder="e.g. Deep clean"
+                />
+              </div>
+              <p className="text-sm text-muted-foreground">{sendLabel}</p>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setAskOpen(false)}
+                  disabled={askNow.isPending}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => askNow.mutate()}
+                  disabled={askNow.isPending}
+                >
+                  {askNow.isPending ? "Creating…" : "Create job and ask"}
+                </Button>
+              </div>
+            </div>
           ) : (
             <div className="space-y-6">
               <form
