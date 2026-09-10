@@ -98,6 +98,15 @@ function UnsubscribePage() {
             </p>
             <Button
               className="mt-6 w-full"
+              style={
+                branding?.button_color && HEX_RE.test(branding.button_color)
+                  ? {
+                      backgroundColor: effectiveButtonColor(branding.button_color),
+                    }
+                  : branding?.button_color
+                    ? { backgroundColor: DEFAULT_BUTTON_COLOR }
+                    : undefined
+              }
               onClick={onUnsubscribe}
               disabled={status === "loading"}
             >
