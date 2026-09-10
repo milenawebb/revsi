@@ -9,7 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { EmailPreview } from "@/components/EmailPreview";
+import {
+  EmailPreview,
+  DEFAULT_BUTTON_COLOR,
+  HEX_RE,
+  buttonLuminance,
+} from "@/components/EmailPreview";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/settings")({
@@ -39,6 +44,9 @@ const CUSTOM_BODY_MAX = 1500;
 const PLACEHOLDER_CHIPS = ["{name}", "{business}", "{service}"] as const;
 const MAX_PHOTO_BYTES = 2 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+const MAX_LOGO_BYTES = 1024 * 1024;
+const LOGO_TYPES = [...ALLOWED_TYPES, "image/svg+xml"];
+const PRESET_COLORS = ["#4F6EF7", "#1a1a1a", "#0F766E", "#B45309", "#9D174D", "#4338CA"];
 
 function SettingsPage() {
   const business = useBusiness();
@@ -49,6 +57,7 @@ function SettingsForm() {
   const business = useBusiness();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
+  const logoRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
   const [form, setForm] = useState({
@@ -66,7 +75,13 @@ function SettingsForm() {
     custom_intro: business.custom_intro ?? "",
     custom_body: business.custom_body ?? "",
     sender_photo_url: business.sender_photo_url ?? null,
+    logo_url: business.logo_url ?? null,
+    button_color: business.button_color ?? DEFAULT_BUTTON_COLOR,
   });
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [logoError, setLogoError] = useState<string | null>(null);
+  const [colorText, setColorText] = useState(business.button_color ?? DEFAULT_BUTTON_COLOR);
+  const [colorError, setColorError] = useState<string | null>(null);
   const [urlError, setUrlError] = useState<string | null>(null);
   const [bodyError, setBodyError] = useState<string | null>(null);
   const bodyRef = useRef<HTMLTextAreaElement>(null);
@@ -140,6 +155,8 @@ function SettingsForm() {
           custom_intro: form.custom_intro.trim() || null,
           custom_body: form.custom_body.trim() || null,
           sender_photo_url: form.sender_photo_url,
+          logo_url: form.logo_url,
+          button_color: form.button_color,
         })
         .eq("id", business.id);
       if (error) throw error;
@@ -190,6 +207,50 @@ function SettingsForm() {
     const { data } = supabase.storage.from("business-photos").getPublicUrl(path);
     setForm((f) => ({ ...f, sender_photo_url: data.publicUrl }));
     toast.success("Photo uploaded", { description: "Save changes to keep it." });
+  }
+
+  async function onLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setLogoError(null);
+
+    if (!LOGO_TYPES.includes(file.type)) {
+      setLogoError("Please choose a JPG, PNG, WEBP or SVG image.");
+      return;
+    }
+    if (file.size > MAX_LOGO_BYTES) {
+      setLogoError("That image is larger than 1MB.");
+      return;
+    }
+
+    const ext = (file.name.split(".").pop() || "png").toLowerCase();
+    const path = `${business.id}/${crypto.randomUUID()}.${ext}`;
+
+    setLogoUploading(true);
+    const { error } = await supabase.storage
+      .from("business-photos")
+      .upload(path, file, { contentType: file.type, upsert: false });
+    setLogoUploading(false);
+
+    if (error) {
+      setLogoError(error.message);
+      return;
+    }
+
+    const { data } = supabase.storage.from("business-photos").getPublicUrl(path);
+    setForm((f) => ({ ...f, logo_url: data.publicUrl }));
+    toast.success("Logo uploaded", { description: "Save changes to keep it." });
+  }
+
+  function applyColor(value: string) {
+    setColorText(value);
+    if (!HEX_RE.test(value)) {
+      setColorError("Enter a colour like #4F6EF7.");
+      return;
+    }
+    setColorError(null);
+    setForm((f) => ({ ...f, button_color: value }));
   }
 
   function onSubmit(e: React.FormEvent) {
@@ -291,6 +352,103 @@ function SettingsForm() {
               <p className="text-sm text-muted-foreground">
                 Choose how your review request emails read.
               </p>
+            </div>
+
+            <div className="space-y-3">
+              <Label>Logo</Label>
+              <div className="flex flex-wrap items-center gap-4">
+                {form.logo_url ? (
+                  <img src={form.logo_url} alt="Logo" className="max-h-[44px] w-auto" />
+                ) : (
+                  <div className="flex h-11 items-center rounded-md bg-muted px-3 text-xs text-muted-foreground">
+                    None
+                  </div>
+                )}
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={logoUploading}
+                    onClick={() => logoRef.current?.click()}
+                  >
+                    {logoUploading ? "Uploading…" : form.logo_url ? "Replace logo" : "Upload logo"}
+                  </Button>
+                  {form.logo_url ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setForm({ ...form, logo_url: null })}
+                    >
+                      Remove
+                    </Button>
+                  ) : null}
+                </div>
+                <input
+                  ref={logoRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                  className="hidden"
+                  onChange={onLogoChange}
+                />
+              </div>
+              {logoError ? <p className="text-sm text-destructive">{logoError}</p> : null}
+              <p className="text-xs text-muted-foreground">
+                Appears at the top of every review request email. Stored publicly so email apps
+                can display it.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <Label htmlFor="button_color">Button colour</Label>
+              <div className="flex flex-wrap items-center gap-3">
+                <input
+                  aria-label="Pick button colour"
+                  type="color"
+                  value={HEX_RE.test(colorText) ? colorText : DEFAULT_BUTTON_COLOR}
+                  onChange={(e) => applyColor(e.target.value.toUpperCase())}
+                  className="h-9 w-12 cursor-pointer rounded-md border bg-card p-1"
+                />
+                <Input
+                  id="button_color"
+                  value={colorText}
+                  onChange={(e) => applyColor(e.target.value)}
+                  className="w-36"
+                />
+                <button
+                  type="button"
+                  onClick={() => applyColor(DEFAULT_BUTTON_COLOR)}
+                  className="text-sm text-primary underline underline-offset-4"
+                >
+                  Reset to default
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {PRESET_COLORS.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    aria-label={`Use ${c}`}
+                    onClick={() => applyColor(c)}
+                    style={{ backgroundColor: c }}
+                    className={cn(
+                      "h-7 w-7 rounded-full border",
+                      form.button_color.toLowerCase() === c.toLowerCase() &&
+                        "ring-2 ring-primary ring-offset-2",
+                    )}
+                  />
+                ))}
+              </div>
+              {colorError ? <p className="text-sm text-destructive">{colorError}</p> : null}
+              {!colorError && buttonLuminance(form.button_color) > 0.7 ? (
+                <div className="rounded-lg border bg-status-queued p-4">
+                  <p className="text-sm text-status-queued-foreground">
+                    This colour is too light for white text. The button will be sent in near-black
+                    instead so it stays readable.
+                  </p>
+                </div>
+              ) : null}
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
@@ -536,6 +694,8 @@ function SettingsForm() {
             customBody={form.custom_body}
             senderPhotoUrl={form.sender_photo_url}
             postalAddress={form.postal_address}
+            logoUrl={form.logo_url}
+            buttonColor={form.button_color}
           />
         </div>
       </div>

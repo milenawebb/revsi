@@ -6,7 +6,26 @@ type Props = {
   customBody: string;
   senderPhotoUrl: string | null;
   postalAddress: string;
+  logoUrl?: string | null;
+  buttonColor?: string;
 };
+
+export const DEFAULT_BUTTON_COLOR = "#4F6EF7";
+export const NEAR_BLACK = "#1a1a1a";
+export const HEX_RE = /^#[0-9A-Fa-f]{6}$/;
+
+export function buttonLuminance(hex: string): number {
+  if (!HEX_RE.test(hex)) return 0;
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+}
+
+export function effectiveButtonColor(hex: string): string {
+  if (!HEX_RE.test(hex)) return DEFAULT_BUTTON_COLOR;
+  return buttonLuminance(hex) > 0.7 ? NEAR_BLACK : hex;
+}
 
 const SAMPLE_NAME = "Sarah";
 const SAMPLE_SERVICE = "loan signing";
@@ -71,6 +90,8 @@ export function EmailPreview({
   customBody,
   senderPhotoUrl,
   postalAddress,
+  logoUrl,
+  buttonColor = DEFAULT_BUTTON_COLOR,
 }: Props) {
   const biz = businessName.trim() || "Your business";
   const isCustom = template === "custom";
@@ -85,6 +106,10 @@ export function EmailPreview({
       </p>
 
       <div className="mt-4 rounded-lg border bg-background p-5">
+        {logoUrl ? (
+          <img src={logoUrl} alt={`${biz} logo`} className="mb-4 max-h-[44px] w-auto" />
+        ) : null}
+
         {template === "personal" && senderPhotoUrl ? (
           <img
             src={senderPhotoUrl}
@@ -104,7 +129,10 @@ export function EmailPreview({
         ))}
 
         <div className="mt-5">
-          <span className="inline-block cursor-default rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">
+          <span
+            style={{ backgroundColor: effectiveButtonColor(buttonColor) }}
+            className="inline-block cursor-default rounded-lg px-4 py-2 text-sm font-medium text-primary-foreground"
+          >
             Leave a review
           </span>
         </div>
