@@ -47,6 +47,7 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
   const queryClient = useQueryClient();
   const [editing, setEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [confirmCancelId, setConfirmCancelId] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: "",
