@@ -336,13 +336,19 @@ function SettingsForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="postal_address">Postal address</Label>
+              <Label htmlFor="postal_address">Contact information</Label>
               <Textarea
                 id="postal_address"
-                rows={2}
+                rows={4}
+                placeholder={`Virginia Notary\n540-603-0359\nnotary@virginia-notary.com\nCharlottesville, VA 22901`}
                 value={form.postal_address}
                 onChange={(e) => setForm({ ...form, postal_address: e.target.value })}
               />
+              <p className="text-xs text-muted-foreground">
+                Shown at the bottom of every email. A physical mailing address is required by law.
+                Add a phone number or email address above it if you want replies to reach you
+                directly.
+              </p>
             </div>
           </div>
 
@@ -395,7 +401,7 @@ function SettingsForm() {
               </div>
               {logoError ? <p className="text-sm text-destructive">{logoError}</p> : null}
               <p className="text-xs text-muted-foreground">
-                Appears at the top of every review request email. Stored publicly so email apps
+                Appears in the footer of every review request email. Stored publicly so email apps
                 can display it.
               </p>
             </div>

@@ -106,10 +106,6 @@ export function EmailPreview({
       </p>
 
       <div className="mt-4 rounded-lg border bg-background p-5">
-        {logoUrl ? (
-          <img src={logoUrl} alt={`${biz} logo`} className="mb-4 max-h-[44px] w-auto" />
-        ) : null}
-
         {template === "personal" && senderPhotoUrl ? (
           <img
             src={senderPhotoUrl}
@@ -137,9 +133,17 @@ export function EmailPreview({
           </span>
         </div>
 
-        <p className="mt-5 text-sm text-foreground">{fromName.trim() || biz}</p>
+        <p className="mt-5 text-sm text-foreground">Thanks again,</p>
+        <p className="text-sm text-foreground">{fromName.trim() || biz}</p>
 
         <div className="mt-6 border-t pt-4 text-xs text-muted-foreground">
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={`${biz} logo`}
+              className="mb-3 max-h-[36px] max-w-[150px] object-contain"
+            />
+          ) : null}
           <p>You received this because you recently used {biz}.</p>
           {postalAddress.trim() ? (
             <p className="mt-1 whitespace-pre-line">{postalAddress.trim()}</p>
