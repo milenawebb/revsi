@@ -3,7 +3,7 @@ import { Star } from "lucide-react";
 import { usePrefersReducedMotion, useInView } from "./motion";
 
 const REVIEW =
-  "Milena came out on a Sunday and walked us through every page. Straightforward and patient.";
+  "Anna came out on a Sunday and walked us through every page. Straightforward and patient.";
 
 export function ReviewBoxMock() {
   const reduced = usePrefersReducedMotion();
