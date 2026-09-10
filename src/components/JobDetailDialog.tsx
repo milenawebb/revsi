@@ -26,8 +26,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { formatDate, formatDateTime } from "@/lib/format";
+import { formatDateTime } from "@/lib/format";
 import { useCanAsk } from "@/lib/can-ask";
+import { MarkCompletedDialog } from "@/components/MarkCompletedDialog";
+import { FUTURE_ERROR_SHORT, fromLocalInput, toLocalInput } from "@/lib/completion-time";
 
 const SENT_STATUSES = ["sending", "sent", "delivered", "bounced", "failed"];
 
@@ -39,8 +41,7 @@ type Props = {
 function toDateInput(value: string | null) {
   if (!value) return "";
   const d = new Date(value);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  return Number.isNaN(d.getTime()) ? "" : toLocalInput(d);
 }
 
 export function JobDetailDialog({ jobId, onOpenChange }: Props) {
