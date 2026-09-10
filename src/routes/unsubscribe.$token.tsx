@@ -30,6 +30,7 @@ function UnsubscribePage() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "invalid">("idle");
   const [result, setResult] = useState<{ business_name: string; customer_email: string } | null>(null);
   const called = useRef(false);
+  const branding = usePublicBranding(token);
 
   async function onUnsubscribe() {
     if (called.current) return;

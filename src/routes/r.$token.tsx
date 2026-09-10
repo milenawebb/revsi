@@ -23,6 +23,7 @@ function ReviewRedirectPage() {
   const { token } = Route.useParams();
   const [status, setStatus] = useState<"loading" | "invalid" | "redirecting">("loading");
   const called = useRef(false);
+  const branding = usePublicBranding(token);
 
   useEffect(() => {
     if (called.current) return;
