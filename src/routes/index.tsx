@@ -13,7 +13,8 @@ import {
   RequestsShot,
 } from "@/components/landing/ProductShots";
 import { Badge } from "@/components/ui/badge";
-import revsiLogo from "@/assets/revsi-logo.png.asset.json";
+import logoHeader from "@/assets/logo-header.png.asset.json";
+import logoFooter from "@/assets/logo-footer.png.asset.json";
 import { cn } from "@/lib/utils";
 
 const WAITLIST_MAILTO =
