@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { EmailPreview } from "@/components/EmailPreview";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
@@ -24,6 +26,17 @@ export const Route = createFileRoute("/_authenticated/settings")({
   component: SettingsPage,
 });
 
+const TEMPLATES = [
+  { value: "personal", label: "Personal", sub: "Warm and first person. Shows your photo." },
+  { value: "short", label: "Short", sub: "Two lines and a button." },
+  { value: "question", label: "Question", sub: "Asks what they'd tell a friend." },
+  { value: "warm", label: "Classic", sub: "Polite and formal." },
+] as const;
+
+const INTRO_MAX = 300;
+const MAX_PHOTO_BYTES = 2 * 1024 * 1024;
+const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
 function SettingsPage() {
   const business = useBusiness();
   return <SettingsForm key={business.id} />;
@@ -32,6 +45,9 @@ function SettingsPage() {
 function SettingsForm() {
   const business = useBusiness();
   const queryClient = useQueryClient();
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: business.name,
     review_url: business.review_url,
@@ -41,8 +57,13 @@ function SettingsForm() {
     request_delay_minutes: String(business.request_delay_minutes),
     reminder_enabled: business.reminder_enabled,
     reminder_delay_days: String(business.reminder_delay_days),
+    email_template: business.email_template ?? "personal",
+    custom_intro: business.custom_intro ?? "",
+    sender_photo_url: business.sender_photo_url ?? null,
   });
   const [urlError, setUrlError] = useState<string | null>(null);
+
+  const photoEnabled = form.email_template === "personal";
 
   const save = useMutation({
     mutationFn: async () => {
@@ -57,6 +78,9 @@ function SettingsForm() {
           request_delay_minutes: Number(form.request_delay_minutes) || 0,
           reminder_enabled: form.reminder_enabled,
           reminder_delay_days: Number(form.reminder_delay_days) || 0,
+          email_template: form.email_template,
+          custom_intro: form.custom_intro.trim() || null,
+          sender_photo_url: form.sender_photo_url,
         })
         .eq("id", business.id);
       if (error) throw error;
@@ -67,6 +91,40 @@ function SettingsForm() {
     },
     onError: (e: Error) => toast.error("Couldn't save settings", { description: e.message }),
   });
+
+  async function onPhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setPhotoError(null);
+
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setPhotoError("Please choose a JPG, PNG or WEBP image.");
+      return;
+    }
+    if (file.size > MAX_PHOTO_BYTES) {
+      setPhotoError("That image is larger than 2MB.");
+      return;
+    }
+
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+    const path = `${business.id}/${crypto.randomUUID()}.${ext}`;
+
+    setUploading(true);
+    const { error } = await supabase.storage
+      .from("business-photos")
+      .upload(path, file, { contentType: file.type, upsert: false });
+    setUploading(false);
+
+    if (error) {
+      setPhotoError(error.message);
+      return;
+    }
+
+    const { data } = supabase.storage.from("business-photos").getPublicUrl(path);
+    setForm((f) => ({ ...f, sender_photo_url: data.publicUrl }));
+    toast.success("Photo uploaded", { description: "Save changes to keep it." });
+  }
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -88,100 +146,227 @@ function SettingsForm() {
         <p className="text-sm text-muted-foreground">How your review requests are sent.</p>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-6 rounded-xl border bg-card p-5 shadow-card md:p-6">
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="name">Business name</Label>
-            <Input
-              id="name"
-              required
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="from_name">From name</Label>
-            <Input
-              id="from_name"
-              required
-              value={form.from_name}
-              onChange={(e) => setForm({ ...form, from_name: e.target.value })}
-            />
-          </div>
-        </div>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <form onSubmit={onSubmit} className="space-y-6">
+          <div className="space-y-6 rounded-xl border bg-card p-5 shadow-card md:p-6">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="name">Business name</Label>
+                <Input
+                  id="name"
+                  required
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="from_name">From name</Label>
+                <Input
+                  id="from_name"
+                  required
+                  value={form.from_name}
+                  onChange={(e) => setForm({ ...form, from_name: e.target.value })}
+                />
+              </div>
+            </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="review_url">Review link</Label>
-          <Input
-            id="review_url"
-            required
-            value={form.review_url}
-            onChange={(e) => setForm({ ...form, review_url: e.target.value })}
+            <div className="space-y-2">
+              <Label htmlFor="review_url">Review link</Label>
+              <Input
+                id="review_url"
+                required
+                value={form.review_url}
+                onChange={(e) => setForm({ ...form, review_url: e.target.value })}
+              />
+              {urlError ? <p className="text-sm text-destructive">{urlError}</p> : null}
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="reply_to_email">Reply-to email</Label>
+                <Input
+                  id="reply_to_email"
+                  type="email"
+                  value={form.reply_to_email}
+                  onChange={(e) => setForm({ ...form, reply_to_email: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="request_delay_minutes">Delay before sending (minutes)</Label>
+                <Input
+                  id="request_delay_minutes"
+                  type="number"
+                  min={0}
+                  value={form.request_delay_minutes}
+                  onChange={(e) => setForm({ ...form, request_delay_minutes: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="postal_address">Postal address</Label>
+              <Textarea
+                id="postal_address"
+                rows={2}
+                value={form.postal_address}
+                onChange={(e) => setForm({ ...form, postal_address: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-6 rounded-xl border bg-card p-5 shadow-card md:p-6">
+            <div>
+              <h2 className="text-lg font-semibold">Email style</h2>
+              <p className="text-sm text-muted-foreground">
+                Choose how your review request emails read.
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              {TEMPLATES.map((t) => {
+                const selected = form.email_template === t.value;
+                return (
+                  <button
+                    key={t.value}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => setForm({ ...form, email_template: t.value })}
+                    className={cn(
+                      "rounded-lg border p-4 text-left transition-colors",
+                      selected
+                        ? "border-primary bg-primary/5"
+                        : "bg-card hover:bg-muted/50",
+                    )}
+                  >
+                    <p className="text-sm font-medium">{t.label}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{t.sub}</p>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="custom_intro">Add a line of your own (optional)</Label>
+              <Textarea
+                id="custom_intro"
+                rows={3}
+                maxLength={INTRO_MAX}
+                value={form.custom_intro}
+                onChange={(e) => setForm({ ...form, custom_intro: e.target.value })}
+              />
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <p className="max-w-md text-xs text-muted-foreground">
+                  This appears as the second line of the email, in your words. For example: I hope
+                  the paperwork all went through smoothly.
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {form.custom_intro.length}/{INTRO_MAX}
+                </p>
+              </div>
+            </div>
+
+            <div className={cn("space-y-3", !photoEnabled && "opacity-50")}>
+              <Label>Sender photo</Label>
+              {!photoEnabled ? (
+                <p className="text-xs text-muted-foreground">
+                  Only shown on the Personal template.
+                </p>
+              ) : null}
+
+              <div className="flex items-center gap-4">
+                {form.sender_photo_url ? (
+                  <img
+                    src={form.sender_photo_url}
+                    alt="Sender"
+                    className="h-14 w-14 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted text-xs text-muted-foreground">
+                    None
+                  </div>
+                )}
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={!photoEnabled || uploading}
+                    onClick={() => fileRef.current?.click()}
+                  >
+                    {uploading ? "Uploading…" : form.sender_photo_url ? "Replace photo" : "Upload photo"}
+                  </Button>
+                  {form.sender_photo_url ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      disabled={!photoEnabled}
+                      onClick={() => setForm({ ...form, sender_photo_url: null })}
+                    >
+                      Remove
+                    </Button>
+                  ) : null}
+                </div>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={onPhotoChange}
+                />
+              </div>
+
+              {photoError ? <p className="text-sm text-destructive">{photoError}</p> : null}
+              <p className="text-xs text-muted-foreground">
+                This photo is stored publicly so email apps can display it. JPG, PNG or WEBP, up to
+                2MB.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-6 rounded-xl border bg-card p-5 shadow-card md:p-6">
+            <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-muted/50 p-4">
+              <div>
+                <p className="text-sm font-medium">Send a reminder</p>
+                <p className="text-xs text-muted-foreground">
+                  Follow up if the first email isn't clicked.
+                </p>
+              </div>
+              <Switch
+                checked={form.reminder_enabled}
+                onCheckedChange={(v) => setForm({ ...form, reminder_enabled: v })}
+              />
+            </div>
+
+            <div className="space-y-2 md:max-w-xs">
+              <Label htmlFor="reminder_delay_days">Reminder delay (days)</Label>
+              <Input
+                id="reminder_delay_days"
+                type="number"
+                min={0}
+                disabled={!form.reminder_enabled}
+                value={form.reminder_delay_days}
+                onChange={(e) => setForm({ ...form, reminder_delay_days: e.target.value })}
+              />
+            </div>
+
+            <Button type="submit" disabled={save.isPending}>
+              {save.isPending ? "Saving…" : "Save changes"}
+            </Button>
+          </div>
+        </form>
+
+        <div className="lg:sticky lg:top-6 lg:self-start">
+          <EmailPreview
+            template={form.email_template}
+            businessName={form.name}
+            fromName={form.from_name}
+            customIntro={form.custom_intro}
+            senderPhotoUrl={form.sender_photo_url}
+            postalAddress={form.postal_address}
           />
-          {urlError ? <p className="text-sm text-destructive">{urlError}</p> : null}
         </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="reply_to_email">Reply-to email</Label>
-            <Input
-              id="reply_to_email"
-              type="email"
-              value={form.reply_to_email}
-              onChange={(e) => setForm({ ...form, reply_to_email: e.target.value })}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="request_delay_minutes">Delay before sending (minutes)</Label>
-            <Input
-              id="request_delay_minutes"
-              type="number"
-              min={0}
-              value={form.request_delay_minutes}
-              onChange={(e) => setForm({ ...form, request_delay_minutes: e.target.value })}
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="postal_address">Postal address</Label>
-          <Textarea
-            id="postal_address"
-            rows={2}
-            value={form.postal_address}
-            onChange={(e) => setForm({ ...form, postal_address: e.target.value })}
-          />
-        </div>
-
-        <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-muted/50 p-4">
-          <div>
-            <p className="text-sm font-medium">Send a reminder</p>
-            <p className="text-xs text-muted-foreground">
-              Follow up if the first email isn't clicked.
-            </p>
-          </div>
-          <Switch
-            checked={form.reminder_enabled}
-            onCheckedChange={(v) => setForm({ ...form, reminder_enabled: v })}
-          />
-        </div>
-
-        <div className="space-y-2 md:max-w-xs">
-          <Label htmlFor="reminder_delay_days">Reminder delay (days)</Label>
-          <Input
-            id="reminder_delay_days"
-            type="number"
-            min={0}
-            disabled={!form.reminder_enabled}
-            value={form.reminder_delay_days}
-            onChange={(e) => setForm({ ...form, reminder_delay_days: e.target.value })}
-          />
-        </div>
-
-        <Button type="submit" disabled={save.isPending}>
-          {save.isPending ? "Saving…" : "Save changes"}
-        </Button>
-      </form>
+      </div>
     </div>
   );
 }
