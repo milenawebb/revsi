@@ -68,6 +68,16 @@
   --color-status-failed-foreground: var(--status-failed-foreground);
   --color-status-cancelled: var(--status-cancelled);
   --color-status-cancelled-foreground: var(--status-cancelled-foreground);
+  --color-status-not-asked: var(--status-not-asked);
+  --color-status-not-asked-foreground: var(--status-not-asked-foreground);
+  --color-status-scheduled: var(--status-scheduled);
+  --color-status-scheduled-foreground: var(--status-scheduled-foreground);
+  --color-status-request-sent: var(--status-request-sent);
+  --color-status-request-sent-foreground: var(--status-request-sent-foreground);
+  --color-status-delivered: var(--status-delivered);
+  --color-status-delivered-foreground: var(--status-delivered-foreground);
+  --color-status-bounced: var(--status-bounced);
+  --color-status-bounced-foreground: var(--status-bounced-foreground);
   --background-image-brand-gradient: var(--brand-gradient);
   --shadow-card: 0 1px 2px 0 rgb(20 20 27 / 0.05);
 }
@@ -120,6 +130,16 @@
   --status-failed-foreground: #991b1b;
   --status-cancelled: #f4f4f6;
   --status-cancelled-foreground: #57534e;
+  --status-not-asked: #f4f4f6;
+  --status-not-asked-foreground: #57534e;
+  --status-scheduled: #fef3c7;
+  --status-scheduled-foreground: #92400e;
+  --status-request-sent: color-mix(in oklab, var(--primary) 12%, transparent);
+  --status-request-sent-foreground: var(--primary);
+  --status-delivered: #dcfce7;
+  --status-delivered-foreground: #166534;
+  --status-bounced: #fee2e2;
+  --status-bounced-foreground: #991b1b;
   --brand-gradient: linear-gradient(135deg, #14141b 0%, #4f6ef7 45%, #ec4899 100%);
 }
 
