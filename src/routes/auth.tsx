@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -73,6 +73,14 @@ function AuthPage() {
             {busy ? "Signing in…" : "Sign in"}
           </Button>
         </form>
+        <div className="mt-6 flex items-center justify-center gap-4 border-t pt-4 text-xs text-muted-foreground">
+          <Link to="/terms" className="hover:text-foreground">
+            Terms
+          </Link>
+          <Link to="/privacy" className="hover:text-foreground">
+            Privacy
+          </Link>
+        </div>
       </div>
     </main>
   );

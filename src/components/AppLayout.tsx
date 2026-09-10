@@ -115,6 +115,14 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <LogOut className="size-4" />
         Sign out
       </Button>
+      <div className="flex items-center gap-3 px-3 text-xs text-sidebar-muted">
+        <Link to="/terms" onClick={() => setOpen(false)} className="hover:text-sidebar-foreground">
+          Terms
+        </Link>
+        <Link to="/privacy" onClick={() => setOpen(false)} className="hover:text-sidebar-foreground">
+          Privacy
+        </Link>
+      </div>
     </div>
   );
 
