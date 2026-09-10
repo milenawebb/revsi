@@ -24,13 +24,12 @@ export function substitutePlaceholders(text: string, biz: string): string {
 export function customTemplateBody(body: string, biz: string): string[] {
   const trimmed = body.trim();
   if (!trimmed) {
-    return [`Hi ${SAMPLE_NAME},`, `Thank you for choosing ${biz}.`, FIXED_ASK_LINE];
+    return [`Hi ${SAMPLE_NAME},`, `Thank you for choosing ${biz}.`];
   }
-  const paragraphs = trimmed
+  return trimmed
     .split(/\n\s*\n/)
     .map((p) => substitutePlaceholders(p.trim(), biz))
     .filter(Boolean);
-  return [...paragraphs, FIXED_ASK_LINE];
 }
 
 export function templateBody(template: string, biz: string): string[] {
