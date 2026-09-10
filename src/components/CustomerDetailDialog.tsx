@@ -23,6 +23,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { NewJobDialog } from "@/components/NewJobDialog";
 import { formatDate } from "@/lib/format";
 import { requestBadge, type RequestSummary } from "@/lib/request-state";
@@ -46,7 +54,7 @@ export function CustomerDetailDialog({
     queryFn: async () => {
       const { data: customer, error: cErr } = await supabase
         .from("customers")
-        .select("id, name, email, phone")
+        .select("id, name, email, phone, reviewed_at, do_not_ask, role")
         .eq("id", customerId!)
         .single();
       if (cErr) throw cErr;
