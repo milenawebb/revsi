@@ -2,6 +2,7 @@ type Props = {
   template: string;
   businessName: string;
   fromName: string;
+  replyToEmail?: string | null;
   customIntro: string;
   customBody: string;
   senderPhotoUrl: string | null;
