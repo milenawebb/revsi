@@ -320,6 +320,13 @@ export type Database = {
           review_url: string
         }[]
       }
+      record_email_event: {
+        Args: { p_event: string; p_message_id: string }
+        Returns: {
+          new_status: string
+          request_id: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
