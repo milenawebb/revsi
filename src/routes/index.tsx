@@ -7,10 +7,13 @@ import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Reveal, useInView, usePrefersReducedMotion } from "@/components/landing/motion";
 import {
   FloatingChip,
-  JobsShot,
+  PhotoFrame,
   RequestsShot,
   SettingsShot,
 } from "@/components/landing/ProductShots";
+import signingTablePhoto from "@/assets/landing/signing-table.jpg";
+import carSeatPhoto from "@/assets/landing/car-seat.jpg";
+import stampSealPhoto from "@/assets/landing/stamp-seal.jpg";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -235,7 +238,12 @@ function LandingPage() {
         <AltSection
           pill="The problem"
           heading="Reviews decide who gets called."
-          visual={<JobsShot />}
+          visual={
+            <PhotoFrame
+              src={signingTablePhoto}
+              alt="Hands turning a page of documents on a signing table beside a pen"
+            />
+          }
           chip={
             <FloatingChip>
               <Badge variant="delivered" className="text-[10px]">
@@ -272,10 +280,18 @@ function LandingPage() {
         <AltSection
           pill="For notaries"
           heading="Built for notaries"
-          visual={<SettingsShot />}
+          visual={
+            <PhotoFrame
+              src={carSeatPhoto}
+              alt="A document folder and a phone on a car passenger seat in afternoon light"
+            />
+          }
           chip={
             <FloatingChip>
-              <p className="text-xs font-medium text-foreground">Button colour</p>
+              <Badge variant="queued" className="text-[10px]">
+                Queued
+              </Badge>
+              <p className="mt-2 text-xs text-muted-foreground">Sends 1 hour after the job</p>
               <div className="mt-2 flex items-center gap-2">
                 {["#4F6EF7", "#0F766E", "#7C3AED", "#B91C4B", "#14141B"].map((c) => (
                   <span
