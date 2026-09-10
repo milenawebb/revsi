@@ -53,7 +53,17 @@ function ReviewRedirectPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md rounded-xl border bg-card p-8 shadow-card text-center">
+      <div className="w-full max-w-md">
+        {branding?.logo_url ? (
+          <div className="mb-6 flex justify-center">
+            <img
+              src={branding.logo_url}
+              alt={branding.business_name}
+              className="max-h-12 w-auto object-contain"
+            />
+          </div>
+        ) : null}
+        <div className="rounded-xl border bg-card p-8 shadow-card text-center">
         {status === "invalid" ? (
           <>
             <h1 className="text-lg font-semibold tracking-tight text-foreground">
