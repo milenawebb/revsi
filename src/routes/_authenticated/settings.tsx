@@ -66,7 +66,13 @@ function SettingsForm() {
     custom_intro: business.custom_intro ?? "",
     custom_body: business.custom_body ?? "",
     sender_photo_url: business.sender_photo_url ?? null,
+    logo_url: business.logo_url ?? null,
+    button_color: business.button_color ?? DEFAULT_BUTTON_COLOR,
   });
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [logoError, setLogoError] = useState<string | null>(null);
+  const [colorText, setColorText] = useState(business.button_color ?? DEFAULT_BUTTON_COLOR);
+  const [colorError, setColorError] = useState<string | null>(null);
   const [urlError, setUrlError] = useState<string | null>(null);
   const [bodyError, setBodyError] = useState<string | null>(null);
   const bodyRef = useRef<HTMLTextAreaElement>(null);
