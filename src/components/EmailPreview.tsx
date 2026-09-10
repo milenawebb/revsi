@@ -106,6 +106,10 @@ export function EmailPreview({
       </p>
 
       <div className="mt-4 rounded-lg border bg-background p-5">
+        {logoUrl ? (
+          <img src={logoUrl} alt={`${biz} logo`} className="mb-4 max-h-[44px] w-auto" />
+        ) : null}
+
         {template === "personal" && senderPhotoUrl ? (
           <img
             src={senderPhotoUrl}
