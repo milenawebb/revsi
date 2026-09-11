@@ -8,6 +8,11 @@ export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async () => {
     const { data, error } = await supabase.auth.getUser();
     if (error || !data.user) throw redirect({ to: "/login" });
+    const { data: rows, error: bizError } = await supabase
+      .from("businesses")
+      .select("id")
+      .limit(1);
+    if (!bizError && (!rows || rows.length === 0)) throw redirect({ to: "/welcome" });
     return { user: data.user };
   },
   component: () => (
