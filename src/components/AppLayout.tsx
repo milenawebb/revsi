@@ -124,14 +124,19 @@ export function AppLayout({ children }: { children: ReactNode }) {
                 usedUp ? "bg-status-queued-foreground" : "bg-primary",
               )}
               style={{
-                width: `${Math.min(100, usage.data.allowance ? (usage.data.used / usage.data.allowance) * 100 : 0)}%`,
+                width: usedUp
+                  ? "100%"
+                  : `${Math.min(100, usage.data.allowance ? (usage.data.used / usage.data.allowance) * 100 : 0)}%`,
               }}
             />
           </div>
           {usedUp ? (
-            <div className="mt-2 flex items-center justify-between gap-2 text-xs">
-              <span className="text-sidebar-foreground">Free requests used up</span>
-              <a href={PAYMENT_MAILTO} className="text-primary hover:underline">
+            <div className="mt-2 space-y-1 text-xs">
+              <p className="text-sidebar-foreground">Free requests used up</p>
+              <a
+                href={PAYMENT_MAILTO}
+                className="block w-full rounded-md bg-primary px-2 py-1.5 text-center text-primary-foreground hover:bg-primary/90"
+              >
                 Add payment
               </a>
             </div>
