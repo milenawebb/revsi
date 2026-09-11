@@ -85,9 +85,10 @@ function JobsPage() {
           .gte("completed_at", from),
         supabase
           .from("review_requests")
-          .select("sent_at, clicked_at")
+          .select("status, sent_at, clicked_at")
           .eq("business_id", business.id)
-          .eq("status", "sent")
+          .eq("kind", "initial")
+          .in("status", ["sent", "delivered", "bounced", "clicked"])
           .gte("sent_at", from)
           .limit(1000),
       ]);
