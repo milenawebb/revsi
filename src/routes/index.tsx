@@ -257,6 +257,9 @@ function LandingPage() {
                 <a href="#how-it-works">See how it works</a>
               </Button>
             </div>
+            <p className="mt-4 text-sm text-white/80">
+              First 20 requests free. No card required.
+            </p>
           </div>
           <div className="lg:pl-6">
             <HeroEmailCard />
