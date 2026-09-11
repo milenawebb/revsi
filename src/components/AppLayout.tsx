@@ -14,7 +14,7 @@ import {
   Users,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useBusinesses } from "@/lib/business-context";
+import { useBusinesses, type Business } from "@/lib/business-context";
 import { AddBusinessDialog } from "@/components/AddBusinessDialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +26,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useCanSend, PAYMENT_MAILTO } from "@/lib/can-send";
+
+function BusinessPlanLine({ business }: { business: Business }) {
+  const usage = useCanSend(business.id, business.plan === "free");
+  if (business.plan !== "free") {
+    return <span className="text-xs text-muted-foreground">Paid</span>;
+  }
+  if (!usage.data) {
+    return <span className="text-xs text-muted-foreground">Free</span>;
+  }
+  return (
+    <span className="text-xs text-muted-foreground">
+      Free, {usage.data.used} of {usage.data.allowance} used
+    </span>
+  );
+}
 
 const nav = [
   { to: "/jobs", label: "Jobs", icon: Briefcase },
@@ -79,7 +94,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
               className="gap-2"
             >
               <Check className={cn("size-4", b.id === business.id ? "opacity-100" : "opacity-0")} />
-              <span className="truncate">{b.name}</span>
+              <div className="flex min-w-0 flex-col">
+                <span className="truncate">{b.name}</span>
+                <BusinessPlanLine business={b} />
+              </div>
             </DropdownMenuItem>
           ))}
           <DropdownMenuSeparator />

@@ -137,6 +137,10 @@ export function AddBusinessDialog({
               onChange={(e) => setForm({ ...form, postal_address: e.target.value })}
             />
           </div>
+          <div className="rounded-lg border bg-muted/40 p-3 text-sm text-muted-foreground">
+            Each business is billed separately. Adding one here creates a second subscription with
+            its own invoice, and its own free requests.
+          </div>
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               Cancel

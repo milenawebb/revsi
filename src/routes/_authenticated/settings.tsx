@@ -290,6 +290,9 @@ function SettingsForm() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
         <p className="text-sm text-muted-foreground">How your review requests are sent.</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Settings and billing apply to {business.name} only.
+        </p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
