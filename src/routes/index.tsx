@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Check } from "lucide-react";
 import { type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { HeroEmailCard } from "@/components/landing/HeroEmailCard";
