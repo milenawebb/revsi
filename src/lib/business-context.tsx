@@ -1,33 +1,15 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
 import { AddBusinessDialog } from "@/components/AddBusinessDialog";
 import { Button } from "@/components/ui/button";
+import {
+  BusinessContext,
+  BUSINESS_STORAGE_KEY as STORAGE_KEY,
+} from "@/lib/business-context-core";
 
-export type Business = Database["public"]["Tables"]["businesses"]["Row"];
-
-const STORAGE_KEY = "selected-business-id";
-
-type Ctx = {
-  business: Business;
-  businesses: Business[];
-  selectBusiness: (id: string) => void;
-};
-
-const BusinessContext = createContext<Ctx | null>(null);
-
-export function useBusiness() {
-  const ctx = useContext(BusinessContext);
-  if (!ctx) throw new Error("useBusiness must be used inside BusinessProvider");
-  return ctx.business;
-}
-
-export function useBusinesses() {
-  const ctx = useContext(BusinessContext);
-  if (!ctx) throw new Error("useBusinesses must be used inside BusinessProvider");
-  return ctx;
-}
+export type { Business } from "@/lib/business-context-core";
+export { useBusiness, useBusinesses } from "@/lib/business-context-core";
 
 export function BusinessProvider({ children }: { children: ReactNode }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
