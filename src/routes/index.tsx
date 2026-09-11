@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Check } from "lucide-react";
 import { type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { HeroEmailCard } from "@/components/landing/HeroEmailCard";
@@ -256,6 +257,9 @@ function LandingPage() {
                 <a href="#how-it-works">See how it works</a>
               </Button>
             </div>
+            <p className="mt-4 text-sm text-white/80">
+              First 20 requests free. No card required.
+            </p>
           </div>
           <div className="lg:pl-6">
             <HeroEmailCard />
@@ -336,17 +340,55 @@ function LandingPage() {
           </div>
         </AltSection>
 
-        {/* Pricing — the second and final gradient moment */}
+        {/* Pricing */}
         <section id="pricing" className="landing-wash scroll-mt-8 py-20 lg:py-28">
-          <div className="mx-auto max-w-3xl px-5">
-            <Reveal>
-              <div className="rounded-2xl bg-brand-gradient p-8 text-center text-primary-foreground shadow-[0_24px_60px_-24px_rgb(20_20_27/0.35)] sm:p-12">
-                <h2 className="text-2xl font-bold tracking-tight">Pricing</h2>
-                <p className="mx-auto mt-4 max-w-md text-base opacity-90">
-                  Pricing announced at launch. Waitlist members get founding pricing.
+          <div className="mx-auto max-w-2xl px-5">
+            <Reveal className="text-center">
+              <SectionLabel centered>Pricing</SectionLabel>
+              <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground">
+                Simple pricing
+              </h2>
+              <p className="mt-3 text-base text-muted-foreground">
+                Start free. No card until you need one.
+              </p>
+            </Reveal>
+
+            <Reveal delay={80}>
+              <div className="mt-10 rounded-2xl border border-border/60 bg-card p-8 text-center shadow-card sm:p-10">
+                <div className="flex items-baseline justify-center gap-1.5">
+                  <span className="text-5xl font-bold tracking-tight text-foreground">$29</span>
+                  <span className="text-base text-muted-foreground">per month</span>
+                </div>
+                <p className="mt-2 text-base text-foreground">
+                  One business, unlimited review requests.
                 </p>
+
+                <hr className="my-6 border-border" />
+
+                <ul className="mx-auto max-w-sm space-y-3 text-left">
+                  {[
+                    "Your first 20 requests are free",
+                    "No card required to start",
+                    "Month to month, cancel any time in the app",
+                    "Email delivery, click tracking and reminders included",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-3 text-base text-foreground">
+                      <span className="mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <Check className="size-3" aria-hidden />
+                      </span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <p className="mx-auto mt-6 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                  Running more than one business? Manage them all from one login.
+                  Each additional business is $15 a month and is billed separately, so
+                  every company gets its own invoice.
+                </p>
+
                 <div className="mt-8">
-                  <WaitlistButton variant="secondary" className="w-full sm:w-auto" />
+                  <WaitlistButton className="w-full sm:w-auto" />
                 </div>
               </div>
             </Reveal>
