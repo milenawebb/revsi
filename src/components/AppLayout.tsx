@@ -25,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useCanSend, PAYMENT_MAILTO } from "@/lib/can-send";
 
 const nav = [
   { to: "/jobs", label: "Jobs", icon: Briefcase },
@@ -40,6 +41,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+  const usage = useCanSend(business.id, business.plan === "free");
+  const usedUp = Boolean(usage.data && usage.data.used >= usage.data.allowance);
 
   async function signOut() {
     await queryClient.cancelQueries();
@@ -107,6 +110,38 @@ export function AppLayout({ children }: { children: ReactNode }) {
           );
         })}
       </nav>
+      {business.plan === "free" && usage.data ? (
+        <div className="px-3">
+          <div
+            className={cn(
+              "h-1.5 w-full overflow-hidden rounded-full",
+              usedUp ? "bg-status-queued" : "bg-sidebar-accent",
+            )}
+          >
+            <div
+              className={cn(
+                "h-full rounded-full transition-all",
+                usedUp ? "bg-status-queued-foreground" : "bg-primary",
+              )}
+              style={{
+                width: `${Math.min(100, usage.data.allowance ? (usage.data.used / usage.data.allowance) * 100 : 0)}%`,
+              }}
+            />
+          </div>
+          {usedUp ? (
+            <div className="mt-2 flex items-center justify-between gap-2 text-xs">
+              <span className="text-sidebar-foreground">Free requests used up</span>
+              <a href={PAYMENT_MAILTO} className="text-primary hover:underline">
+                Add payment
+              </a>
+            </div>
+          ) : (
+            <p className="mt-2 text-xs text-sidebar-muted">
+              {usage.data.used} of {usage.data.allowance} free requests used
+            </p>
+          )}
+        </div>
+      ) : null}
       <Button
         variant="ghost"
         className="mt-auto justify-start gap-3 px-3 text-sidebar-muted hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
