@@ -94,7 +94,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
               className="gap-2"
             >
               <Check className={cn("size-4", b.id === business.id ? "opacity-100" : "opacity-0")} />
-              <span className="truncate">{b.name}</span>
+              <div className="flex min-w-0 flex-col">
+                <span className="truncate">{b.name}</span>
+                <BusinessPlanLine business={b} />
+              </div>
             </DropdownMenuItem>
           ))}
           <DropdownMenuSeparator />
