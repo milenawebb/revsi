@@ -65,12 +65,14 @@ export type Database = {
           custom_intro: string | null
           daily_send_cap: number
           email_template: string
+          free_allowance: number
           from_name: string
           id: string
           is_active: boolean
           logo_url: string | null
           name: string
           owner_id: string
+          plan: string
           postal_address: string | null
           reminder_delay_days: number
           reminder_enabled: boolean
@@ -91,12 +93,14 @@ export type Database = {
           custom_intro?: string | null
           daily_send_cap?: number
           email_template?: string
+          free_allowance?: number
           from_name: string
           id?: string
           is_active?: boolean
           logo_url?: string | null
           name: string
           owner_id: string
+          plan?: string
           postal_address?: string | null
           reminder_delay_days?: number
           reminder_enabled?: boolean
@@ -117,12 +121,14 @@ export type Database = {
           custom_intro?: string | null
           daily_send_cap?: number
           email_template?: string
+          free_allowance?: number
           from_name?: string
           id?: string
           is_active?: boolean
           logo_url?: string | null
           name?: string
           owner_id?: string
+          plan?: string
           postal_address?: string | null
           reminder_delay_days?: number
           reminder_enabled?: boolean
@@ -422,6 +428,15 @@ export type Database = {
           reason: string
         }[]
       }
+      can_business_send: {
+        Args: { p_business_id: string }
+        Returns: {
+          allowance: number
+          allowed: boolean
+          reason: string
+          used: number
+        }[]
+      }
       check_review_copy: {
         Args: { p_text: string }
         Returns: {
@@ -461,6 +476,7 @@ export type Database = {
           key_prefix: string
         }[]
       }
+      free_requests_used: { Args: { p_business_id: string }; Returns: number }
       ingest_completed_job: {
         Args: {
           p_business_id: string
