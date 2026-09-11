@@ -92,10 +92,26 @@ function AuthPage() {
             />
           </div>
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
+          {notice ? <p className="text-sm text-muted-foreground">{notice}</p> : null}
           <Button type="submit" className="w-full" disabled={busy}>
             {busy ? "Signing in…" : "Sign in"}
           </Button>
         </form>
+        <div className="mt-4 space-y-2 text-center text-sm">
+          <p className="text-muted-foreground">
+            <Link to="/signup" className="font-medium text-foreground hover:underline">
+              Create an account
+            </Link>
+          </p>
+          <button
+            type="button"
+            onClick={onForgotPassword}
+            disabled={busy}
+            className="text-sm text-muted-foreground hover:text-foreground hover:underline"
+          >
+            Forgot password
+          </button>
+        </div>
         <div className="mt-6 flex items-center justify-center gap-4 border-t pt-4 text-xs text-muted-foreground">
           <Link to="/terms" className="hover:text-foreground">
             Terms
