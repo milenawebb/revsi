@@ -27,6 +27,26 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  async function onForgotPassword() {
+    setError(null);
+    setNotice(null);
+    if (!email.trim()) {
+      setError("Enter your email address first, then choose Forgot password.");
+      return;
+    }
+    setBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setBusy(false);
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    setNotice("We sent you a link to reset your password. Check your inbox.");
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
