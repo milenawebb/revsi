@@ -22,6 +22,7 @@ import {
 } from "@/components/CompletionTimeControl";
 import { fromLocalInput, nowLocalInput } from "@/lib/completion-time";
 import { useCanAsk } from "@/lib/can-ask";
+import { useCanSend } from "@/lib/can-send";
 import { useCustomerMatches } from "@/lib/customer-match";
 import { CustomerMatchHint } from "@/components/CustomerMatchHint";
 import { cn } from "@/lib/utils";
@@ -81,6 +82,7 @@ export function NewJobDialog({
   });
 
   const { data: canAsk } = useCanAsk(selectedId, open);
+  const { data: canSend } = useCanSend(business.id, open);
   const blockedReason = canAsk && !canAsk.allowed ? canAsk.reason : null;
 
   const completionInvalid =
@@ -256,6 +258,16 @@ export function NewJobDialog({
               <p className="text-sm text-status-queued-foreground">{blockedReason}</p>
               <p className="mt-1 text-sm text-status-queued-foreground">
                 Saving this job will not send a review request.
+              </p>
+            </div>
+          ) : null}
+          {canSend && !canSend.allowed ? (
+            <div className="rounded-lg border bg-status-queued p-3">
+              <p className="text-sm text-status-queued-foreground">
+                {canSend.reason ?? "This business cannot send review requests right now."}
+              </p>
+              <p className="mt-1 text-sm text-status-queued-foreground">
+                The job will be saved and the request will send once payment is added.
               </p>
             </div>
           ) : null}

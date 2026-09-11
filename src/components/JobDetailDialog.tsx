@@ -28,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { formatDateTime } from "@/lib/format";
 import { useCanAsk } from "@/lib/can-ask";
+import { useCanSend } from "@/lib/can-send";
 import { MarkCompletedDialog } from "@/components/MarkCompletedDialog";
 import { FUTURE_ERROR_SHORT, fromLocalInput, toLocalInput } from "@/lib/completion-time";
 
@@ -117,6 +118,7 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
   const missingInitial =
     !requests.isLoading && !initial && job.data?.status === "completed";
   const { data: canAsk } = useCanAsk(job.data?.customer_id, Boolean(missingInitial));
+  const { data: canSend } = useCanSend(business.id, Boolean(jobId));
 
   const parsedCompleted = fromLocalInput(form.completed_date);
   const completedFuture = Boolean(parsedCompleted && parsedCompleted.getTime() > Date.now());
@@ -380,6 +382,16 @@ export function JobDetailDialog({ jobId, onOpenChange }: Props) {
                           </Button>
                         )}
                       </div>
+                      {r.status === "queued" && canSend && !canSend.allowed ? (
+                        <div className="mt-2 rounded-md bg-status-queued p-2">
+                          <p className="text-xs font-medium text-status-queued-foreground">
+                            Waiting to send
+                          </p>
+                          <p className="mt-1 text-xs text-status-queued-foreground">
+                            {canSend.reason ?? "This business cannot send review requests right now."}
+                          </p>
+                        </div>
+                      ) : null}
                       <div className="mt-2 space-y-1 text-xs text-muted-foreground">
                         <p>Sends {formatDateTime(r.send_after)}</p>
                         {r.sent_at && <p>Sent {formatDateTime(r.sent_at)}</p>}

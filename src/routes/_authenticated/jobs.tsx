@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
+import { useCanSend } from "@/lib/can-send";
 import { supabase } from "@/integrations/supabase/client";
 import { useBusiness } from "@/lib/business-context";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,9 @@ function JobsPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [completingId, setCompletingId] = useState<string | null>(null);
+  const [dismissed, setDismissed] = useState(false);
+  const { data: canSend } = useCanSend(business.id);
+  const usedUp = Boolean(canSend && canSend.used >= canSend.allowance);
 
   const jobs = useQuery({
     queryKey: ["jobs", business.id],
@@ -125,6 +129,22 @@ function JobsPage() {
 
   return (
     <div className="space-y-6">
+      {usedUp && !dismissed ? (
+        <div className="flex items-start gap-3 rounded-xl border bg-status-queued p-4">
+          <p className="flex-1 text-sm text-status-queued-foreground">
+            You have used all {canSend?.allowance} free requests. New requests are being saved and
+            will send as soon as you add a payment method.
+          </p>
+          <button
+            type="button"
+            onClick={() => setDismissed(true)}
+            aria-label="Dismiss"
+            className="text-status-queued-foreground/70 hover:text-status-queued-foreground"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+      ) : null}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Jobs</h1>
