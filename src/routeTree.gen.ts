@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
 import { Route as AuthenticatedImportRouteImport } from './routes/_authenticated/import'
@@ -45,6 +46,11 @@ const LoginRoute = LoginRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/import': typeof AuthenticatedImportRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
   '/customers': typeof AuthenticatedCustomersRoute
   '/import': typeof AuthenticatedImportRoute
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
   '/_authenticated/customers': typeof AuthenticatedCustomersRoute
   '/_authenticated/import': typeof AuthenticatedImportRoute
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/login'
     | '/privacy'
+    | '/signup'
     | '/terms'
     | '/customers'
     | '/import'
@@ -153,6 +163,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/login'
     | '/privacy'
+    | '/signup'
     | '/terms'
     | '/customers'
     | '/import'
@@ -168,6 +179,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/login'
     | '/privacy'
+    | '/signup'
     | '/terms'
     | '/_authenticated/customers'
     | '/_authenticated/import'
@@ -184,6 +196,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
+  SignupRoute: typeof SignupRoute
   TermsRoute: typeof TermsRoute
   RTokenRoute: typeof RTokenRoute
   UnsubscribeTokenRoute: typeof UnsubscribeTokenRoute
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -310,6 +330,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
+  SignupRoute: SignupRoute,
   TermsRoute: TermsRoute,
   RTokenRoute: RTokenRoute,
   UnsubscribeTokenRoute: UnsubscribeTokenRoute,
