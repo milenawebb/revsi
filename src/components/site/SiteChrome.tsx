@@ -162,6 +162,9 @@ export function SiteFooter({ className }: { className?: string }) {
           <Link to="/privacy" className="hover:text-foreground">
             Privacy
           </Link>
+          <Link to="/subscriptions" className="hover:text-foreground">
+            Subscriptions &amp; Refunds
+          </Link>
           <a href="mailto:info@revsi.app" className="hover:text-foreground">
             info@revsi.app
           </a>
