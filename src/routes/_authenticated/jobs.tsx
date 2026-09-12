@@ -4,6 +4,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Plus, X } from "lucide-react";
 import { useCanSend } from "@/lib/can-send";
+import { useCheckoutReturn } from "@/lib/checkout";
+import { AddPaymentButton } from "@/components/AddPaymentButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useBusiness } from "@/lib/business-context";
 import { Button } from "@/components/ui/button";
