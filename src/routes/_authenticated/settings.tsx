@@ -62,6 +62,14 @@ function BillingSection() {
             ) : (
               <p className="text-sm text-muted-foreground">
                 Renews {formatLongDate(business.current_period_end)}
+                {(() => {
+                  const b = business as unknown as {
+                    subscription_amount_cents: number | null;
+                    subscription_currency: string | null;
+                  };
+                  const amount = formatMoney(b.subscription_amount_cents, b.subscription_currency);
+                  return amount ? ` for ${amount}` : "";
+                })()}
               </p>
             )
           ) : null}
