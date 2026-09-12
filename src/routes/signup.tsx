@@ -45,7 +45,7 @@ function SignupPage() {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${window.location.origin}/login` },
+      options: { emailRedirectTo: "https://revsi.app/login" },
     });
     setBusy(false);
     if (error) {

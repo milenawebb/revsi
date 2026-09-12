@@ -39,7 +39,7 @@ function AuthPage() {
     }
     setBusy(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: "https://revsi.app/reset-password",
     });
     setBusy(false);
     if (error) {
