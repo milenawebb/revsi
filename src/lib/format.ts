@@ -32,3 +32,16 @@ export function statusTone(
   if (status === "cancelled") return "cancelled";
   return "queued";
 }
+
+/** e.g. $15.00 */
+export function formatMoney(cents: number | null | undefined, currency: string | null | undefined) {
+  if (cents == null) return null;
+  try {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: (currency || "usd").toUpperCase(),
+    }).format(cents / 100);
+  } catch {
+    return `${(cents / 100).toFixed(2)}`;
+  }
+}
