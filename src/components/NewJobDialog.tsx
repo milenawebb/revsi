@@ -83,7 +83,7 @@ export function NewJobDialog({
   });
 
   const { data: canAsk } = useCanAsk(selectedId, open);
-  const { data: canSend } = useCanSend(business.id, open);
+  const { data: canSend } = useCanSend(business.id, open && business.plan === "free");
   const blockedReason = canAsk && !canAsk.allowed ? canAsk.reason : null;
 
   const completionInvalid =

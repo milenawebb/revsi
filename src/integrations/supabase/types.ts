@@ -446,55 +446,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      apply_subscription:
-        | {
-            Args: {
-              p_business_id: string
-              p_customer_id: string
-              p_period_end: string
-              p_status: string
-              p_subscription_id: string
-            }
-            Returns: undefined
-          }
-        | {
-            Args: {
-              p_business_id: string
-              p_customer_id: string
-              p_period_end: string
-              p_started_at?: string
-              p_status: string
-              p_subscription_id: string
-            }
-            Returns: undefined
-          }
-        | {
-            Args: {
-              p_amount_cents?: number
-              p_business_id: string
-              p_currency?: string
-              p_customer_id: string
-              p_period_end: string
-              p_started_at?: string
-              p_status: string
-              p_subscription_id: string
-            }
-            Returns: undefined
-          }
-        | {
-            Args: {
-              p_amount_cents?: number
-              p_business_id: string
-              p_cancel_at_period_end?: boolean
-              p_currency?: string
-              p_customer_id: string
-              p_period_end: string
-              p_started_at?: string
-              p_status: string
-              p_subscription_id: string
-            }
-            Returns: undefined
-          }
+      apply_subscription: {
+        Args: {
+          p_amount_cents?: number
+          p_business_id: string
+          p_cancel_at_period_end?: boolean
+          p_currency?: string
+          p_customer_id: string
+          p_period_end: string
+          p_started_at?: string
+          p_status: string
+          p_subscription_id: string
+        }
+        Returns: undefined
+      }
       business_for_api_key: { Args: { p_key: string }; Returns: string }
       can_ask_customer: {
         Args: { p_customer_id: string }
