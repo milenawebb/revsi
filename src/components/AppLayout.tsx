@@ -152,12 +152,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
           {usedUp ? (
             <div className="mt-2 space-y-1 text-xs">
               <p className="text-sidebar-foreground">Free requests used up</p>
-              <a
-                href={PAYMENT_MAILTO}
-                className="block w-full rounded-md bg-primary px-2 py-1.5 text-center text-primary-foreground hover:bg-primary/90"
-              >
-                Add payment
-              </a>
+              <AddPaymentButton
+                businessId={business.id}
+                size="sm"
+                className="h-8 w-full text-xs"
+              />
             </div>
           ) : (
             <p className="mt-2 text-xs text-sidebar-muted">
