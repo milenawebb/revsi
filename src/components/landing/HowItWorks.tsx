@@ -5,6 +5,7 @@ const STEPS = [
   "We wait an hour, so it lands while you are still fresh in their mind",
   "They get a short, personal email with one button",
   "One polite reminder if they do not act, and nothing more",
+  "Your first 20 requests are free, so you can see whether it works before paying anything",
 ];
 
 export function HowItWorks() {
