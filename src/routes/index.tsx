@@ -52,7 +52,7 @@ function WaitlistButton({
 }) {
   return (
     <Button asChild size="lg" variant={variant} className={className}>
-      <a href={WAITLIST_MAILTO}>Join the waitlist</a>
+      <Link to="/signup">Start free</Link>
     </Button>
   );
 }
