@@ -105,6 +105,13 @@ function WelcomePage() {
       return;
     }
     localStorage.setItem(BUSINESS_STORAGE_KEY, data.id);
+    // Fire and forget: welcome email for the first business only.
+    void supabase.functions
+      .invoke("send-welcome-email", { body: { business_id: data.id } })
+      .then(({ error: fnError }) => {
+        if (fnError) console.error("send-welcome-email failed", fnError);
+      })
+      .catch((err) => console.error("send-welcome-email failed", err));
     await queryClient.invalidateQueries({ queryKey: ["businesses"] });
     navigate({ to: "/jobs", replace: true });
   }
