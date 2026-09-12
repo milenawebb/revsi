@@ -61,6 +61,7 @@ export type Database = {
           ask_window_days_requestor: number
           button_color: string
           created_at: string
+          current_period_end: string | null
           custom_body: string | null
           custom_intro: string | null
           daily_send_cap: number
@@ -80,6 +81,9 @@ export type Database = {
           request_delay_minutes: number
           review_url: string
           sender_photo_url: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_status: string | null
           timezone: string
           updated_at: string
           website_url: string | null
@@ -89,6 +93,7 @@ export type Database = {
           ask_window_days_requestor?: number
           button_color?: string
           created_at?: string
+          current_period_end?: string | null
           custom_body?: string | null
           custom_intro?: string | null
           daily_send_cap?: number
@@ -108,6 +113,9 @@ export type Database = {
           request_delay_minutes?: number
           review_url: string
           sender_photo_url?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
           timezone?: string
           updated_at?: string
           website_url?: string | null
@@ -117,6 +125,7 @@ export type Database = {
           ask_window_days_requestor?: number
           button_color?: string
           created_at?: string
+          current_period_end?: string | null
           custom_body?: string | null
           custom_intro?: string | null
           daily_send_cap?: number
@@ -136,6 +145,9 @@ export type Database = {
           request_delay_minutes?: number
           review_url?: string
           sender_photo_url?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
           timezone?: string
           updated_at?: string
           website_url?: string | null
@@ -419,6 +431,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_subscription: {
+        Args: {
+          p_business_id: string
+          p_customer_id: string
+          p_period_end: string
+          p_status: string
+          p_subscription_id: string
+        }
+        Returns: undefined
+      }
       business_for_api_key: { Args: { p_key: string }; Returns: string }
       can_ask_customer: {
         Args: { p_customer_id: string }
@@ -504,6 +526,7 @@ export type Database = {
         }[]
       }
       owns_business: { Args: { p_business_id: string }; Returns: boolean }
+      paid_business_count: { Args: { p_owner: string }; Returns: number }
       public_branding: {
         Args: { p_token: string }
         Returns: {
