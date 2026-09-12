@@ -13,6 +13,16 @@ export function formatDate(value: string | null | undefined) {
   return new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
+/** e.g. 12 September 2026 */
+export function formatLongDate(value: string | null | undefined) {
+  if (!value) return "–";
+  return new Date(value).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 export function statusTone(
   status: string,
 ): "queued" | "sent" | "clicked" | "failed" | "cancelled" {

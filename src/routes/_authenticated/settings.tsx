@@ -20,7 +20,7 @@ import { ApiKeysSection } from "@/components/ApiKeysSection";
 import { AddPaymentButton } from "@/components/AddPaymentButton";
 import { useBillingPortal } from "@/lib/checkout";
 import { useCanSend } from "@/lib/can-send";
-import { formatDate } from "@/lib/format";
+import { formatLongDate } from "@/lib/format";
 
 function BillingSection() {
   const business = useBusiness();
@@ -40,11 +40,30 @@ function BillingSection() {
         </div>
       ) : (
         <div className="mt-3 space-y-1">
-          <p className="text-sm text-muted-foreground">Paid plan, active</p>
-          {business.current_period_end ? (
+          <p className="text-sm text-muted-foreground">
+            {business.subscription_status === "canceled"
+              ? "Paid plan, cancelled"
+              : business.subscription_status === "past_due"
+                ? "Paid plan, payment past due"
+                : "Paid plan, active"}
+          </p>
+          {business.subscription_started_at ? (
             <p className="text-sm text-muted-foreground">
-              Renews {formatDate(business.current_period_end)}
+              Started {formatLongDate(business.subscription_started_at)}
             </p>
+          ) : null}
+          {business.current_period_end ? (
+            business.subscription_status === "canceled" ? (
+              new Date(business.current_period_end).getTime() > Date.now() ? (
+                <p className="text-sm text-muted-foreground">
+                  Access until {formatLongDate(business.current_period_end)}
+                </p>
+              ) : null
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Renews {formatLongDate(business.current_period_end)}
+              </p>
+            )
           ) : null}
           <div className="pt-3">
             <Button size="sm" onClick={() => void portal.open()} disabled={portal.loading}>

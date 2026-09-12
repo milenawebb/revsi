@@ -83,6 +83,7 @@ export type Database = {
           sender_photo_url: string | null
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
+          subscription_started_at: string | null
           subscription_status: string | null
           timezone: string
           updated_at: string
@@ -115,6 +116,7 @@ export type Database = {
           sender_photo_url?: string | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          subscription_started_at?: string | null
           subscription_status?: string | null
           timezone?: string
           updated_at?: string
@@ -147,6 +149,7 @@ export type Database = {
           sender_photo_url?: string | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          subscription_started_at?: string | null
           subscription_status?: string | null
           timezone?: string
           updated_at?: string
@@ -431,16 +434,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      apply_subscription: {
-        Args: {
-          p_business_id: string
-          p_customer_id: string
-          p_period_end: string
-          p_status: string
-          p_subscription_id: string
-        }
-        Returns: undefined
-      }
+      apply_subscription:
+        | {
+            Args: {
+              p_business_id: string
+              p_customer_id: string
+              p_period_end: string
+              p_status: string
+              p_subscription_id: string
+            }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              p_business_id: string
+              p_customer_id: string
+              p_period_end: string
+              p_started_at?: string
+              p_status: string
+              p_subscription_id: string
+            }
+            Returns: undefined
+          }
       business_for_api_key: { Args: { p_key: string }; Returns: string }
       can_ask_customer: {
         Args: { p_customer_id: string }
