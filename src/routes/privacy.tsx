@@ -74,9 +74,15 @@ function PrivacyPage() {
             to operate, secure, and troubleshoot the Service.
           </li>
           <li>
-            Billing and transaction information if paid plans are offered.
-            Payment card information may be processed by a third-party payment
-            processor rather than stored directly by Revsi.
+            Billing and transaction information when you subscribe to a paid
+            plan. Revsi currently offers 20 review requests per business at no
+            charge and does not require a payment card to start. If you
+            continue after using those 20 requests, the primary business plan is
+            $29 per month for unlimited review requests for one business.
+            Additional businesses managed under the same login are $15 per month
+            each and are billed separately. Payment card information may be
+            processed by a third-party payment processor rather than stored
+            directly by Revsi.
           </li>
         </ul>
       </LegalSection>
