@@ -258,7 +258,7 @@ function LandingPage() {
               </Button>
             </div>
             <p className="mt-4 text-sm text-white/80">
-              First 20 requests free. No card required.
+              Every business gets 20 free review requests. No card required.
             </p>
           </div>
           <div className="lg:pl-6">
@@ -351,6 +351,10 @@ function LandingPage() {
               <p className="mt-3 text-base text-muted-foreground">
                 Start free. No card until you need one.
               </p>
+              <p className="mt-2 text-base text-muted-foreground">
+                No card, no trial clock. You get 20 requests to try it, however long you take to
+                use them.
+              </p>
             </Reveal>
 
             <Reveal delay={80}>
@@ -367,7 +371,7 @@ function LandingPage() {
 
                 <ul className="mx-auto max-w-sm space-y-3 text-left">
                   {[
-                    "Your first 20 requests are free",
+                    "20 free review requests to start",
                     "No card required to start",
                     "Month to month, cancel any time in the app",
                     "Email delivery, click tracking and reminders included",
@@ -382,9 +386,9 @@ function LandingPage() {
                 </ul>
 
                 <p className="mx-auto mt-6 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                  Running more than one business? Manage them all from one login.
-                  Each additional business is $15 a month and is billed separately, so
-                  every company gets its own invoice.
+                  Running more than one business? Manage them all from one login. Each one gets
+                  its own 20 free requests, and each additional business is $15 a month, billed
+                  separately so every company gets its own invoice.
                 </p>
 
                 <div className="mt-8">
