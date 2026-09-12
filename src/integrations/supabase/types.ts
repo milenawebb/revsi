@@ -83,6 +83,8 @@ export type Database = {
           sender_photo_url: string | null
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
+          subscription_amount_cents: number | null
+          subscription_currency: string | null
           subscription_started_at: string | null
           subscription_status: string | null
           timezone: string
@@ -116,6 +118,8 @@ export type Database = {
           sender_photo_url?: string | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          subscription_amount_cents?: number | null
+          subscription_currency?: string | null
           subscription_started_at?: string | null
           subscription_status?: string | null
           timezone?: string
@@ -149,6 +153,8 @@ export type Database = {
           sender_photo_url?: string | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          subscription_amount_cents?: number | null
+          subscription_currency?: string | null
           subscription_started_at?: string | null
           subscription_status?: string | null
           timezone?: string
@@ -448,6 +454,19 @@ export type Database = {
         | {
             Args: {
               p_business_id: string
+              p_customer_id: string
+              p_period_end: string
+              p_started_at?: string
+              p_status: string
+              p_subscription_id: string
+            }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              p_amount_cents?: number
+              p_business_id: string
+              p_currency?: string
               p_customer_id: string
               p_period_end: string
               p_started_at?: string
