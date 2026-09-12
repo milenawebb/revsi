@@ -31,7 +31,9 @@ function BillingSection() {
   return (
     <div className="rounded-xl border bg-card p-5 shadow-card md:p-6">
       <h2 className="text-lg font-semibold">Billing</h2>
-      {isFree ? (
+      {business.plan === "owner" ? (
+        <p className="mt-3 text-sm text-muted-foreground">Owner account</p>
+      ) : isFree ? (
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-muted-foreground">
             Free plan{usage ? `, ${usage.used} of ${usage.allowance} requests used` : ""}
