@@ -41,11 +41,13 @@ function BillingSection() {
       ) : (
         <div className="mt-3 space-y-1">
           <p className="text-sm text-muted-foreground">
-            {business.subscription_status === "canceled"
-              ? "Paid plan, cancelled"
-              : business.subscription_status === "past_due"
-                ? "Paid plan, payment past due"
-                : "Paid plan, active"}
+            {business.cancel_at_period_end
+              ? "Paid plan, cancelling"
+              : business.subscription_status === "canceled"
+                ? "Paid plan, cancelled"
+                : business.subscription_status === "past_due"
+                  ? "Paid plan, payment past due"
+                  : "Paid plan, active"}
           </p>
           {business.subscription_started_at ? (
             <p className="text-sm text-muted-foreground">
@@ -53,7 +55,11 @@ function BillingSection() {
             </p>
           ) : null}
           {business.current_period_end ? (
-            business.subscription_status === "canceled" ? (
+            business.cancel_at_period_end ? (
+              <p className="text-sm text-muted-foreground">
+                Cancels {formatLongDate(business.current_period_end)}. You have access until then.
+              </p>
+            ) : business.subscription_status === "canceled" ? (
               new Date(business.current_period_end).getTime() > Date.now() ? (
                 <p className="text-sm text-muted-foreground">
                   Access until {formatLongDate(business.current_period_end)}
