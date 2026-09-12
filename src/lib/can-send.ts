@@ -13,6 +13,8 @@ export function useCanSend(businessId: string | null | undefined, enabled = true
   return useQuery({
     queryKey: ["can-send", businessId],
     enabled: Boolean(businessId) && enabled,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
     queryFn: async (): Promise<CanSend | null> => {
       const { data, error } = await supabase.rpc("can_business_send", {
         p_business_id: businessId!,

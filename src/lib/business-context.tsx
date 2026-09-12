@@ -21,6 +21,8 @@ export function BusinessProvider({ children }: { children: ReactNode }) {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["businesses"],
+    staleTime: 0,
+    refetchOnWindowFocus: true,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("businesses")

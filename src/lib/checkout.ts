@@ -69,6 +69,8 @@ export function useCheckoutReturn(businessId: string | null | undefined) {
           .maybeSingle();
         if (data?.plan === "paid") {
           await queryClient.invalidateQueries();
+          await queryClient.refetchQueries({ queryKey: ["businesses"] });
+          await queryClient.refetchQueries({ queryKey: ["can-send"] });
           return;
         }
       }
