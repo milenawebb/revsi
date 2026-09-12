@@ -140,8 +140,9 @@ function JobsPage() {
         <div className="flex items-start gap-3 rounded-xl border bg-status-queued p-4">
           <div className="flex-1 space-y-3">
             <p className="text-sm text-status-queued-foreground">
-              You have used all {canSend?.allowance} free requests. New requests are being saved and
-              will send as soon as you add a payment method.
+              You have used all {canSend!.allowance} free requests ({canSend!.used} of{" "}
+              {canSend!.allowance}). New requests are being saved and will send as soon as you add a
+              payment method.
             </p>
             <AddPaymentButton businessId={business.id} size="sm" />
           </div>
