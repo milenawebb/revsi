@@ -262,6 +262,11 @@ function SubscriptionsPage() {
           billing period. Data associated with suspended or terminated accounts
           will be handled according to our Terms of Service and Privacy Policy.
         </p>
+        <p>
+          Suspension, restriction, or removal of your Google Business Profile,
+          reviews, or other third-party accounts or content does not entitle
+          you to a refund or credit for your Revsi subscription.
+        </p>
       </LegalSection>
 
       <LegalSection heading="9. Billing errors and exceptional circumstances">
