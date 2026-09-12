@@ -49,6 +49,10 @@ function WelcomePage() {
     reply_to_email: "",
     postal_address: "",
   });
+
+  useEffect(() => {
+    if (accountEmail) setForm((f) => ({ ...f, reply_to_email: accountEmail }));
+  }, [accountEmail]);
   const [urlError, setUrlError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -84,7 +88,7 @@ function WelcomePage() {
         name: form.name.trim(),
         from_name: form.from_name.trim(),
         review_url: form.review_url.trim(),
-        reply_to_email: form.reply_to_email.trim() || auth.user.email || null,
+        reply_to_email: form.reply_to_email.trim(),
         postal_address: form.postal_address.trim(),
         request_delay_minutes: 60,
         reminder_enabled: true,
@@ -159,16 +163,17 @@ function WelcomePage() {
               </Collapsible>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="reply_to_email">Reply-to email (optional)</Label>
+              <Label htmlFor="reply_to_email">Reply-to email</Label>
               <Input
                 id="reply_to_email"
                 type="email"
+                required
                 placeholder={accountEmail}
                 value={form.reply_to_email}
                 onChange={(e) => set("reply_to_email", e.target.value)}
               />
               <p className="text-xs text-muted-foreground">
-                Leave blank to use {accountEmail || "your account email"}.
+                Customer replies go here. Defaults to your account email.
               </p>
             </div>
             <div className="space-y-2">
