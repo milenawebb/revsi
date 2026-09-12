@@ -21,9 +21,10 @@ function TermsPage() {
       <p>
         These Terms of Service ("Terms") are an agreement between you and Webb
         Consulting LLC, a Virginia limited liability company ("Webb
-        Consulting," "Revsi," "we," "us," or "our"). They govern your access
-        to and use of revsi.app and related services (the "Service"). By
-        creating an account or using the Service, you agree to these Terms.
+        Consulting," "Revsi," "we," "us," or "our"). Revsi is a DBA of Webb
+        Consulting LLC. They govern your access to and use of revsi.app and
+        related services (the "Service"). By creating an account or using the
+        Service, you agree to these Terms.
       </p>
 
       <LegalSection heading="1. What Revsi does">
