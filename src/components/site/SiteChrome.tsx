@@ -136,9 +136,9 @@ export function SiteHeader({
               </Link>
             )}
             <Button asChild size="lg" variant="secondary">
-              <a href={WAITLIST_MAILTO} onClick={() => setMenuOpen(false)}>
-                Join the waitlist
-              </a>
+              <Link to="/signup" onClick={() => setMenuOpen(false)}>
+                Start free
+              </Link>
             </Button>
           </nav>
         </div>
