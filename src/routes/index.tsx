@@ -375,6 +375,7 @@ function LandingPage() {
                     "No card required to start",
                     "Month to month, cancel any time in the app",
                     "Email delivery, click tracking and reminders included",
+                    "API access, so your scheduling software can create requests automatically",
                   ].map((item) => (
                     <li key={item} className="flex items-start gap-3 text-base text-foreground">
                       <span className="mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
