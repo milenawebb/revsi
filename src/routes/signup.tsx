@@ -11,10 +11,10 @@ export const Route = createFileRoute("/signup")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Create an account · revsi" },
-      { name: "description", content: "Create a revsi account and start asking customers for reviews." },
-      { property: "og:title", content: "Create an account · revsi" },
-      { property: "og:description", content: "Create a revsi account and start asking customers for reviews." },
+      { title: "Create an account · Revsi" },
+      { name: "description", content: "Create a Revsi account and start asking customers for reviews." },
+      { property: "og:title", content: "Create an account · Revsi" },
+      { property: "og:description", content: "Create a Revsi account and start asking customers for reviews." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

@@ -22,7 +22,7 @@ const WAITLIST_MAILTO =
 
 const TITLE = "Get Google reviews after every job";
 const DESC =
-  "revsi asks your customers for an honest review, on its own, an hour after the job is done.";
+  "Revsi asks your customers for an honest review, on its own, an hour after the job is done.";
 const OG_IMAGE = `https://revsi.app${ogImage.url}`;
 
 export const Route = createFileRoute("/")({
@@ -243,7 +243,7 @@ function LandingPage() {
               Get Google reviews after every job.
             </h1>
             <p className="mt-5 text-lg opacity-90">
-              revsi asks your customers for an honest review, on its own, an hour after the job
+              Revsi asks your customers for an honest review, on its own, an hour after the job
               is done. No app to remember, no awkward ask.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">

@@ -27,9 +27,9 @@ export const Route = createFileRoute("/welcome")({
   },
   head: () => ({
     meta: [
-      { title: "Set up your business · revsi" },
+      { title: "Set up your business · Revsi" },
       { name: "description", content: "Add your business details to start sending review requests." },
-      { property: "og:title", content: "Set up your business · revsi" },
+      { property: "og:title", content: "Set up your business · Revsi" },
       { property: "og:description", content: "Add your business details to start sending review requests." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
