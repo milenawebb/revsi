@@ -28,6 +28,32 @@ export function useStartCheckout(businessId: string | null | undefined) {
   return { start, loading };
 }
 
+/** Open the Stripe billing portal for a business. */
+export function useBillingPortal(businessId: string | null | undefined) {
+  const [loading, setLoading] = useState(false);
+
+  async function open() {
+    if (!businessId || loading) return;
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke<{ url?: string }>(
+        "create-portal-session",
+        { body: { business_id: businessId } },
+      );
+      if (error) throw error;
+      if (!data?.url) throw new Error("No billing link was returned.");
+      window.location.href = data.url;
+    } catch (e) {
+      setLoading(false);
+      toast.error("Couldn't open billing", {
+        description: e instanceof Error ? e.message : "Please try again.",
+      });
+    }
+  }
+
+  return { open, loading };
+}
+
 /**
  * Handles /jobs?checkout=success|cancelled. On success, toast and poll the
  * business row until the plan flips to paid (up to 30 seconds).

@@ -18,6 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import { ApiKeysSection } from "@/components/ApiKeysSection";
 import { AddPaymentButton } from "@/components/AddPaymentButton";
+import { useBillingPortal } from "@/lib/checkout";
 import { useCanSend } from "@/lib/can-send";
 import { formatDate } from "@/lib/format";
 
@@ -25,6 +26,7 @@ function BillingSection() {
   const business = useBusiness();
   const isFree = business.plan === "free";
   const { data: usage } = useCanSend(business.id, isFree);
+  const portal = useBillingPortal(business.id);
 
   return (
     <div className="rounded-xl border bg-card p-5 shadow-card md:p-6">
@@ -44,6 +46,14 @@ function BillingSection() {
               Renews {formatDate(business.current_period_end)}
             </p>
           ) : null}
+          <div className="pt-3">
+            <Button size="sm" onClick={() => void portal.open()} disabled={portal.loading}>
+              {portal.loading ? "Opening..." : "Manage billing"}
+            </Button>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Update your card, see invoices, or cancel.
+            </p>
+          </div>
         </div>
       )}
     </div>
