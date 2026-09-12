@@ -201,28 +201,35 @@ function NotaryPoints() {
   const show = reduced || inView;
 
   return (
-    <ul ref={ref} className="grid gap-6">
-      {NOTARY_POINTS.map((point, i) => (
-        <li
-          key={point}
-          className={cn(
-            "flex gap-3 text-base text-foreground",
-            show ? "animate-problem-reveal" : "opacity-0",
-          )}
-          style={{ animationDelay: `${i * 100}ms` }}
-        >
-          <span
-            aria-hidden
+    <>
+      <ul ref={ref} className="grid gap-6">
+        {NOTARY_POINTS.map((point, i) => (
+          <li
+            key={point}
             className={cn(
-              "mt-2 size-2 shrink-0 rounded-full bg-pink",
-              show ? "animate-dot-pop" : "scale-0",
+              "flex gap-3 text-base text-foreground",
+              show ? "animate-problem-reveal" : "opacity-0",
             )}
-            style={{ animationDelay: `${i * 100 + 120}ms` }}
-          />
-          <span>{point}</span>
-        </li>
-      ))}
-    </ul>
+            style={{ animationDelay: `${i * 100}ms` }}
+          >
+            <span
+              aria-hidden
+              className={cn(
+                "mt-2 size-2 shrink-0 rounded-full bg-pink",
+                show ? "animate-dot-pop" : "scale-0",
+              )}
+              style={{ animationDelay: `${i * 100 + 120}ms` }}
+            />
+            <span>{point}</span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-6 text-base leading-relaxed text-muted-foreground">
+        Revsi works the same way for any business with completed jobs: contractors, cleaners,
+        salons, mobile detailing, photographers. The notary integration is simply the one that
+        exists today.
+      </p>
+    </>
   );
 }
 
