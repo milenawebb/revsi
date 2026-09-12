@@ -155,20 +155,43 @@ function TermsPage() {
 
       <LegalSection heading="8. Fees, subscriptions, and billing">
         <p>
-          Some or all features may require a paid subscription. Applicable
-          prices, billing intervals, usage limits, and plan features will be
-          disclosed before purchase. Unless otherwise stated at purchase,
-          recurring subscriptions renew automatically for the applicable
-          billing period until canceled.
+          Revsi lets each business send its first 20 review requests at no
+          charge. There is no time limit for using those 20 requests and no
+          payment card is required to start. After a business uses its 20 free
+          review requests, continued use requires a paid subscription unless
+          Revsi offers another plan or promotion.
         </p>
         <p>
-          You authorize us and our payment providers to charge applicable fees
-          and taxes using your selected payment method. We may change pricing
-          prospectively by providing reasonable notice. Except where required
-          by law or expressly stated otherwise at purchase, fees already paid
-          are non-refundable. Cancellation prevents future renewal charges but
-          does not ordinarily create a refund for a partially used billing
-          period.
+          The current paid plan for the first business is $29 per month and
+          includes unlimited review requests for that business, email delivery,
+          click tracking, reminders, and API access. A user may manage more than
+          one business under one login. Each additional business receives its
+          own 20 free review requests and, after those requests are used, is $15
+          per month. Additional businesses are billed separately so each
+          business may receive its own invoice. Subscriptions are month to month
+          and may be canceled in the app at any time.
+        </p>
+        <p>
+          Paid subscriptions renew automatically each month until canceled.
+          Cancellation stops future renewal charges and takes effect at the end
+          of the then-current paid billing period unless applicable law requires
+          otherwise. Except where required by law or expressly stated otherwise,
+          amounts already paid are non-refundable and Revsi does not provide
+          prorated refunds for a partially used billing period.
+        </p>
+        <p>
+          You authorize Revsi and its payment providers to charge applicable
+          subscription fees and taxes using your selected payment method. If a
+          payment fails, we may retry the charge, request an updated payment
+          method, limit paid features, or suspend the affected business until
+          payment is resolved.
+        </p>
+        <p>
+          We may change prices or plan features prospectively. If a price change
+          affects an existing paid subscription, we will provide reasonable
+          advance notice before the new price applies to a future billing
+          period. Promotional, beta, or custom pricing may be subject to
+          separate terms disclosed when offered.
         </p>
       </LegalSection>
 
