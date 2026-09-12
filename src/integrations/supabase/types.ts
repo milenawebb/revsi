@@ -60,6 +60,7 @@ export type Database = {
           ask_window_days: number
           ask_window_days_requestor: number
           button_color: string
+          cancel_at_period_end: boolean
           created_at: string
           current_period_end: string | null
           custom_body: string | null
@@ -96,6 +97,7 @@ export type Database = {
           ask_window_days?: number
           ask_window_days_requestor?: number
           button_color?: string
+          cancel_at_period_end?: boolean
           created_at?: string
           current_period_end?: string | null
           custom_body?: string | null
@@ -132,6 +134,7 @@ export type Database = {
           ask_window_days?: number
           ask_window_days_requestor?: number
           button_color?: string
+          cancel_at_period_end?: boolean
           created_at?: string
           current_period_end?: string | null
           custom_body?: string | null
@@ -469,6 +472,20 @@ export type Database = {
             Args: {
               p_amount_cents?: number
               p_business_id: string
+              p_currency?: string
+              p_customer_id: string
+              p_period_end: string
+              p_started_at?: string
+              p_status: string
+              p_subscription_id: string
+            }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              p_amount_cents?: number
+              p_business_id: string
+              p_cancel_at_period_end?: boolean
               p_currency?: string
               p_customer_id: string
               p_period_end: string
