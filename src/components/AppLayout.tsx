@@ -25,7 +25,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { useCanSend, PAYMENT_MAILTO } from "@/lib/can-send";
+import { useCanSend } from "@/lib/can-send";
+import { AddPaymentButton } from "@/components/AddPaymentButton";
 
 function BusinessPlanLine({ business }: { business: Business }) {
   const usage = useCanSend(business.id, business.plan === "free");
