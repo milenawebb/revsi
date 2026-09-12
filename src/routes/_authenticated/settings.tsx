@@ -20,7 +20,7 @@ import { ApiKeysSection } from "@/components/ApiKeysSection";
 import { AddPaymentButton } from "@/components/AddPaymentButton";
 import { useBillingPortal } from "@/lib/checkout";
 import { useCanSend } from "@/lib/can-send";
-import { formatLongDate } from "@/lib/format";
+import { formatLongDate, formatMoney } from "@/lib/format";
 
 function BillingSection() {
   const business = useBusiness();
@@ -62,6 +62,14 @@ function BillingSection() {
             ) : (
               <p className="text-sm text-muted-foreground">
                 Renews {formatLongDate(business.current_period_end)}
+                {(() => {
+                  const b = business as unknown as {
+                    subscription_amount_cents: number | null;
+                    subscription_currency: string | null;
+                  };
+                  const amount = formatMoney(b.subscription_amount_cents, b.subscription_currency);
+                  return amount ? ` for ${amount}` : "";
+                })()}
               </p>
             )
           ) : null}
