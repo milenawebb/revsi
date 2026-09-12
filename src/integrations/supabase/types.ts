@@ -90,6 +90,7 @@ export type Database = {
           timezone: string
           updated_at: string
           website_url: string | null
+          welcome_sent_at: string | null
         }
         Insert: {
           ask_window_days?: number
@@ -125,6 +126,7 @@ export type Database = {
           timezone?: string
           updated_at?: string
           website_url?: string | null
+          welcome_sent_at?: string | null
         }
         Update: {
           ask_window_days?: number
@@ -160,6 +162,7 @@ export type Database = {
           timezone?: string
           updated_at?: string
           website_url?: string | null
+          welcome_sent_at?: string | null
         }
         Relationships: []
       }
@@ -551,6 +554,7 @@ export type Database = {
           service_id: string
         }[]
       }
+      mark_welcome_sent: { Args: { p_business_id: string }; Returns: undefined }
       next_send_slot: { Args: { p_business_id: string }; Returns: string }
       optout_by_token: {
         Args: { p_token: string }
@@ -582,6 +586,16 @@ export type Database = {
         Returns: {
           new_status: string
           request_id: string
+        }[]
+      }
+      welcome_email_data: {
+        Args: { p_business_id: string }
+        Returns: {
+          already_sent: boolean
+          business_name: string
+          from_name: string
+          owner_email: string
+          review_url: string
         }[]
       }
     }
