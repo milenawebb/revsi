@@ -23,7 +23,7 @@ function PrivacyPage() {
         limited liability company ("Webb Consulting," "Revsi," "we," "us," or
         "our"), collects, uses, discloses, retains, and protects personal
         information in connection with revsi.app and related services (the
-        "Service").
+        "Service"). Revsi is a DBA of Webb Consulting LLC.
       </p>
 
       <LegalSection heading="1. Our role and your role">
