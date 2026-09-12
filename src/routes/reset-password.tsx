@@ -12,10 +12,10 @@ export const Route = createFileRoute("/reset-password")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Set a new password · revsi" },
-      { name: "description", content: "Choose a new password for your revsi account." },
-      { property: "og:title", content: "Set a new password · revsi" },
-      { property: "og:description", content: "Choose a new password for your revsi account." },
+      { title: "Set a new password · Revsi" },
+      { name: "description", content: "Choose a new password for your Revsi account." },
+      { property: "og:title", content: "Set a new password · Revsi" },
+      { property: "og:description", content: "Choose a new password for your Revsi account." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

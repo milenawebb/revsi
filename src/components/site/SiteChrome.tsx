@@ -63,7 +63,7 @@ export function SiteHeader({
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
         <Link to="/" aria-label="revsi.app home">
-          <img src={onGradient ? logoHeader.url : logoFooter.url} alt="revsi" className="h-7 w-auto" />
+          <img src={onGradient ? logoHeader.url : logoFooter.url} alt="Revsi" className="h-7 w-auto" />
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex">
@@ -117,7 +117,7 @@ export function SiteHeader({
       {menuOpen ? (
         <div className="fixed inset-0 z-50 flex flex-col bg-brand-gradient px-5 py-5 text-primary-foreground md:hidden">
           <div className="flex items-center justify-between">
-            <img src={logoHeader.url} alt="revsi" className="h-7 w-auto" />
+            <img src={logoHeader.url} alt="Revsi" className="h-7 w-auto" />
             <button type="button" aria-label="Close menu" onClick={() => setMenuOpen(false)}>
               <X className="size-6" />
             </button>
@@ -154,7 +154,7 @@ export function SiteFooter({ className }: { className?: string }) {
     <footer className={cn("border-t bg-card", className)}>
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-5 py-8 text-center text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:text-left">
         <Link to="/" aria-label="revsi.app home">
-          <img src={logoFooter.url} alt="revsi" className="h-6 w-auto" />
+          <img src={logoFooter.url} alt="Revsi" className="h-6 w-auto" />
         </Link>
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:flex-wrap sm:gap-4">
           <Link to="/terms" className="hover:text-foreground">
