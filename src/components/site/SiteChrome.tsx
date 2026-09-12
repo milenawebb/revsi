@@ -13,8 +13,6 @@ const NAV_LINKS = [
   { label: "Pricing", href: "/#pricing" },
 ];
 
-const WAITLIST_MAILTO =
-  "mailto:info@revsi.app?subject=revsi.app%20waitlist&body=Please%20add%20me%20to%20the%20waitlist.";
 
 function useSignedIn() {
   const [signedIn, setSignedIn] = useState(false);
