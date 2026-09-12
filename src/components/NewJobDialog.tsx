@@ -23,6 +23,7 @@ import {
 import { fromLocalInput, nowLocalInput } from "@/lib/completion-time";
 import { useCanAsk } from "@/lib/can-ask";
 import { useCanSend } from "@/lib/can-send";
+import { AddPaymentLink } from "@/components/AddPaymentButton";
 import { useCustomerMatches } from "@/lib/customer-match";
 import { CustomerMatchHint } from "@/components/CustomerMatchHint";
 import { cn } from "@/lib/utils";
@@ -269,6 +270,10 @@ export function NewJobDialog({
               <p className="mt-1 text-sm text-status-queued-foreground">
                 The job will be saved and the request will send once payment is added.
               </p>
+              <AddPaymentLink
+                businessId={business.id}
+                className="mt-2 text-sm text-status-queued-foreground"
+              />
             </div>
           ) : null}
           <DialogFooter>
