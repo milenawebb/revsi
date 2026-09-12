@@ -20,7 +20,7 @@ import { ApiKeysSection } from "@/components/ApiKeysSection";
 import { AddPaymentButton } from "@/components/AddPaymentButton";
 import { useBillingPortal } from "@/lib/checkout";
 import { useCanSend } from "@/lib/can-send";
-import { formatDate } from "@/lib/format";
+import { formatLongDate } from "@/lib/format";
 
 function BillingSection() {
   const business = useBusiness();
