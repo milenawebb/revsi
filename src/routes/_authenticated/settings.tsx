@@ -17,6 +17,38 @@ import {
 } from "@/components/EmailPreview";
 import { cn } from "@/lib/utils";
 import { ApiKeysSection } from "@/components/ApiKeysSection";
+import { AddPaymentButton } from "@/components/AddPaymentButton";
+import { useCanSend } from "@/lib/can-send";
+import { formatDate } from "@/lib/format";
+
+function BillingSection() {
+  const business = useBusiness();
+  const isFree = business.plan === "free";
+  const { data: usage } = useCanSend(business.id, isFree);
+
+  return (
+    <div className="rounded-xl border bg-card p-5 shadow-card md:p-6">
+      <h2 className="text-lg font-semibold">Billing</h2>
+      {isFree ? (
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            Free plan{usage ? `, ${usage.used} of ${usage.allowance} requests used` : ""}
+          </p>
+          <AddPaymentButton businessId={business.id} size="sm" />
+        </div>
+      ) : (
+        <div className="mt-3 space-y-1">
+          <p className="text-sm text-muted-foreground">Paid plan, active</p>
+          {business.current_period_end ? (
+            <p className="text-sm text-muted-foreground">
+              Renews {formatDate(business.current_period_end)}
+            </p>
+          ) : null}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
@@ -294,6 +326,8 @@ function SettingsForm() {
           Settings and billing apply to {business.name} only.
         </p>
       </div>
+
+      <BillingSection />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
         <form onSubmit={onSubmit} className="space-y-6">
