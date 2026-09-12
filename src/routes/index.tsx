@@ -17,8 +17,6 @@ import { cn } from "@/lib/utils";
 import { SiteFooter, SiteHeader } from "@/components/site/SiteChrome";
 import ogImage from "@/assets/og-revsi.jpg.asset.json";
 
-const WAITLIST_MAILTO =
-  "mailto:info@revsi.app?subject=revsi.app%20waitlist&body=Please%20add%20me%20to%20the%20waitlist.";
 
 const TITLE = "Get Google reviews after every job";
 const DESC =
@@ -54,7 +52,7 @@ function WaitlistButton({
 }) {
   return (
     <Button asChild size="lg" variant={variant} className={className}>
-      <a href={WAITLIST_MAILTO}>Join the waitlist</a>
+      <Link to="/signup">Start free</Link>
     </Button>
   );
 }

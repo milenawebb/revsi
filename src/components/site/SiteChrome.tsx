@@ -13,8 +13,6 @@ const NAV_LINKS = [
   { label: "Pricing", href: "/#pricing" },
 ];
 
-const WAITLIST_MAILTO =
-  "mailto:info@revsi.app?subject=revsi.app%20waitlist&body=Please%20add%20me%20to%20the%20waitlist.";
 
 function useSignedIn() {
   const [signedIn, setSignedIn] = useState(false);
@@ -138,9 +136,9 @@ export function SiteHeader({
               </Link>
             )}
             <Button asChild size="lg" variant="secondary">
-              <a href={WAITLIST_MAILTO} onClick={() => setMenuOpen(false)}>
-                Join the waitlist
-              </a>
+              <Link to="/signup" onClick={() => setMenuOpen(false)}>
+                Start free
+              </Link>
             </Button>
           </nav>
         </div>
