@@ -41,8 +41,9 @@ function JobsPage() {
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [completingId, setCompletingId] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState(false);
-  const { data: canSend } = useCanSend(business.id);
-  const usedUp = Boolean(canSend && canSend.used >= canSend.allowance);
+  const isFree = business.plan === "free";
+  const { data: canSend } = useCanSend(business.id, isFree);
+  const usedUp = Boolean(isFree && canSend && canSend.used >= canSend.allowance);
 
   useCheckoutReturn(business.id);
 
