@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import logoHeader from "@/assets/logo-header.png.asset.json";
 import logoFooter from "@/assets/logo-footer.png.asset.json";
+import fifthexit from "@/assets/developed-by-fifthexit.png.asset.json";
 
 const NAV_LINKS = [
   { label: "How it works", href: "/#how-it-works" },
@@ -165,6 +166,15 @@ export function SiteFooter({ className }: { className?: string }) {
             info@revsi.app
           </a>
         </div>
+      </div>
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 border-t px-5 py-5 text-center text-xs text-muted-foreground sm:flex-row sm:justify-between sm:text-left">
+        <p>&copy; 2026 Revsi. All rights reserved.</p>
+        <img
+          src={fifthexit.url}
+          alt="Developed by fifthexit"
+          className="h-5 w-auto"
+          loading="lazy"
+        />
       </div>
     </footer>
   );
