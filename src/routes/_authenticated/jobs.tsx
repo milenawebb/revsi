@@ -42,6 +42,9 @@ function JobsPage() {
   const { data: canSend } = useCanSend(business.id);
   const usedUp = Boolean(canSend && canSend.used >= canSend.allowance);
 
+  useCheckoutReturn(business.id);
+
+
   const jobs = useQuery({
     queryKey: ["jobs", business.id],
     queryFn: async () => {
