@@ -595,6 +595,7 @@ function ReviewCard({
         display: "flex",
         flexDirection: "column",
         padding: pad,
+        paddingBottom: padBottom,
         overflow: "hidden",
       }}
     >
