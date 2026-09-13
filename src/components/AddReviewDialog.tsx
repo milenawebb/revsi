@@ -84,6 +84,17 @@ export function AddReviewDialog({
 
   useEffect(() => {
     if (!open) return;
+    if (review) {
+      const { first, initial } = splitName(review.reviewer_name);
+      setFirstName(first);
+      setLastInitial(initial);
+      setCity(review.reviewer_city ?? "");
+      setRating(review.rating);
+      setBody(review.body);
+      setDate(toDateInput(review.reviewed_at));
+      setSourceUrl(review.source_url ?? "");
+      return;
+    }
     setFirstName("");
     setLastInitial("");
     setCity("");
@@ -91,7 +102,7 @@ export function AddReviewDialog({
     setBody("");
     setDate(today());
     setSourceUrl("");
-  }, [open]);
+  }, [open, review]);
 
   const composedName = lastInitial
     ? `${firstName.trim()} ${lastInitial}.`
