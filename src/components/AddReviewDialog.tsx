@@ -35,7 +35,8 @@ export function AddReviewDialog({
 }) {
   const business = useBusiness();
   const queryClient = useQueryClient();
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastInitial, setLastInitial] = useState("");
   const [city, setCity] = useState("");
   const [rating, setRating] = useState<number | null>(null);
   const [body, setBody] = useState("");
@@ -43,18 +44,23 @@ export function AddReviewDialog({
 
   useEffect(() => {
     if (!open) return;
-    setName("");
+    setFirstName("");
+    setLastInitial("");
     setCity("");
     setRating(null);
     setBody("");
     setDate(today());
   }, [open]);
 
+  const composedName = lastInitial
+    ? `${firstName.trim()} ${lastInitial}.`
+    : firstName.trim();
+
   const save = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("reviews").insert({
         business_id: business.id,
-        reviewer_name: name.trim(),
+        reviewer_name: composedName,
         reviewer_city: city.trim() || null,
         rating,
         body: body.trim(),
