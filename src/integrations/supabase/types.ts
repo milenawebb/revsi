@@ -386,6 +386,7 @@ export type Database = {
           reviewer_city: string | null
           reviewer_name: string
           source: string
+          source_url: string | null
           updated_at: string
         }
         Insert: {
@@ -399,6 +400,7 @@ export type Database = {
           reviewer_city?: string | null
           reviewer_name: string
           source?: string
+          source_url?: string | null
           updated_at?: string
         }
         Update: {
@@ -412,6 +414,7 @@ export type Database = {
           reviewer_city?: string | null
           reviewer_name?: string
           source?: string
+          source_url?: string | null
           updated_at?: string
         }
         Relationships: [
