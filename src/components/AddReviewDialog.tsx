@@ -39,12 +39,38 @@ function isGoogleReviewUrl(value: string) {
   }
 }
 
+export type EditableReview = {
+  id: string;
+  reviewer_name: string;
+  reviewer_city: string | null;
+  rating: number | null;
+  body: string;
+  reviewed_at: string;
+  source_url?: string | null;
+};
+
+function splitName(full: string) {
+  const value = (full ?? "").trim();
+  const idx = value.lastIndexOf(" ");
+  if (idx === -1) return { first: value, initial: "" };
+  const last = value.slice(idx + 1).replace(/[^a-zA-Z]/g, "");
+  return { first: value.slice(0, idx), initial: last.slice(0, 1).toUpperCase() };
+}
+
+function toDateInput(iso: string) {
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 export function AddReviewDialog({
   open,
   onOpenChange,
+  review,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
+  review?: EditableReview | null;
 }) {
   const business = useBusiness();
   const queryClient = useQueryClient();
