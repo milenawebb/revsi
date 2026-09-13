@@ -22,6 +22,7 @@ export type ReviewRow = {
   rating: number | null;
   body: string;
   reviewed_at: string;
+  source_url?: string | null;
 };
 
 type Format = "square" | "story";
