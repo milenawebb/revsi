@@ -112,25 +112,30 @@ export function AddReviewDialog({
 
   const save = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("reviews").insert({
-        business_id: business.id,
+      const values = {
         reviewer_name: composedName,
         reviewer_city: city.trim() || null,
         rating,
         body: body.trim(),
         reviewed_at: new Date(`${date}T12:00:00`).toISOString(),
-        source: "manual",
         source_url: sourceUrl.trim() || null,
-      });
+      };
+      const { error } = review
+        ? await supabase.from("reviews").update(values).eq("id", review.id)
+        : await supabase
+            .from("reviews")
+            .insert({ ...values, business_id: business.id, source: "manual" });
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Review added");
+      toast.success(review ? "Review updated" : "Review added");
       onOpenChange(false);
       queryClient.invalidateQueries({ queryKey: ["reviews", business.id] });
     },
     onError: (e: { message: string }) => {
-      toast.error("Couldn't add review", { description: e.message });
+      toast.error(review ? "Couldn't update review" : "Couldn't add review", {
+        description: e.message,
+      });
     },
   });
 
