@@ -54,6 +54,7 @@ export function AddReviewDialog({
   const [rating, setRating] = useState<number | null>(null);
   const [body, setBody] = useState("");
   const [date, setDate] = useState(today());
+  const [sourceUrl, setSourceUrl] = useState("");
 
   useEffect(() => {
     if (!open) return;
@@ -63,6 +64,7 @@ export function AddReviewDialog({
     setRating(null);
     setBody("");
     setDate(today());
+    setSourceUrl("");
   }, [open]);
 
   const composedName = lastInitial
