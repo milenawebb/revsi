@@ -273,17 +273,42 @@ function ReviewCard({
   logoUrl: string | null;
   businessName: string;
 }) {
-  const fontSize = bodySize(review.body.length);
-  const pad = 72;
+  const isStory = height > width;
+  const s = isStory ? 1.4 : 1;
+  const fontSize = Math.round(bodySize(review.body.length) * s);
+  const pad = Math.round(72 * (isStory ? 1.1 : 1));
   const light = "#FAFAFE";
+  const quoteSize = Math.round(150 * s);
+
+  const quote = (which: "open" | "close") => (
+    <span
+      style={{
+        position: "absolute",
+        ...(which === "open"
+          ? { top: Math.round(-quoteSize * 0.34), left: Math.round(pad * 0.35) }
+          : {
+              bottom: Math.round(-quoteSize * 0.62),
+              right: Math.round(pad * 0.35),
+              transform: "rotate(180deg)",
+            }),
+        fontSize: quoteSize,
+        lineHeight: 1,
+        fontFamily: "Georgia, serif",
+        color,
+        opacity: 0.15,
+      }}
+    >
+      &ldquo;
+    </span>
+  );
 
   const header = (
     <div
       style={{
         display: "flex",
-        justifyContent: style === "bold" ? "center" : style === "split" ? "center" : "flex-end",
+        justifyContent: style === "light" ? "flex-end" : "center",
         alignItems: "center",
-        minHeight: 96,
+        minHeight: Math.round(96 * s),
       }}
     >
       {logoUrl ? (
@@ -291,12 +316,12 @@ function ReviewCard({
           src={logoUrl}
           alt=""
           crossOrigin="anonymous"
-          style={{ height: 72, width: "auto", objectFit: "contain" }}
+          style={{ height: Math.round(72 * s), width: "auto", objectFit: "contain" }}
         />
       ) : (
         <span
           style={{
-            fontSize: 40,
+            fontSize: Math.round(40 * s),
             fontWeight: 700,
             letterSpacing: "-0.02em",
             color: style === "light" ? "#1a1a1a" : "#ffffff",
@@ -313,31 +338,19 @@ function ReviewCard({
       style={{
         position: "relative",
         background: "#ffffff",
-        borderRadius: 40,
+        borderRadius: 24,
         border: style === "light" ? "1px solid #E8E8EF" : "none",
-        padding: 72,
-        boxShadow: style === "light" ? "none" : "0 24px 60px rgba(0,0,0,0.14)",
+        padding: Math.round(96 * s),
+        boxShadow: style === "light" ? "none" : "0 40px 110px rgba(0,0,0,0.16)",
         overflow: "hidden",
       }}
     >
-      <span
-        style={{
-          position: "absolute",
-          top: -30,
-          left: 28,
-          fontSize: 260,
-          lineHeight: 1,
-          fontFamily: "Georgia, serif",
-          color: color,
-          opacity: 0.12,
-        }}
-      >
-        &ldquo;
-      </span>
+      {quote("open")}
+      {quote("close")}
       <div style={{ position: "relative" }}>
         {review.rating ? (
-          <div style={{ marginBottom: 32 }}>
-            <Stars rating={review.rating} color={color} size={44} />
+          <div style={{ marginBottom: Math.round(40 * s) }}>
+            <Stars rating={review.rating} size={Math.round(56 * s)} />
           </div>
         ) : null}
         <p
@@ -351,12 +364,12 @@ function ReviewCard({
         >
           {review.body}
         </p>
-        <div style={{ marginTop: 44 }}>
-          <div style={{ fontSize: 32, fontWeight: 700, color: "#1a1a1a" }}>
+        <div style={{ marginTop: Math.round(52 * s) }}>
+          <div style={{ fontSize: Math.round(42 * s), fontWeight: 700, color: "#1a1a1a" }}>
             {displayName(review.reviewer_name)}
           </div>
           {review.reviewer_city ? (
-            <div style={{ fontSize: 24, color: "#6b7280", marginTop: 6 }}>
+            <div style={{ fontSize: Math.round(28 * s), color, marginTop: 8 }}>
               {review.reviewer_city}
             </div>
           ) : null}
@@ -372,11 +385,11 @@ function ReviewCard({
         alignItems: "center",
         justifyContent: "center",
         gap: 10,
-        fontSize: 24,
+        fontSize: Math.round(24 * s),
         color: style === "bold" ? "rgba(255,255,255,0.85)" : color,
       }}
     >
-      <Check style={{ width: 26, height: 26 }} />
+      <Check style={{ width: Math.round(26 * s), height: Math.round(26 * s) }} />
       <span>Verified Google review</span>
     </div>
   );
@@ -397,15 +410,18 @@ function ReviewCard({
       >
         <div
           style={{
+            position: "relative",
             height: Math.round(height / 3),
             background: color,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             padding: pad,
+            overflow: "hidden",
           }}
         >
-          {header}
+          <Texture width={width} height={Math.round(height / 3)} />
+          <div style={{ position: "relative" }}>{header}</div>
         </div>
         <div
           style={{
@@ -414,11 +430,11 @@ function ReviewCard({
             flexDirection: "column",
             justifyContent: "space-between",
             padding: pad,
-            marginTop: -120,
+            marginTop: Math.round(-140 * s),
           }}
         >
           {card}
-          <div style={{ marginTop: 48 }}>{footer}</div>
+          <div style={{ marginTop: Math.round(48 * s) }}>{footer}</div>
         </div>
       </div>
     );
@@ -428,19 +444,50 @@ function ReviewCard({
     <div
       ref={ref}
       style={{
+        position: "relative",
         width,
         height,
         background: style === "bold" ? color : light,
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
         padding: pad,
         overflow: "hidden",
       }}
     >
-      {header}
-      <div style={{ paddingTop: 40, paddingBottom: 40 }}>{card}</div>
-      {footer}
+      {style === "bold" ? <Texture width={width} height={height} /> : null}
+      <div
+        style={{
+          position: "relative",
+          height: `${isStory ? 20 : 18}%`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: style === "light" ? "flex-end" : "center",
+        }}
+      >
+        {header}
+      </div>
+      <div
+        style={{
+          position: "relative",
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        {card}
+      </div>
+      <div
+        style={{
+          position: "relative",
+          height: `${isStory ? 10 : 12}%`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {footer}
+      </div>
     </div>
   );
 }
