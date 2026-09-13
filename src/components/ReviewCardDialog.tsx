@@ -69,14 +69,54 @@ export function ReviewCardDialog({
   const [format, setFormat] = useState<Format>("square");
   const [style, setStyle] = useState<Style>("bold");
   const [busy, setBusy] = useState(false);
+  const [captions, setCaptions] = useState<string[]>([]);
+  const [captionBusy, setCaptionBusy] = useState(false);
+  const [captionError, setCaptionError] = useState<string | null>(null);
+  const [selected, setSelected] = useState<number | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (review) {
       setFormat("square");
       setStyle("bold");
+      setCaptions([]);
+      setCaptionBusy(false);
+      setCaptionError(null);
+      setSelected(null);
     }
   }, [review]);
+
+  async function writeCaption() {
+    if (!review) return;
+    setCaptionBusy(true);
+    setCaptionError(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-caption", {
+        body: { review_id: review.id },
+      });
+      if (error) throw error;
+      const raw = (data as { captions?: unknown })?.captions ?? data;
+      const list = Array.isArray(raw) ? raw.filter((c): c is string => typeof c === "string") : [];
+      if (list.length === 0) throw new Error("No captions were returned.");
+      setCaptions(list);
+      setSelected(0);
+    } catch (e) {
+      setCaptions([]);
+      setSelected(null);
+      setCaptionError(e instanceof Error ? e.message : "Something went wrong.");
+    } finally {
+      setCaptionBusy(false);
+    }
+  }
+
+  async function copyCaption(text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Caption copied.");
+    } catch {
+      toast.error("Couldn't copy the caption.");
+    }
+  }
 
   const spec = FORMATS.find((f) => f.id === format)!;
   const previewW = format === "square" ? 340 : 260;
