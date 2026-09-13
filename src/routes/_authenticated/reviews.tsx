@@ -124,12 +124,29 @@ function ReviewsPage() {
               <span className="text-xs text-muted-foreground">
                 {formatDate(review.reviewed_at)}
               </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1.5"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEditing(review);
+                }}
+              >
+                <Pencil className="size-3.5" />
+                Edit
+              </Button>
             </div>
           ))}
         </div>
       )}
 
       <AddReviewDialog open={addOpen} onOpenChange={setAddOpen} />
+      <AddReviewDialog
+        open={Boolean(editing)}
+        onOpenChange={(v) => !v && setEditing(null)}
+        review={editing}
+      />
       <ReviewCardDialog review={selected} onOpenChange={(v) => !v && setSelected(null)} />
     </div>
   );
