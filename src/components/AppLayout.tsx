@@ -12,6 +12,7 @@ import {
   ChevronsUpDown,
   Plus,
   Users,
+  Star,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useBusinesses, type Business } from "@/lib/business-context";
@@ -46,6 +47,7 @@ function BusinessPlanLine({ business }: { business: Business }) {
 const nav = [
   { to: "/jobs", label: "Jobs", icon: Briefcase },
   { to: "/requests", label: "Requests", icon: Send },
+  { to: "/reviews", label: "Reviews", icon: Star },
   { to: "/customers", label: "Customers", icon: Users },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
