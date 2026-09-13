@@ -228,6 +228,12 @@ export function ReviewCardDialog({
                     </Button>
                   ))}
                 </div>
+                {isVerifiedReview(review) ? null : (
+                  <p className="text-xs text-muted-foreground">
+                    No Google link on this review, so the verified badge is hidden. Add the
+                    link from the review list to show it.
+                  </p>
+                )}
               </div>
 
               <div className="space-y-3">
