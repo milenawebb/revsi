@@ -571,13 +571,14 @@ function ReviewCard({
             flex: 1,
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-between",
+            justifyContent: verified ? "space-between" : "center",
             padding: pad,
+            paddingBottom: padBottom,
             marginTop: Math.round(-140 * s),
           }}
         >
           {card}
-          <div style={{ marginTop: Math.round(48 * s) }}>{footer}</div>
+          {verified ? <div style={{ marginTop: Math.round(48 * s) }}>{footer}</div> : null}
         </div>
       </div>
     );
