@@ -33,6 +33,7 @@ export const Route = createFileRoute("/_authenticated/reviews")({
 function ReviewsPage() {
   const business = useBusiness();
   const [addOpen, setAddOpen] = useState(false);
+  const [editing, setEditing] = useState<ReviewRow | null>(null);
   const [selected, setSelected] = useState<ReviewRow | null>(null);
 
   const { data, isLoading } = useQuery({
