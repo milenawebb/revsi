@@ -26,6 +26,19 @@ function today() {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
+const GOOGLE_HOSTS = ["maps.app.goo.gl", "maps.google.com", "www.google.com", "google.com"];
+
+function isGoogleReviewUrl(value: string) {
+  const v = value.trim();
+  if (!v) return true;
+  try {
+    const u = new URL(v);
+    return u.protocol === "https:" && GOOGLE_HOSTS.includes(u.hostname.toLowerCase());
+  } catch {
+    return false;
+  }
+}
+
 export function AddReviewDialog({
   open,
   onOpenChange,
@@ -41,6 +54,7 @@ export function AddReviewDialog({
   const [rating, setRating] = useState<number | null>(null);
   const [body, setBody] = useState("");
   const [date, setDate] = useState(today());
+  const [sourceUrl, setSourceUrl] = useState("");
 
   useEffect(() => {
     if (!open) return;
@@ -50,11 +64,14 @@ export function AddReviewDialog({
     setRating(null);
     setBody("");
     setDate(today());
+    setSourceUrl("");
   }, [open]);
 
   const composedName = lastInitial
     ? `${firstName.trim()} ${lastInitial}.`
     : firstName.trim();
+
+  const sourceUrlValid = isGoogleReviewUrl(sourceUrl);
 
   const save = useMutation({
     mutationFn: async () => {
@@ -66,6 +83,7 @@ export function AddReviewDialog({
         body: body.trim(),
         reviewed_at: new Date(`${date}T12:00:00`).toISOString(),
         source: "manual",
+        source_url: sourceUrl.trim() || null,
       });
       if (error) throw error;
     },
@@ -80,7 +98,10 @@ export function AddReviewDialog({
   });
 
   const canSave =
-    Boolean(firstName.trim()) && Boolean(body.trim()) && body.length <= MAX_BODY;
+    Boolean(firstName.trim()) &&
+    Boolean(body.trim()) &&
+    body.length <= MAX_BODY &&
+    sourceUrlValid;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -190,6 +211,28 @@ export function AddReviewDialog({
               onChange={(e) => setBody(e.target.value)}
               placeholder="What did they say?"
             />
+
+            <div className="space-y-2">
+              <Label htmlFor="review-source-url">Link to this review on Google (optional)</Label>
+              <Input
+                id="review-source-url"
+                type="url"
+                value={sourceUrl}
+                onChange={(e) => setSourceUrl(e.target.value)}
+                placeholder="https://maps.app.goo.gl/..."
+              />
+              {sourceUrlValid ? (
+                <p className="text-xs text-muted-foreground">
+                  Open the review on Google Maps, click Share, and copy the link. This is
+                  only used to verify the review is real. It never appears on the graphic.
+                </p>
+              ) : (
+                <p className="text-xs text-destructive">
+                  That does not look like a Google Maps link.
+                </p>
+              )}
+            </div>
+
             <p className="text-xs text-muted-foreground">
               {body.length} of {MAX_BODY} characters
             </p>

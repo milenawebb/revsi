@@ -40,7 +40,7 @@ function ReviewsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reviews")
-        .select("id, reviewer_name, reviewer_city, rating, body, reviewed_at")
+        .select("id, reviewer_name, reviewer_city, rating, body, reviewed_at, source_url")
         .eq("business_id", business.id)
         .order("reviewed_at", { ascending: false })
         .limit(500);
@@ -109,6 +109,17 @@ function ReviewsPage() {
                   {review.body.split("\n")[0]}
                 </p>
               </div>
+              {review.source_url ? (
+                <a
+                  href={review.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-xs font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  View on Google
+                </a>
+              ) : null}
               <span className="text-xs text-muted-foreground">
                 {formatDate(review.reviewed_at)}
               </span>
