@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { toPng } from "html-to-image";
 import { toast } from "sonner";
-import { Check, Download, Star } from "lucide-react";
+import { Check, Copy, Download, Loader2, Sparkles, Star } from "lucide-react";
 import { useBusiness } from "@/lib/business-context";
 import { supabase } from "@/integrations/supabase/client";
 import {
