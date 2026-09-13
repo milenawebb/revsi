@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, Star } from "lucide-react";
+import { Pencil, Plus, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useBusiness } from "@/lib/business-context";
 import { Button } from "@/components/ui/button";
@@ -33,6 +33,7 @@ export const Route = createFileRoute("/_authenticated/reviews")({
 function ReviewsPage() {
   const business = useBusiness();
   const [addOpen, setAddOpen] = useState(false);
+  const [editing, setEditing] = useState<ReviewRow | null>(null);
   const [selected, setSelected] = useState<ReviewRow | null>(null);
 
   const { data, isLoading } = useQuery({
@@ -123,12 +124,29 @@ function ReviewsPage() {
               <span className="text-xs text-muted-foreground">
                 {formatDate(review.reviewed_at)}
               </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1.5"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEditing(review);
+                }}
+              >
+                <Pencil className="size-3.5" />
+                Edit
+              </Button>
             </div>
           ))}
         </div>
       )}
 
       <AddReviewDialog open={addOpen} onOpenChange={setAddOpen} />
+      <AddReviewDialog
+        open={Boolean(editing)}
+        onOpenChange={(v) => !v && setEditing(null)}
+        review={editing}
+      />
       <ReviewCardDialog review={selected} onOpenChange={(v) => !v && setSelected(null)} />
     </div>
   );

@@ -39,12 +39,38 @@ function isGoogleReviewUrl(value: string) {
   }
 }
 
+export type EditableReview = {
+  id: string;
+  reviewer_name: string;
+  reviewer_city: string | null;
+  rating: number | null;
+  body: string;
+  reviewed_at: string;
+  source_url?: string | null;
+};
+
+function splitName(full: string) {
+  const value = (full ?? "").trim();
+  const idx = value.lastIndexOf(" ");
+  if (idx === -1) return { first: value, initial: "" };
+  const last = value.slice(idx + 1).replace(/[^a-zA-Z]/g, "");
+  return { first: value.slice(0, idx), initial: last.slice(0, 1).toUpperCase() };
+}
+
+function toDateInput(iso: string) {
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 export function AddReviewDialog({
   open,
   onOpenChange,
+  review,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
+  review?: EditableReview | null;
 }) {
   const business = useBusiness();
   const queryClient = useQueryClient();
@@ -58,6 +84,17 @@ export function AddReviewDialog({
 
   useEffect(() => {
     if (!open) return;
+    if (review) {
+      const { first, initial } = splitName(review.reviewer_name);
+      setFirstName(first);
+      setLastInitial(initial);
+      setCity(review.reviewer_city ?? "");
+      setRating(review.rating);
+      setBody(review.body);
+      setDate(toDateInput(review.reviewed_at));
+      setSourceUrl(review.source_url ?? "");
+      return;
+    }
     setFirstName("");
     setLastInitial("");
     setCity("");
@@ -65,7 +102,7 @@ export function AddReviewDialog({
     setBody("");
     setDate(today());
     setSourceUrl("");
-  }, [open]);
+  }, [open, review]);
 
   const composedName = lastInitial
     ? `${firstName.trim()} ${lastInitial}.`
@@ -75,25 +112,30 @@ export function AddReviewDialog({
 
   const save = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("reviews").insert({
-        business_id: business.id,
+      const values = {
         reviewer_name: composedName,
         reviewer_city: city.trim() || null,
         rating,
         body: body.trim(),
         reviewed_at: new Date(`${date}T12:00:00`).toISOString(),
-        source: "manual",
         source_url: sourceUrl.trim() || null,
-      });
+      };
+      const { error } = review
+        ? await supabase.from("reviews").update(values).eq("id", review.id)
+        : await supabase
+            .from("reviews")
+            .insert({ ...values, business_id: business.id, source: "manual" });
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Review added");
+      toast.success(review ? "Review updated" : "Review added");
       onOpenChange(false);
       queryClient.invalidateQueries({ queryKey: ["reviews", business.id] });
     },
     onError: (e: { message: string }) => {
-      toast.error("Couldn't add review", { description: e.message });
+      toast.error(review ? "Couldn't update review" : "Couldn't add review", {
+        description: e.message,
+      });
     },
   });
 
@@ -107,7 +149,7 @@ export function AddReviewDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Add review</DialogTitle>
+          <DialogTitle>{review ? "Edit review" : "Add review"}</DialogTitle>
           <DialogDescription>
             Enter a review you have received so you can turn it into a shareable graphic.
             Reviewer names are shortened to a first name and last initial.
@@ -223,8 +265,9 @@ export function AddReviewDialog({
               />
               {sourceUrlValid ? (
                 <p className="text-xs text-muted-foreground">
-                  Open the review on Google Maps, click Share, and copy the link. This is
-                  only used to verify the review is real. It never appears on the graphic.
+                  Open the review on Google Maps, click Share, and copy the link. The link
+                  itself never appears on the graphic, but adding it is what lets us show
+                  the Verified Google review badge.
                 </p>
               ) : (
                 <p className="text-xs text-destructive">

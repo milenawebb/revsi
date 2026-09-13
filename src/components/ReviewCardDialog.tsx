@@ -56,6 +56,15 @@ export function displayName(full: string) {
   return last ? `${first} ${last[0]!.toUpperCase()}.` : first;
 }
 
+/**
+ * Single source of truth for the "Verified Google review" badge.
+ * Today a review counts as verified when a Google link is attached.
+ * Extend here when Google Business Profile sourced reviews arrive.
+ */
+export function isVerifiedReview(review: Pick<ReviewRow, "source_url">) {
+  return Boolean(review.source_url && review.source_url.trim());
+}
+
 function safeFileName(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "review";
 }
@@ -219,6 +228,12 @@ export function ReviewCardDialog({
                     </Button>
                   ))}
                 </div>
+                {isVerifiedReview(review) ? null : (
+                  <p className="text-xs text-muted-foreground">
+                    No Google link on this review, so the verified badge is hidden. Add the
+                    link from the review list to show it.
+                  </p>
+                )}
               </div>
 
               <div className="space-y-3">
@@ -404,6 +419,8 @@ function ReviewCard({
   const fontSize = Math.round(bodySize(review.body.length) * s);
   const pad = Math.round(72 * (isStory ? 1.1 : 1));
   const light = "#FAFAFE";
+  const verified = isVerifiedReview(review);
+  const padBottom = verified ? pad : Math.round(pad * 0.7);
   const quoteSize = Math.round(150 * s);
 
   const quote = (which: "open" | "close") => (
@@ -554,13 +571,14 @@ function ReviewCard({
             flex: 1,
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-between",
+            justifyContent: verified ? "space-between" : "center",
             padding: pad,
+            paddingBottom: padBottom,
             marginTop: Math.round(-140 * s),
           }}
         >
           {card}
-          <div style={{ marginTop: Math.round(48 * s) }}>{footer}</div>
+          {verified ? <div style={{ marginTop: Math.round(48 * s) }}>{footer}</div> : null}
         </div>
       </div>
     );
@@ -577,6 +595,7 @@ function ReviewCard({
         display: "flex",
         flexDirection: "column",
         padding: pad,
+        paddingBottom: padBottom,
         overflow: "hidden",
       }}
     >
@@ -603,17 +622,19 @@ function ReviewCard({
       >
         {card}
       </div>
-      <div
-        style={{
-          position: "relative",
-          height: `${isStory ? 10 : 12}%`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {footer}
-      </div>
+      {verified ? (
+        <div
+          style={{
+            position: "relative",
+            height: `${isStory ? 10 : 12}%`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {footer}
+        </div>
+      ) : null}
     </div>
   );
 }
