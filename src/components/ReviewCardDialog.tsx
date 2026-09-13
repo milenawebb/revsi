@@ -220,10 +220,94 @@ export function ReviewCardDialog({
                 </div>
               </div>
 
-              <Button onClick={download} disabled={busy} className="gap-2">
-                <Download className="size-4" />
-                {busy ? "Preparing…" : "Download image"}
-              </Button>
+              <div className="space-y-3">
+                <Button onClick={download} disabled={busy} className="gap-2">
+                  <Download className="size-4" />
+                  {busy ? "Preparing…" : "Download image"}
+                </Button>
+
+                <div className="space-y-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={writeCaption}
+                    disabled={captionBusy}
+                    className="gap-2"
+                  >
+                    {captionBusy ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <Sparkles className="size-4" />
+                    )}
+                    {captionBusy
+                      ? "Writing…"
+                      : captions.length > 0
+                        ? "Write new captions"
+                        : "Write a caption"}
+                  </Button>
+
+                  {captionError ? (
+                    <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm">
+                      <p className="text-destructive">
+                        Couldn't write a caption. {captionError}
+                      </p>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="mt-2"
+                        onClick={writeCaption}
+                        disabled={captionBusy}
+                      >
+                        Try again
+                      </Button>
+                    </div>
+                  ) : null}
+
+                  {captions.length > 0 ? (
+                    <div className="space-y-2">
+                      {captions.map((c, i) => (
+                        <div
+                          key={i}
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => setSelected(i)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setSelected(i);
+                            }
+                          }}
+                          className={cn(
+                            "cursor-pointer rounded-lg border p-3 text-sm transition-colors",
+                            selected === i
+                              ? "border-primary bg-primary/5"
+                              : "border-border hover:bg-muted",
+                          )}
+                        >
+                          <p className="whitespace-pre-wrap">{c}</p>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            className="mt-2 gap-2 px-2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              void copyCaption(c);
+                            }}
+                          >
+                            <Copy className="size-3.5" />
+                            Copy
+                          </Button>
+                        </div>
+                      ))}
+                      <p className="text-xs text-muted-foreground">
+                        Written by AI from the review. Check it before you post.
+                      </p>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
             </div>
           </div>
         ) : null}
