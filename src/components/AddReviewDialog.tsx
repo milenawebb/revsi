@@ -89,18 +89,42 @@ export function AddReviewDialog({
           <DialogTitle>Add review</DialogTitle>
           <DialogDescription>
             Enter a review you have received so you can turn it into a shareable graphic.
+            Reviewer names are shortened to a first name and last initial.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="review-name">Reviewer name</Label>
-            <Input
-              id="review-name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Sarah Mitchell"
-            />
+            <div className="grid grid-cols-[3fr_1fr] gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="review-first-name">First name</Label>
+                <Input
+                  id="review-first-name"
+                  value={firstName}
+                  maxLength={40}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Sarah"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="review-last-initial">Last initial</Label>
+                <Input
+                  id="review-last-initial"
+                  value={lastInitial}
+                  maxLength={1}
+                  onChange={(e) =>
+                    setLastInitial(
+                      e.target.value.replace(/[^a-zA-Z]/g, "").slice(0, 1).toUpperCase(),
+                    )
+                  }
+                  placeholder="M"
+                />
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              We only publish a first name and a last initial. Leave the initial blank if
+              the reviewer used a single name or a business name.
+            </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
