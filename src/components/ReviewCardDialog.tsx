@@ -191,12 +191,65 @@ export function ReviewCardDialog({
   );
 }
 
-function Stars({ rating, color, size }: { rating: number; color: string; size: number }) {
+const GOLD = "#F5A524";
+
+function Stars({ rating, size }: { rating: number; size: number }) {
   return (
-    <div style={{ display: "flex", gap: size * 0.18 }}>
+    <div style={{ display: "flex", gap: size * 0.34 }}>
       {Array.from({ length: rating }).map((_, i) => (
-        <Star key={i} style={{ width: size, height: size, color, fill: color }} />
+        <Star key={i} style={{ width: size, height: size, color: GOLD, fill: GOLD }} />
       ))}
+    </div>
+  );
+}
+
+/** Low opacity angled bars that add texture to a coloured background. */
+function Texture({ width, height }: { width: number; height: number }) {
+  const bar = (extra: React.CSSProperties) => ({
+    position: "absolute" as const,
+    background: "#ffffff",
+    opacity: 0.08,
+    ...extra,
+  });
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        overflow: "hidden",
+        pointerEvents: "none",
+      }}
+    >
+      <div
+        style={bar({
+          top: -height * 0.14,
+          left: -width * 0.22,
+          width: width * 0.34,
+          height: height * 0.5,
+          transform: "rotate(28deg)",
+          borderRadius: 24,
+        })}
+      />
+      <div
+        style={bar({
+          top: -height * 0.1,
+          left: -width * 0.04,
+          width: width * 0.14,
+          height: height * 0.4,
+          transform: "rotate(28deg)",
+          borderRadius: 24,
+        })}
+      />
+      <div
+        style={bar({
+          bottom: -height * 0.16,
+          right: -width * 0.18,
+          width: width * 0.4,
+          height: height * 0.42,
+          transform: "rotate(28deg)",
+          borderRadius: 24,
+        })}
+      />
     </div>
   );
 }
