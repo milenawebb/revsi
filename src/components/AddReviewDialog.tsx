@@ -26,6 +26,19 @@ function today() {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
+const GOOGLE_HOSTS = ["maps.app.goo.gl", "maps.google.com", "www.google.com", "google.com"];
+
+function isGoogleReviewUrl(value: string) {
+  const v = value.trim();
+  if (!v) return true;
+  try {
+    const u = new URL(v);
+    return u.protocol === "https:" && GOOGLE_HOSTS.includes(u.hostname.toLowerCase());
+  } catch {
+    return false;
+  }
+}
+
 export function AddReviewDialog({
   open,
   onOpenChange,
