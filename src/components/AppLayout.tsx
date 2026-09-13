@@ -12,6 +12,7 @@ import {
   ChevronsUpDown,
   Plus,
   Users,
+  Star,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useBusinesses, type Business } from "@/lib/business-context";
