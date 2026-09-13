@@ -265,8 +265,9 @@ export function AddReviewDialog({
               />
               {sourceUrlValid ? (
                 <p className="text-xs text-muted-foreground">
-                  Open the review on Google Maps, click Share, and copy the link. This is
-                  only used to verify the review is real. It never appears on the graphic.
+                  Open the review on Google Maps, click Share, and copy the link. The link
+                  itself never appears on the graphic, but adding it is what lets us show
+                  the Verified Google review badge.
                 </p>
               ) : (
                 <p className="text-xs text-destructive">
