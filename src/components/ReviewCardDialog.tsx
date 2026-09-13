@@ -419,6 +419,8 @@ function ReviewCard({
   const fontSize = Math.round(bodySize(review.body.length) * s);
   const pad = Math.round(72 * (isStory ? 1.1 : 1));
   const light = "#FAFAFE";
+  const verified = isVerifiedReview(review);
+  const padBottom = verified ? pad : Math.round(pad * 0.7);
   const quoteSize = Math.round(150 * s);
 
   const quote = (which: "open" | "close") => (
