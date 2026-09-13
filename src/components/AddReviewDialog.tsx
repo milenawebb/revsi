@@ -56,6 +56,8 @@ export function AddReviewDialog({
     ? `${firstName.trim()} ${lastInitial}.`
     : firstName.trim();
 
+  const sourceUrlValid = isGoogleReviewUrl(sourceUrl);
+
   const save = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("reviews").insert({
@@ -66,6 +68,7 @@ export function AddReviewDialog({
         body: body.trim(),
         reviewed_at: new Date(`${date}T12:00:00`).toISOString(),
         source: "manual",
+        source_url: sourceUrl.trim() || null,
       });
       if (error) throw error;
     },
