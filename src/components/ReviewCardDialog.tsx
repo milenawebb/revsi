@@ -3,6 +3,7 @@ import { toPng } from "html-to-image";
 import { toast } from "sonner";
 import { Check, Download, Star } from "lucide-react";
 import { useBusiness } from "@/lib/business-context";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
