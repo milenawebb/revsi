@@ -622,17 +622,19 @@ function ReviewCard({
       >
         {card}
       </div>
-      <div
-        style={{
-          position: "relative",
-          height: `${isStory ? 10 : 12}%`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {footer}
-      </div>
+      {verified ? (
+        <div
+          style={{
+            position: "relative",
+            height: `${isStory ? 10 : 12}%`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {footer}
+        </div>
+      ) : null}
     </div>
   );
 }
