@@ -149,7 +149,7 @@ export function AddReviewDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Add review</DialogTitle>
+          <DialogTitle>{review ? "Edit review" : "Add review"}</DialogTitle>
           <DialogDescription>
             Enter a review you have received so you can turn it into a shareable graphic.
             Reviewer names are shortened to a first name and last initial.
