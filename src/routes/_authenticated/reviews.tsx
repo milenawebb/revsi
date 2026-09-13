@@ -40,7 +40,7 @@ function ReviewsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reviews")
-        .select("id, reviewer_name, reviewer_city, rating, body, reviewed_at")
+        .select("id, reviewer_name, reviewer_city, rating, body, reviewed_at, source_url")
         .eq("business_id", business.id)
         .order("reviewed_at", { ascending: false })
         .limit(500);
