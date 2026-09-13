@@ -109,6 +109,17 @@ function ReviewsPage() {
                   {review.body.split("\n")[0]}
                 </p>
               </div>
+              {review.source_url ? (
+                <a
+                  href={review.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-xs font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  View on Google
+                </a>
+              ) : null}
               <span className="text-xs text-muted-foreground">
                 {formatDate(review.reviewed_at)}
               </span>
