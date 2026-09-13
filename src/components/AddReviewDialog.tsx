@@ -208,6 +208,28 @@ export function AddReviewDialog({
               onChange={(e) => setBody(e.target.value)}
               placeholder="What did they say?"
             />
+
+            <div className="space-y-2">
+              <Label htmlFor="review-source-url">Link to this review on Google (optional)</Label>
+              <Input
+                id="review-source-url"
+                type="url"
+                value={sourceUrl}
+                onChange={(e) => setSourceUrl(e.target.value)}
+                placeholder="https://maps.app.goo.gl/..."
+              />
+              {sourceUrlValid ? (
+                <p className="text-xs text-muted-foreground">
+                  Open the review on Google Maps, click Share, and copy the link. This is
+                  only used to verify the review is real. It never appears on the graphic.
+                </p>
+              ) : (
+                <p className="text-xs text-destructive">
+                  That does not look like a Google Maps link.
+                </p>
+              )}
+            </div>
+
             <p className="text-xs text-muted-foreground">
               {body.length} of {MAX_BODY} characters
             </p>
