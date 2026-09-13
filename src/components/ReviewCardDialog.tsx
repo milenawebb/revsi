@@ -56,6 +56,15 @@ export function displayName(full: string) {
   return last ? `${first} ${last[0]!.toUpperCase()}.` : first;
 }
 
+/**
+ * Single source of truth for the "Verified Google review" badge.
+ * Today a review counts as verified when a Google link is attached.
+ * Extend here when Google Business Profile sourced reviews arrive.
+ */
+export function isVerifiedReview(review: Pick<ReviewRow, "source_url">) {
+  return Boolean(review.source_url && review.source_url.trim());
+}
+
 function safeFileName(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "review";
 }
