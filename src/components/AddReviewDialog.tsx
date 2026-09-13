@@ -98,7 +98,10 @@ export function AddReviewDialog({
   });
 
   const canSave =
-    Boolean(firstName.trim()) && Boolean(body.trim()) && body.length <= MAX_BODY;
+    Boolean(firstName.trim()) &&
+    Boolean(body.trim()) &&
+    body.length <= MAX_BODY &&
+    sourceUrlValid;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
