@@ -17,7 +17,7 @@ export const Route = createFileRoute("/terms")({
 
 function TermsPage() {
   return (
-    <LegalPage title="Terms of Service" updated="September 12, 2026" draft={false}>
+    <LegalPage title="Terms of Service" updated="September 20, 2026" draft={false}>
       <p>
         These Terms of Service ("Terms") are an agreement between you and Webb
         Consulting LLC, a Virginia limited liability company ("Webb
@@ -454,23 +454,23 @@ function TermsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection heading="23. Contact">
-        <p>Questions about these Terms may be sent to:</p>
+      <LegalSection heading="23. Contact us">
+        <p>Questions about these terms can be sent to:</p>
         <p>
           Webb Consulting LLC
           <br />
-          511 Caddy Aly
+          243 Ridge McIntire Road #1042
           <br />
-          Charlottesville, VA 22911
+          Charlottesville, VA 22903
           <br />
-          Email:{" "}
+          United States
+          <br />
           <a href="mailto:info@revsi.app" className="underline underline-offset-2">
             info@revsi.app
           </a>
-          <br />
-          Website: revsi.app
         </p>
       </LegalSection>
+
     </LegalPage>
   );
 }
