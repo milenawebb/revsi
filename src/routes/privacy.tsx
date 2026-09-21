@@ -17,7 +17,7 @@ export const Route = createFileRoute("/privacy")({
 
 function PrivacyPage() {
   return (
-    <LegalPage title="Privacy Policy" updated="September 10, 2026" draft={false}>
+    <LegalPage title="Privacy Policy" updated="September 20, 2026" draft={false}>
       <p>
         This Privacy Policy explains how Webb Consulting LLC, a Virginia
         limited liability company ("Webb Consulting," "Revsi," "we," "us," or
@@ -248,14 +248,26 @@ function PrivacyPage() {
         </p>
       </LegalSection>
 
-      <LegalSection heading="15. Contact">
+      <LegalSection heading="15. Contact us">
         <p>
-          Privacy questions or requests may be sent to:{" "}
+          Questions about this policy, or requests about your personal data, can
+          be sent to:
+        </p>
+        <p>
+          Webb Consulting LLC
+          <br />
+          243 Ridge McIntire Road #1042
+          <br />
+          Charlottesville, VA 22903
+          <br />
+          United States
+          <br />
           <a href="mailto:info@revsi.app" className="underline underline-offset-2">
             info@revsi.app
           </a>
         </p>
       </LegalSection>
+
     </LegalPage>
   );
 }

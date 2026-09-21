@@ -171,7 +171,7 @@ export function SiteFooter({ className }: { className?: string }) {
         </div>
       </div>
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 border-t px-5 py-5 text-center text-xs text-muted-foreground sm:flex-row sm:justify-between sm:text-left">
-        <p>&copy; 2026 Revsi. All rights reserved.</p>
+        <p>&copy; 2026 Revsi. All rights reserved. Webb Consulting LLC, Charlottesville, VA</p>
         <a
           href="https://fifthexit.com"
           target="_blank"
